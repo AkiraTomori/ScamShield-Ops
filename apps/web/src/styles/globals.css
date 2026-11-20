@@ -1,0 +1,52 @@
+/* Tokens from docs/product/design-system.md §2 (only those used so far). */
+:root {
+  --color-bg: #ffffff;
+  --color-surface-subtle: #f2f4f7;
+  --color-text: #101828;
+  --color-text-muted: #475467;
+  --color-border: #d0d5dd;
+  --color-primary: #3538cd;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header,
+.main,
+.footer {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.header {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.main {
+  flex: 1;
+}
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}

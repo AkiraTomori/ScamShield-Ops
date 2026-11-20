@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (20/11/2026):** BẢN NHÁP, **dự kiến**. Chưa có mã; cây dưới đây là đích đến. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (20/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng đã có mã (nhánh `feat/foundation`, chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -93,10 +93,10 @@ lookup, llm ─→ http
 
 | Tầng | Công cụ | Ở đâu | Gọi ra ngoài |
 |---|---|---|---|
-| Hàm thuần (che dữ liệu, chỉ dấu, kiểm URL, verdict) | Vitest | Cạnh file, `*.test.ts` | Không |
-| Module có I/O | Vitest + phụ thuộc giả | Cạnh file | Không |
-| Tích hợp DB | Vitest + Postgres local | `*.int.test.ts` | Chỉ DB local; bỏ qua nếu thiếu `DATABASE_URL` |
-| Route handler | Vitest gọi trực tiếp hàm handler | Cạnh route | Không |
+| Hàm thuần (che dữ liệu, chỉ dấu, kiểm URL, verdict) | Vitest | `<package>/test/`, `*.test.ts`, phản chiếu `src/` | Không |
+| Module có I/O | Vitest + phụ thuộc giả | `<package>/test/` | Không |
+| Tích hợp DB | Vitest + Postgres local | `<package>/test/`, `*.int.test.ts` | Chỉ DB local; bỏ qua nếu thiếu `DATABASE_URL` |
+| Route handler | Vitest gọi trực tiếp hàm handler | `apps/web/test/` | Không |
 | End-to-end | Playwright | `apps/web/e2e/` | App + DB local; LLM thật hoặc giả theo cấu hình |
 | Chất lượng AI | Runner eval | `eval/` | LLM thật |
 

@@ -38,4 +38,4 @@ Phát hiện lệch thì **dừng và báo owner** ([AGENTS.md](../AGENTS.md)), 
 
 ## Trạng thái
 
-Giai đoạn **đặc tả và thiết kế** (20/11/2026): owner đã chốt Q-01…Q-10; spec v1, kế hoạch và thiết kế slice nền móng là bản nháp. Chưa có mã ứng dụng; D-01…D-03 đã chốt; chờ owner duyệt slice nền móng (D-04 còn chờ kiểm, xem system-design §9).
+Giai đoạn **đặc tả và thiết kế** (20/11/2026): owner đã chốt Q-01…Q-10; spec v1, kế hoạch và thiết kế slice nền móng là bản nháp. Chưa có mã ứng dụng; D-01…D-03 đã chốt; slice nền móng đã được owner yêu cầu triển khai (20/11, nhánh `feat/foundation`, chưa merge; chỉ phạm vi §1–§8, không gồm pipeline hay bảng nghiệp vụ). D-04 còn chờ kiểm, xem system-design §9.

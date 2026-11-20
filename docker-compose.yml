@@ -1,0 +1,30 @@
+# Local PostgreSQL for development and tests. The deployed app uses Supabase (system-design §2).
+#
+# Image: Debian bookworm, not alpine. Alpine uses musl, whose text collation/locale behaviour can
+# differ from the glibc-based Postgres images used by managed hosts, so ORDER BY and LIKE results
+# could differ between local and deployed. Pick the major version to match the Supabase project
+# (set POSTGRES_VERSION in .env; the default below is a placeholder until that is checked).
+#
+# Only the POSTGRES_* variables are passed in (by interpolation from .env). There is deliberately no
+# `env_file`, so GROQ_API_KEY and other secrets never enter the container.
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-17}-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-scamshield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (copy .env.example)}
+      POSTGRES_DB: ${POSTGRES_DB:-scamshield}
+    ports:
+      # Loopback only: the database is not reachable from the network.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - scamshield-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  scamshield-pgdata:

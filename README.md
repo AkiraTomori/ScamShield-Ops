@@ -80,7 +80,17 @@ git add tools/sdlc-kit && git commit -m "chore: update sdlc-kit"
 
 ## Cách chạy
 
-*Sẽ bổ sung ở slice nền móng.* Dự kiến: Node.js LTS, PostgreSQL, biến môi trường trong `.env` (mẫu ở `.env.example`). Chi tiết ở [`docs/runbook/setup-and-bringup.md`](docs/runbook/setup-and-bringup.md).
+Cần Node.js ≥ 22 (`.nvmrc`: 24) và Docker.
+
+```bash
+cp .env.example .env     # rồi đổi POSTGRES_PASSWORD, và cùng mật khẩu đó trong DATABASE_URL
+docker compose up -d --wait
+npm ci
+npm run dev              # http://localhost:3000, kiểm tra: /api/health
+npm run verify           # format + lint + typecheck + test
+```
+
+Đổi API key (ví dụ `GROQ_API_KEY`): sửa `.env`, khởi động lại `npm run dev`. Chi tiết ở [`docs/runbook/setup-and-bringup.md`](docs/runbook/setup-and-bringup.md).
 
 ## Công nghệ, tài sản có sẵn và công cụ AI
 
