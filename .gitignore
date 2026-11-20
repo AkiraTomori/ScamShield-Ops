@@ -1,0 +1,23 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+
+# Secrets: LLM API keys, database URLs, demo account passwords live only here
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Next.js
+**/.next/
+**/.playwright/
+**/next-env.d.ts
+**/*.tsbuildinfo
+
+# Local eval runs (committed results go to eval/results/)
+eval/.cache/
+
+# Local Claude settings
+.claude/settings.local.json
