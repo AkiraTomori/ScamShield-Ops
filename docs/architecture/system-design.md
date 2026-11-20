@@ -120,7 +120,7 @@ Schema `HealthResponse` nằm ở `packages/shared` và là nguồn sự thật.
 | `DATABASE_URL_MIGRATE` | Chỉ `.env` local của owner | Kết nối trực tiếp/session |
 | `GROQ_API_KEY` | Chưa cần ở slice này | Thêm ở slice pipeline |
 
-Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `config_missing` thay vì làm sập build. `.env.example` chỉ chứa tên biến và giá trị giả.
+Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `config_missing` thay vì làm sập build. `/api/health` **chỉ** đọc và kiểm `DATABASE_URL`: giá trị sai ở `DATABASE_URL_MIGRATE` hay `GROQ_API_KEY` không được làm health thành 503 (có test hồi quy). `.env.example` chỉ chứa tên biến và giá trị giả.
 
 **Local:** `docker compose up` chạy PostgreSQL (major version trùng với Supabase, kiểm lúc tạo project). `npm run dev` chạy Next.js.
 
@@ -151,7 +151,8 @@ Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `con
 | D-01 | Một app Next.js hay tách `apps/api`? | **Một app Next.js**, API là route handlers, nghiệp vụ ở `packages/core` (§2). Phương án bỏ: tách `apps/api` | Đã chốt 20/11 |
 | D-02 | Thư viện cho slice nền móng | **Drizzle + postgres.js; ESLint + Prettier** và các thư viện ở bảng dưới. Ghi vào [`libraries.md`](../conventions/libraries.md). Phương án bỏ: Prisma, Biome | Đã chốt 20/11 |
 | D-03 | Bản preview của Vercel có dùng DB không? | **Không.** `DATABASE_URL` chỉ đặt cho Production; preview trả 503 ở `/api/health`. Phương án bỏ: Supabase staging | Đã chốt 20/11 |
-| D-04 | Rủi ro project Supabase gói Free bị tạm dừng khi ít truy cập, trong khi link phải sống 03/12–11/12 | Đề xuất: kiểm chính sách hiện hành; nếu có tạm dừng thì đặt lịch gọi `/api/health` định kỳ bằng GitHub Actions `schedule`, hoặc nâng gói trả phí trong giai đoạn chấm | Chờ owner kiểm, trước 03/12 |
+| D-04 | Rủi ro project Supabase gói Free bị tạm dừng khi ít truy cập, trong khi link phải sống 03/12–11/12. *Ghi chú 20/11: môi trường dev local dùng Docker Postgres (`postgres:<major>-bookworm`, xem `docker-compose.yml`); điều này không giải quyết D-04 vì D-04 nói về link công khai khi chấm.* | Đề xuất: kiểm chính sách hiện hành; nếu có tạm dừng thì đặt lịch gọi `/api/health` định kỳ bằng GitHub Actions `schedule`, hoặc nâng gói trả phí trong giai đoạn chấm | Chờ owner kiểm, trước 03/12 |
+| D-05 | Khi nào dựng Vercel + Supabase? (plan §6 đặt mốc 20–21/11: URL công khai trả trang trống + `/api/health` nối DB) | **Hoãn** tới khi gần hoàn thiện tính năng; trong lúc đó dev và test chỉ dùng Docker Postgres local. Phương án bỏ: deploy skeleton ngay 21/11. **Hệ quả đã biết:** chưa kiểm trên bản deploy mục `time` đổi giữa hai lần gọi, preview trả 503 (D-03), `maxDuration` so với trần 20 giây (spec §9); D-04 chưa kiểm; rủi ro hạ tầng dồn về cuối. *Đề xuất, chưa chốt:* dựng bản deploy chậm nhất **27/11** để còn 28–29/11 tích hợp trên bản deploy (plan §6); nếu không kịp thì báo owner và cắt theo plan §7. Hạn D-04 (03/12) giữ nguyên | Owner chốt hoãn 20/11; mốc chậm nhất chờ owner |
 
 **D-02 thư viện đã duyệt** (bản chính thức ở `libraries.md`):
 

@@ -1,0 +1,10 @@
+node_modules
+.next
+dist
+coverage
+package-lock.json
+docs
+tools
+.claude
+packages/core/src/db/migrations
+*.md

@@ -1,6 +1,6 @@
 # ScamShield Ops — Agent Context
 
-**Trạng thái (20/11/2026): CHỜ DUYỆT SLICE.** Mới có tài liệu: spec v1 bản nháp và kế hoạch. Owner đã chốt Q-01…Q-10 (spec §7; còn mở model Q-08 và danh sách Q-10). Chưa có mã ứng dụng; **chưa được viết mã** cho tới khi owner duyệt slice. MoMo Tech Talent 2026: **vòng loại nộp trước ngày 03/12/2026**, chung kết 11/12 (slide không được sửa sau khi nộp). Mục tiêu: một web app công khai giúp người dùng kiểm tra tin nhắn nghi lừa đảo và giúp đội vận hành fintech xử lý báo cáo thành hồ sơ điều tra có bằng chứng.
+**Trạng thái (20/11/2026): ĐANG LÀM SLICE NỀN MÓNG** (nhánh `feat/foundation`, chưa merge, chưa deploy). Owner đã yêu cầu triển khai slice nền móng + walking skeleton (system-design §1–§8): monorepo, `/api/health`, trang skeleton, Postgres local bằng Docker, CI. Đã có mã và test cho phạm vi này; `npm run verify` xanh ở local. **Chưa được viết mã** cho phần còn lại (pipeline phân tích, bảng nghiệp vụ, FraudOps, gọi Groq) cho tới khi owner duyệt slice tương ứng. Owner đã chốt Q-01…Q-10 (spec §7; còn mở model Q-08 và danh sách Q-10). D-04 (Supabase tạm dừng) vẫn mở. MoMo Tech Talent 2026: **vòng loại nộp trước ngày 03/12/2026**, chung kết 11/12 (slide không được sửa sau khi nộp). Mục tiêu: một web app công khai giúp người dùng kiểm tra tin nhắn nghi lừa đảo và giúp đội vận hành fintech xử lý báo cáo thành hồ sơ điều tra có bằng chứng.
 
 ## Đọc trước khi làm bất cứ việc gì
 1. [docs/README.md](docs/README.md): mục lục, thứ tự đọc, **thứ tự ưu tiên khi các file lệch nhau**.

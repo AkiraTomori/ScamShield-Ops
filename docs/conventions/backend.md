@@ -60,7 +60,7 @@ Chi tiết thuộc slice FraudOps. Định hướng để không thêm thư vi�
 
 ## 8. Test phía server
 
-- Vitest, file `*.test.ts` đặt cạnh file được test.
+- Vitest. File test **không** nằm lẫn trong `src/`: mỗi package có thư mục `test/` riêng, cấu trúc phản chiếu `src/` (`packages/core/test/db/health.test.ts` kiểm `packages/core/src/db/health.ts`). Owner chốt 20/11/2026.
 - Tên test bắt đầu bằng mã AC khi kiểm một tiêu chí: `it("SO-03-AC02: same signals always yield the same verdict", …)`.
 - Unit test **không** gọi LLM hay mạng thật; dùng client giả truyền vào (§2).
 - Test tích hợp DB chạy với Postgres local (`docker compose`), tự bỏ qua khi thiếu `DATABASE_URL`; mỗi test dọn dữ liệu của mình. Không bao giờ trỏ test vào DB deploy.
