@@ -1,0 +1,3 @@
+[submodule "tools/sdlc-kit"]
+	path = tools/sdlc-kit
+	url = https://github.com/AkiraTomori/my-sdlc-kit
