@@ -8,19 +8,19 @@ Docs viết bằng tiếng Việt; định danh kỹ thuật giữ tiếng Anh.
 
 | # | File | Nội dung | Trạng thái |
 |---|---|---|---|
-| 0 | [`onboarding/concepts.md`](./onboarding/concepts.md) | Nhập môn: thủ đoạn lừa đảo phổ biến, chỉ dấu, signal, verdict, prompt injection | Chưa viết |
-| 1 | [`product/pitch.md`](./product/pitch.md) | Sản phẩm là gì, vì sao Workspace-first, ví dụ Input→Output, FAQ giám khảo | Chưa viết |
-| 2 | [`spec/ScamShield-v1.md`](./spec/ScamShield-v1.md) | **Nguồn sự thật về hành vi.** Nguyên tắc P1–P5, tính năng SO-01…SO-10, tiêu chí chấp nhận, quyết định Q-01…Q-10, kịch bản demo | **Bản nháp, chờ duyệt** |
-| 3 | [`architecture/system-design.md`](./architecture/system-design.md) | **Nguồn sự thật về kiến trúc.** Modular monolith, pipeline 6 bước, quy tắc verdict, data model, mối đe doạ | Chưa viết (`/sdlc:design`) |
-| 4 | [`architecture/api.md`](./architecture/api.md) | Endpoint công khai và FraudOps, ví dụ request/response, mã lỗi | Chưa viết |
-| 5 | [`architecture/contracts.md`](./architecture/contracts.md) | Hợp đồng dữ liệu: JSON schema đầu ra LLM, zod schema dùng chung | Chưa viết |
-| 6 | [`architecture/codebase.md`](./architecture/codebase.md) | Cây thư mục, ranh giới module, test theo tầng | Chưa viết |
-| 7 | [`conventions/`](./conventions/README.md) | Cách viết code backend, frontend; thư viện | Chưa viết |
-| 8 | [`product/ui-pages.md`](./product/ui-pages.md) + [`design/pages.md`](./design/pages.md) | Các trang, component, trạng thái, ma trận trang ↔ API | Chưa viết |
-| 9 | [`product/design-system.md`](./product/design-system.md) | Token, component, pattern cho mọi UI | Chưa viết |
+| 0 | [`onboarding/concepts.md`](./onboarding/concepts.md) | Nhập môn: đề bài, thủ đoạn lừa đảo, chỉ dấu, signal, verdict, kiểm URL, vai trò của AI, prompt injection, eval, hạ tầng | Bản nháp |
+| 1 | [`product/pitch.md`](./product/pitch.md) | Sản phẩm là gì, vì sao Workspace-first, ví dụ Input→Output, FAQ giám khảo | Bản nháp |
+| 2 | [`spec/ScamShield-v1.md`](./spec/ScamShield-v1.md) | **Nguồn sự thật về hành vi.** Nguyên tắc P1–P5, tính năng SO-01…SO-10, tiêu chí chấp nhận, quyết định Q-01…Q-10, kịch bản demo | **Bản nháp; Q-01…Q-10 đã chốt 20/11** |
+| 3 | [`architecture/system-design.md`](./architecture/system-design.md) | **Nguồn sự thật về kiến trúc.** Modular monolith, pipeline 6 bước, quy tắc verdict, data model, mối đe doạ | **Bản nháp:** mới có slice nền móng |
+| 4 | [`architecture/api.md`](./architecture/api.md) | Endpoint công khai và FraudOps, ví dụ request/response, mã lỗi | Bản nháp |
+| 5 | [`architecture/contracts.md`](./architecture/contracts.md) | Hợp đồng dữ liệu: enum, chỉ dấu, signal, kết quả, hồ sơ, đầu ra LLM, mã lỗi | Bản nháp |
+| 6 | [`architecture/codebase.md`](./architecture/codebase.md) | Cây thư mục dự kiến, phụ thuộc module, lệnh, test theo tầng | Bản nháp |
+| 7 | [`conventions/`](./conventions/README.md) | Cách viết code chung, backend, frontend, hợp đồng dữ liệu; thư viện được phép | Bản nháp |
+| 8 | [`product/ui-pages.md`](./product/ui-pages.md) + [`design/pages.md`](./design/pages.md) | `ui-pages.md`: trang, khối giao diện, trạng thái theo AC. `design/pages.md`: wireframe từng trang, sơ đồ luồng, ma trận trang ↔ dữ liệu/API | Bản nháp |
+| 9 | [`product/design-system.md`](./product/design-system.md) | Token, component, pattern cho mọi UI | Bản nháp |
 | 10 | [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Mục tiêu, phạm vi, lộ trình theo ngày, quyền của agent, cắt việc, rủi ro, checklist nộp | **Bản nháp** |
-| 11 | [`runbook/setup-and-bringing.md`](./runbook/setup-and-bringing.md) | Env, thứ tự bring-up, lỗi thường gặp | Chưa viết |
-| 12 | [`research/result.md`](./research/result.md) | Thử nghiệm chọn LLM (Q-08), kết quả eval | Chưa viết |
+| 11 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Env, thứ tự bring-up, lỗi thường gặp | Chưa viết |
+| 12 | [`research/result.md`](./research/result.md) | Cách thử chọn model Groq (Q-08), định dạng và chỉ số bộ eval (SO-09), nhật ký kết quả | Bản nháp, chưa có số liệu |
 | 13 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, checklist trước khi quay, xử lý sự cố | Chưa viết |
 
 ## Khi các file lệch nhau
@@ -38,4 +38,4 @@ Phát hiện lệch thì **dừng và báo owner** ([AGENTS.md](../AGENTS.md)), 
 
 ## Trạng thái
 
-Giai đoạn **đặc tả** (20/11/2026): spec v1 và kế hoạch là bản nháp; Q-01…Q-10 chờ owner chốt. Chưa có mã ứng dụng. Bước tiếp theo sau khi duyệt spec: thiết kế kiến trúc và schema dữ liệu.
+Giai đoạn **đặc tả và thiết kế** (20/11/2026): owner đã chốt Q-01…Q-10; spec v1, kế hoạch và thiết kế slice nền móng là bản nháp. Chưa có mã ứng dụng; D-01…D-03 đã chốt; chờ owner duyệt slice nền móng (D-04 còn chờ kiểm, xem system-design §9).

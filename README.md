@@ -46,8 +46,8 @@ flowchart LR
 
 | Thư mục | Nội dung |
 |---|---|
-| `apps/web` | Next.js: giao diện ScamShield và FraudOps |
-| `apps/api` | Node.js/TypeScript: các module Analysis, Reports, Cases, Auth |
+| `apps/web` | Next.js: giao diện ScamShield, FraudOps và API (route handlers), deploy một lần lên Vercel |
+| `packages/core` | Module nghiệp vụ không phụ thuộc Next.js: DB, Analysis, Reports, Cases, Auth (eval gọi trực tiếp) |
 | `packages/shared` | Zod schema (request/response, đầu ra LLM), mã lỗi kèm câu tiếng Việt |
 | `eval` | Bộ tình huống có nhãn và script đánh giá |
 | `docs` | Tài liệu sản phẩm và kỹ thuật, viết bằng tiếng Việt |
@@ -80,7 +80,7 @@ git add tools/sdlc-kit && git commit -m "chore: update sdlc-kit"
 
 ## Cách chạy
 
-*Sẽ bổ sung ở slice nền móng.* Dự kiến: Node.js LTS, PostgreSQL, biến môi trường trong `.env` (mẫu ở `.env.example`). Chi tiết ở [`docs/runbook/setup-and-bringing.md`](docs/runbook/setup-and-bringing.md).
+*Sẽ bổ sung ở slice nền móng.* Dự kiến: Node.js LTS, PostgreSQL, biến môi trường trong `.env` (mẫu ở `.env.example`). Chi tiết ở [`docs/runbook/setup-and-bringup.md`](docs/runbook/setup-and-bringup.md).
 
 ## Công nghệ, tài sản có sẵn và công cụ AI
 
@@ -89,8 +89,8 @@ git add tools/sdlc-kit && git commit -m "chore: update sdlc-kit"
 | Loại | Tên | Dùng để |
 |---|---|---|
 | Framework | Next.js, Node.js, TypeScript | Web và API |
-| Cơ sở dữ liệu | PostgreSQL | Analyses, cases, decisions |
-| Mô hình AI | *(chốt ở Q-08)* | Trích tín hiệu, giải thích, tóm tắt hồ sơ |
+| Cơ sở dữ liệu | PostgreSQL (Supabase managed) | Analyses, cases, decisions |
+| Mô hình AI | Groq (model chốt sau thử nghiệm Q-08) | Trích tín hiệu, giải thích, tóm tắt hồ sơ |
 | Thư viện mã nguồn mở | *(liệt kê khi cài)* | |
 | Công cụ AI hỗ trợ phát triển | Claude Code + [my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit) | Viết spec, thiết kế, mã và test |
 

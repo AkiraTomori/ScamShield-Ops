@@ -26,7 +26,7 @@
 | URL dưới dạng chuỗi và metadata, không mở trang (SO-02) | Sandbox mở URL, phân tích nội dung trang |
 | Gửi báo cáo, case management đơn giản (SO-04…SO-06) | Phân công, SLA, nhiều cấp duyệt |
 | Tóm tắt điều tra do LLM tạo (SO-05) | Multi-agent investigation |
-| *(Nếu Q-02 chốt)* Liên kết case theo chỉ dấu, vòng phản hồi chỉ dấu đã xác minh (SO-07, SO-08) | Đồ thị chiến dịch lừa đảo, chia sẻ chỉ dấu giữa các tổ chức |
+| *(Q-02, mức P1)* Liên kết case theo chỉ dấu, vòng phản hồi chỉ dấu đã xác minh (SO-07, SO-08) | Đồ thị chiến dịch lừa đảo, chia sẻ chỉ dấu giữa các tổ chức |
 | Bộ eval 60–100 tình huống (SO-09) | Benchmark lớn, học từ dữ liệu thật |
 | Seed và tài khoản thử cho giám khảo (SO-10) | Đăng ký tài khoản, SSO |
 | — | Cuộc gọi/giọng nói, giám sát giao dịch, tích hợp API ngân hàng/MoMo, tự khoá tài khoản, dashboard thống kê phức tạp |
@@ -34,7 +34,7 @@
 ## 3. Hiện trạng (20/11)
 
 - Repo mới có khung tài liệu và submodule `tools/sdlc-kit`. Chưa có mã ứng dụng.
-- Spec v1 ở trạng thái bản nháp; Q-01…Q-10 chờ owner chốt.
+- Spec v1 ở trạng thái bản nháp. Owner đã chốt Q-01…Q-10 ngày 20/11 (còn mở: model của Q-08, danh sách Phụ lục A của Q-10). Slice chưa được duyệt nên chưa viết mã.
 
 ## 4. Quyết định cần chốt trước khi code
 
@@ -63,7 +63,7 @@
 | **22–23/11** | Pipeline: kiểm tra đầu vào, che dữ liệu, trích chỉ dấu, kiểm URL, LLM trích signal, quy tắc verdict, giải thích (SO-01…SO-03). Thử LLM trên tập dev | `curl` một tin mẫu ra JSON đúng schema; test quy tắc verdict xanh |
 | **24–25/11** | Giao diện ScamShield: ô nhập, tin mẫu, kết quả, trạng thái lỗi/chờ. AWS Training 25/11 | Dán tin trên điện thoại ra kết quả |
 | **26–27/11** | Gửi báo cáo, tạo case, đăng nhập FraudOps, danh sách và chi tiết case (SO-04…SO-06). **Viết kịch bản video** | Báo cáo gửi từ ScamShield hiện trong FraudOps |
-| **28–29/11** | Kết luận và đóng case; seed + reset demo (SO-10); SO-07, SO-08 nếu Q-02 chốt; tích hợp toàn hệ thống | Đi hết 6 bước ở §1 trên bản deploy |
+| **28–29/11** | Kết luận và đóng case; seed + reset demo (SO-10); SO-07, SO-08 (Q-02); tích hợp toàn hệ thống | Đi hết 6 bước ở §1 trên bản deploy |
 | **30/11** | **Đóng băng tính năng.** Chạy end-to-end | Không còn lỗi chặn luồng demo |
 | **01–02/12** | Eval tập held-out, sửa lỗi, README, hướng dẫn 1 trang, slide, quay video | Đủ 4 thành phần ở §9 |
 | **03/12** | Dự phòng. Kiểm mọi link ở chế độ ẩn danh. **Nộp sớm trong ngày** | Đã nộp |
