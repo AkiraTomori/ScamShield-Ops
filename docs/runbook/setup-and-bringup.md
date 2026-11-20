@@ -48,3 +48,22 @@ Không dán key vào chat, commit hay dòng lệnh.
 | Đổi `POSTGRES_PASSWORD` mà vẫn sai mật khẩu | Volume cũ giữ mật khẩu cũ; xem §3 |
 | `docker compose up` báo thiếu `POSTGRES_PASSWORD` | Chưa tạo `.env` |
 | Cổng 5432 bận | Đặt `POSTGRES_PORT` khác trong `.env` và sửa cổng trong `DATABASE_URL` |
+
+## 6. Deploy (owner)
+
+Thứ tự cho lần đầu (chi tiết và lý do ở [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay)):
+
+1. Tạo project Supabase ở region Singapore. Ghi lại major version Postgres và đặt `POSTGRES_VERSION` local cho khớp.
+2. Tắt Data API của project.
+3. Tạo project Vercel nối repo GitHub, root là gốc repo, region function gần Singapore.
+4. Đặt `DATABASE_URL` (chuỗi transaction pooler) **chỉ cho môi trường Production** (D-03). Preview không có DB, `/api/health` ở preview trả 503 là đúng.
+5. Merge PR vào `main` để deploy production.
+6. Có bảng rồi thì chạy migration từ máy owner: đặt `DATABASE_URL_MIGRATE` (kết nối trực tiếp hoặc session) trong `.env`, chạy `npm run db:migrate`. Không bao giờ chạy trong build.
+
+**Kiểm sau mỗi lần deploy production:**
+- `curl -i https://<domain>/api/health` trả 200, có `Cache-Control: no-store`, `version` khớp commit vừa merge.
+- Gọi lại sau vài giây: `time` phải khác lần trước (không bị cache lúc build).
+- Mở `/` ở chế độ ẩn danh trên điện thoại: có disclaimer, không cuộn ngang.
+
+**Giữ link sống 03/12–11/12:** xem D-04 ở system-design §9 và lịch kiểm hằng ngày ở [demo.md §5](./demo.md#5-giai-đoạn-chấm-0312112).
+

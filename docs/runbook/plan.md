@@ -33,17 +33,22 @@
 
 ## 3. Hiện trạng (20/11)
 
-- Repo mới có khung tài liệu và submodule `tools/sdlc-kit`. Chưa có mã ứng dụng.
-- Spec v1 ở trạng thái bản nháp. Owner đã chốt Q-01…Q-10 ngày 20/11 (còn mở: model của Q-08, danh sách Phụ lục A của Q-10). Slice chưa được duyệt nên chưa viết mã.
+- **Tài liệu:** spec, system-design, api, contracts, codebase, conventions, product, design, research, onboarding đều đã có bản nháp. Owner đã chốt Q-01…Q-10 (còn mở: model của Q-08, danh sách Phụ lục A của Q-10), D-01…D-03, O-01…O-03, O-05, A-01, A-02, C-01.
+- **Mã:** slice nền móng đang ở nhánh `feat/foundation`, chưa commit/merge. Chưa deploy, nên mốc walking skeleton (URL công khai + `/api/health`) chưa đạt.
+- **Chưa có:** bảng nghiệp vụ (`/sdlc:database`), thiết kế slice pipeline, bộ eval, `tasks.csv` (`/sdlc:to-tickets`).
 
-## 4. Quyết định cần chốt trước khi code
+## 4. Quyết định cần chốt
 
-| Loại | Ở đâu | Hạn |
-|---|---|---|
-| Quyết định sản phẩm Q-01…Q-07, Q-10 | [spec §7](../spec/ScamShield-v1.md#7-quyết-định-mở-owner-chốt) | 21/11 |
-| Q-08 nhà cung cấp LLM (sau khi thử 20 câu dev) | spec §7, kết quả ở [`../research/result.md`](../research/result.md) | 22/11 |
-| Q-09 hạ tầng | spec §7 | 21/11 (có thể đổi sau 25/11 nếu có credit AWS) |
-| Kiến trúc, schema DB, API contract | `/sdlc:design`, `/sdlc:database` → `../architecture/` | 21/11 |
+| Loại | Ở đâu | Hạn | Trạng thái |
+|---|---|---|---|
+| Quyết định sản phẩm Q-01…Q-07, Q-10 | [spec §7](../spec/ScamShield-v1.md#7-quyết-định-mở-owner-chốt) | 21/11 | Đã chốt 20/11; danh sách thương hiệu Q-10 chờ owner kiểm |
+| Q-08 model Groq (sau khi thử 20 câu dev) | spec §7, [`../research/result.md`](../research/result.md) | 22/11 | Provider đã chốt; model chờ thử |
+| Q-09 hạ tầng | spec §7 | 21/11 | Đã chốt: Vercel + Supabase (có thể xem lại sau 25/11) |
+| Kiến trúc, API contract | [`../architecture/`](../architecture/system-design.md) | 21/11 | Bản nháp |
+| Schema DB | `/sdlc:database` | 21/11 | Chưa làm |
+| D-04 Supabase Free tạm dừng project | [system-design §9](../architecture/system-design.md#9-quyết-định-cần-owner-chốt) | trước 03/12 | Chờ owner kiểm |
+| O-04 giới hạn độ dài ghi chú, lý do | [ui-pages §8](../product/ui-pages.md#8-quyết-định-mở-cho-giao-diện) | trước slice báo cáo (26/11) | Chờ owner |
+| Ngưỡng chọn model, định dạng eval | [research A.5, B.2](../research/result.md) | 21/11 | Chờ owner |
 
 ## 5. Charter: coding agent được tự quyết tới đâu
 

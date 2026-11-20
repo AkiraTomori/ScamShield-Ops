@@ -18,10 +18,10 @@ Docs viết bằng tiếng Việt; định danh kỹ thuật giữ tiếng Anh.
 | 7 | [`conventions/`](./conventions/README.md) | Cách viết code chung, backend, frontend, hợp đồng dữ liệu; thư viện được phép | Bản nháp |
 | 8 | [`product/ui-pages.md`](./product/ui-pages.md) + [`design/pages.md`](./design/pages.md) | `ui-pages.md`: trang, khối giao diện, trạng thái theo AC. `design/pages.md`: wireframe từng trang, sơ đồ luồng, ma trận trang ↔ dữ liệu/API | Bản nháp |
 | 9 | [`product/design-system.md`](./product/design-system.md) | Token, component, pattern cho mọi UI | Bản nháp |
-| 10 | [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Mục tiêu, phạm vi, lộ trình theo ngày, quyền của agent, cắt việc, rủi ro, checklist nộp | **Bản nháp** |
-| 11 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Env, thứ tự bring-up, lỗi thường gặp | Chưa viết |
+| 10 | [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Mục tiêu, phạm vi, lộ trình theo ngày, quyền của agent, cắt việc, rủi ro, checklist nộp; tasks.csv: 48 việc theo slice, phụ thuộc, ngày, mức cắt | **Bản nháp** |
+| 11 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Chạy local, Postgres Docker, đổi key, migration, deploy (owner), lỗi thường gặp | Bản nháp |
 | 12 | [`research/result.md`](./research/result.md) | Cách thử chọn model Groq (Q-08), định dạng và chỉ số bộ eval (SO-09), nhật ký kết quả | Bản nháp, chưa có số liệu |
-| 13 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, checklist trước khi quay, xử lý sự cố | Chưa viết |
+| 13 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, dữ liệu demo, checklist, xử lý sự cố, giai đoạn chấm | Bản nháp |
 
 ## Khi các file lệch nhau
 
