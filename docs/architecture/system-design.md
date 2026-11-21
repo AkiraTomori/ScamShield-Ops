@@ -1,6 +1,6 @@
 # ScamShield Ops — Thiết kế hệ thống
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Mới thiết kế **slice nền móng + walking skeleton** (§1–§9). Các phần khác ghi "chưa thiết kế" ở §10. Owner đã chốt D-01…D-03 ngày 20/11/2026 (§9); D-04 còn chờ kiểm. Thiết kế đã chốt **chưa** phải duyệt slice: chỉ viết mã khi owner duyệt slice nền móng.
+**Trạng thái (21/11/2026):** BẢN NHÁP. Thiết kế **slice nền móng + walking skeleton** (§1–§9; đã merge vào `main`); slice dữ liệu P0 ở [data-model.md](./data-model.md). Các phần khác ghi "chưa thiết kế" ở §10. Owner đã chốt D-01…D-03 ngày 20/11/2026 (§9); D-04 còn chờ kiểm. Thiết kế đã chốt **chưa** phải duyệt slice: chỉ viết mã khi owner duyệt slice nền móng.
 
 Căn cứ: [spec v1](../spec/ScamShield-v1.md) (hành vi, P1–P5, Q-01…Q-10 đã chốt), [plan](../runbook/plan.md) (lịch, quyền của agent). File này thắng các file khác về **kiến trúc** ([docs/README.md](../README.md#khi-các-file-lệch-nhau)).
 
@@ -12,7 +12,7 @@ Căn cứ: [spec v1](../spec/ScamShield-v1.md) (hành vi, P1–P5, Q-01…Q-10 �
 - Monorepo npm workspaces, TypeScript strict, cấu hình format, lint, typecheck, Vitest, và lệnh `npm run verify`.
 - Ứng dụng Next.js có trang skeleton và route `/api/health`.
 - `packages/shared` có zod schema đầu tiên (`HealthResponse`) và schema đọc biến môi trường.
-- Lớp truy cập DB (kết nối, đóng kết nối, ping) và công cụ migration đã cấu hình nhưng **chưa có bảng nghiệp vụ**.
+- Lớp truy cập DB (kết nối, đóng kết nối, ping), công cụ migration, và schema 8 bảng P0 (data-model.md) cùng migration `0000_p0_tables`. Migration chưa chạy trên DB deploy.
 - Postgres local cho dev (Docker Compose), `.env.example` chỉ có placeholder.
 - CI (GitHub Actions) chạy `npm run verify` trên PR và `main`.
 - Cập nhật `docs/runbook/setup-and-bringup.md`, `docs/architecture/codebase.md`, `docs/conventions/libraries.md` theo những gì owner duyệt.
@@ -170,9 +170,9 @@ Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `con
 
 | Phần | Thiết kế ở | Ghi chú đã biết |
 |---|---|---|
-| Pipeline phân tích 6 bước, quy tắc verdict, prompt (SO-01…SO-03) | `/sdlc:design` slice pipeline | Hợp đồng dữ liệu và đầu ra LLM đã có bản nháp ở [contracts.md](./contracts.md); thứ tự xử lý mức API ở [api.md](./api.md). Model Groq chốt sau thử nghiệm 20 câu dev (Q-08) |
+| Pipeline phân tích 6 bước, quy tắc verdict, prompt (SO-01…SO-03) | **[design/analysis-pipeline.md](../design/analysis-pipeline.md)** (bản nháp) | Model Groq chốt sau thử nghiệm 20 câu dev (Q-08) |
 | Nơi lưu bộ đếm rate limit 10 lượt/phút/IP (Q-06) | Slice pipeline | Hướng đề xuất: bảng Postgres, không thêm dịch vụ; không lưu IP thô quá thời gian cần (spec §9) |
 | Trần chi tiêu LLM (Q-06) | Slice pipeline | Kiểm Groq có trần cứng không; nếu không thì thêm trần lượt/ngày trong app |
-| Bảng nghiệp vụ, ràng buộc, seed, reset `is_seed` | `/sdlc:database` | Mọi bảng bật RLS, không policy (§4) |
+| Bảng nghiệp vụ, ràng buộc, seed, reset `is_seed` | **[data-model.md](./data-model.md)** (bản nháp) | Mọi bảng bật RLS, không policy (§4) |
 | Đăng nhập FraudOps (SO-06-AC01) | Slice FraudOps | Cookie cùng origin (D-01) |
 | Mô hình mối đe doạ đầy đủ (prompt injection, spam, lộ dữ liệu) | Slice pipeline | P5: không fetch URL người dùng gửi, kể cả trong test |

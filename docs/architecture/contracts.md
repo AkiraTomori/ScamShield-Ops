@@ -50,7 +50,7 @@ Mỗi URL sinh thêm một chỉ dấu `domain` (tên miền đăng ký). Trích
 
 | Giá trị | Nguồn | Nghĩa |
 |---|---|---|
-| `brand_impersonation` | ai | Tin xưng là/nhân danh một tổ chức |
+| `claims_organization` | ai | Tin tự xưng là của một tổ chức. Signal yếu, trung tính; "mạo danh" chỉ kết luận qua loại rủi ro khi có bằng chứng tên miền (P-07) |
 | `urgency` | ai | Tạo áp lực thời gian |
 | `threat` | ai | Đe doạ khoá tài khoản, phạt, pháp lý |
 | `credential_request` | ai | Đòi OTP, mật khẩu, số thẻ, thông tin đăng nhập |
@@ -81,13 +81,14 @@ Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá th�
 |---|---|---|
 | `analysisId` | UUID | |
 | `verdict` | `Verdict` | Do quy tắc trong code (P4) |
-| `inconclusiveReason` | `InconclusiveReason` \| null | Chỉ khi `verdict = inconclusive` |
+| `inconclusiveReason` | `InconclusiveReason` \| null | Khác null khi AI không chạy/lỗi (kể cả verdict `high_risk` do bằng chứng cứng, P-01); luôn có khi `verdict = inconclusive` (DB ép bằng CHECK, data-model DB-06) |
 | `riskTypes` | `RiskType[]` | Suy từ signal bằng code |
 | `signals` | `Signal[]` | |
 | `indicators` | `Indicator[]` | |
 | `redactions` | `{ otp: number, password: number, card: number }` | Số chỗ đã che (SO-01-AC03); UI hiện thông báo khi tổng > 0 |
 | `explanation` | string \| null | Do LLM viết, ≤ 800 ký tự, chỉ dựa trên signal và check (SO-03-AC05). `null` khi LLM lỗi |
 | `recommendations` | string[] (2–4) | Câu mẫu do **code** chọn theo verdict và signal (A-01) |
+| `rule` | string | Mã quy tắc verdict đã kích hoạt (`R0`…`R9`, design/analysis-pipeline §7) |
 | `promptVersion`, `rulesVersion` | string | Spec §10 |
 | `createdAt` | ISO 8601 UTC | |
 
@@ -154,4 +155,4 @@ Một analysis quá thời gian **không** là lỗi: trả 200 với `verdict =
 |---|---|---|---|
 | A-01 | Khuyến nghị 2–4 dòng (SO-03-AC04) do ai viết? | **Code**: bộ câu mẫu tiếng Việt cố định, chọn theo verdict và signal, nằm ở module `verdict`. LLM chỉ viết phần giải thích | Đã chốt 20/11 |
 | A-02 | Tóm tắt AI của hồ sơ (SO-05-AC02) lỗi thì sao? | Tạo đồng bộ lúc gửi báo cáo, có timeout riêng. Lỗi thì **vẫn tạo case**, `aiSummary = null`; FraudOps hiện "Chưa có tóm tắt AI", nhân viên vẫn kết luận từ bằng chứng | Đã chốt 20/11 |
-| A-03 | `SignalType` cụ thể (§3) | Đề xuất; chốt cùng quy tắc verdict ở slice pipeline | Chờ slice pipeline |
+| A-03 | `SignalType` cụ thể (§3) | Theo [design/analysis-pipeline §6.9](../design/analysis-pipeline.md); `brand_impersonation` (signal) đổi thành `claims_organization` (P-07). Loại rủi ro `brand_impersonation` giữ nguyên | Đổi tên đã chốt 20/11; nhóm mạnh/vừa/yếu chờ duyệt slice |

@@ -74,6 +74,9 @@ Câu ghi "nguyên văn spec" phải dùng đúng từng chữ. Toàn hệ thốn
 | Trạng thái phép kiểm | **Cảnh báo** (`warn`) · **Không phát hiện vấn đề** (`pass`) · **Không tra được** (`unavailable`, kèm "Không tra được kết quả. Điều này không có nghĩa là không có vấn đề.") | SO-02-AC03 |
 | Lý do chưa kết luận | `timeout`: "Hệ thống phân tích quá lâu. Hãy thử lại sau ít phút." · `llm_invalid_output`, `llm_unavailable`: "Bước phân tích bằng AI đang gặp sự cố. Hãy thử lại sau ít phút." · `insufficient_evidence`: "Nội dung chưa đủ để đánh giá. Hãy thận trọng và xác minh qua kênh chính thức." | contracts §1, SO-03-AC03, AC06 |
 | Thiếu tóm tắt AI | "Chưa có tóm tắt AI cho hồ sơ này. Hãy kết luận dựa trên bằng chứng." | contracts A-02 |
+| Bằng chứng cứng khi AI lỗi | Dưới verdict *Nguy cơ cao*: "Bước phân tích bằng AI chưa chạy được; kết quả dựa trên kiểm tra của hệ thống." | design/analysis-pipeline P-01 |
+| Quy tắc kích hoạt (FraudOps) | R0 "AI không chạy được" · R1 "Bằng chứng đã xác minh hoặc danh sách đen" · R2 "Câu lệnh nhắm vào AI kèm dấu hiệu khác" · R3 "Tên miền đánh lừa + đòi thông tin hoặc tiền" · R4 "Đòi thông tin bảo mật kèm đe doạ/gấp/đường dẫn" · R5 "Từ hai dấu hiệu mạnh" · R6 "Một dấu hiệu mạnh" · R7 "Nhiều dấu hiệu vừa/yếu" · R8 "Thiếu bằng chứng" · R9 "Không có dấu hiệu" | design/analysis-pipeline §7 |
+| Signal `claims_organization` | "Tin xưng danh một tổ chức" | P-07 |
 
 Ghi chú về trạng thái phép kiểm: nhãn "Không phát hiện vấn đề" chỉ dùng cho **một phép kiểm**, không bao giờ dùng làm verdict. Giao diện không có chữ "an toàn" ở bất kỳ đâu.
 

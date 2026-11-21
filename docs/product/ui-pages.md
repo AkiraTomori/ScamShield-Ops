@@ -66,7 +66,7 @@ Mở ngay dưới kết quả (không chuyển trang, để giữ ngữ cảnh t
 | Phần | Nội dung | AC |
 |---|---|---|
 | Kênh nhận tin | Chọn một: SMS, Zalo, Messenger, Email, Khác (bắt buộc) | SO-04-AC02 |
-| Ghi chú | Tuỳ chọn, tối đa **500 ký tự** *(đề xuất, chờ owner; spec chưa có số)*, có bộ đếm | SO-04-AC02 |
+| Ghi chú | Tuỳ chọn, tối đa **500 ký tự** (O-04), có bộ đếm | SO-04-AC02 |
 | Nút | "Gửi báo cáo" | — |
 
 | Trạng thái | Hiển thị | AC |
@@ -133,7 +133,7 @@ Cắt việc (plan §7 mục 5): bỏ lọc và tìm, giữ sắp xếp mới nh
 ### 6.2 Kết luận (SO-06-AC03)
 
 - Ba lựa chọn (radio): **Xác nhận lừa đảo** (`confirmed_scam`), **Không phải lừa đảo** (`not_scam`), **Chưa đủ bằng chứng** (`insufficient_evidence`).
-- "Lý do" bắt buộc, tối thiểu 10, tối đa 500 ký tự *(đề xuất, chờ owner)*.
+- "Lý do" bắt buộc, tối thiểu 10, tối đa 500 ký tự (O-04).
 - Khi chọn "Xác nhận lừa đảo" và SO-08 có trong bản build: dòng nhắc "Các chỉ dấu của hồ sơ này sẽ được thêm vào danh sách đã xác minh và cảnh báo cho người dùng sau." (SO-08-AC01).
 - Nút "Lưu kết luận và đóng hồ sơ".
 
@@ -162,5 +162,5 @@ Cắt việc (plan §7 mục 5): bỏ lọc và tìm, giữ sắp xếp mới nh
 | O-01 | Thế nào là "nhân viên không đồng ý với AI" (SO-06-AC04)? | Đồng ý khi `confirmed_scam` ↔ `high_risk`/`suspicious`; `not_scam` ↔ `no_signal`; `insufficient_evidence` ↔ `inconclusive`; còn lại là không đồng ý. Đã ghi vào SO-06-AC04 | Đã chốt 20/11 |
 | O-02 | Gửi lại cùng analysis: có hiện lại mã bí mật? | Không; mã bí mật chỉ lưu dạng băm. Đã ghi vào SO-04-AC03 | Đã chốt 20/11 |
 | O-03 | Nhãn `no_signal` lệch giữa spec §3/§8 và SO-03-AC03 | "Chưa phát hiện dấu hiệu lừa đảo"; đã sửa spec §3 và §8 | Đã chốt 20/11 |
-| O-04 | Giới hạn ghi chú báo cáo và lý do kết luận | Đề xuất: ghi chú ≤ 500 ký tự; lý do 10–500 ký tự | Chờ owner |
+| O-04 | Giới hạn ghi chú báo cáo và lý do kết luận | Ghi chú ≤ 500 ký tự; lý do 10–500 ký tự | Đã chốt 20/11 |
 | O-05 | Styling | **Tailwind CSS**; token khai báo một lần (§2 design-system) | Đã chốt 20/11 |
