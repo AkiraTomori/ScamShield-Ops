@@ -1,6 +1,6 @@
 # ScamShield Ops — Agent Context
 
-**Trạng thái (20/11/2026): ĐANG LÀM SLICE NỀN MÓNG** (nhánh `feat/foundation`, chưa merge, chưa deploy). Owner đã yêu cầu triển khai slice nền móng + walking skeleton (system-design §1–§8): monorepo, `/api/health`, trang skeleton, Postgres local bằng Docker, CI. Đã có mã và test cho phạm vi này; `npm run verify` xanh ở local. **Chưa được viết mã** cho phần còn lại (pipeline phân tích, bảng nghiệp vụ, FraudOps, gọi Groq) cho tới khi owner duyệt slice tương ứng. Owner đã chốt Q-01…Q-10 (spec §7; còn mở model Q-08 và danh sách Q-10). D-04 (Supabase tạm dừng) vẫn mở. MoMo Tech Talent 2026: **vòng loại nộp trước ngày 03/12/2026**, chung kết 11/12 (slide không được sửa sau khi nộp). Mục tiêu: một web app công khai giúp người dùng kiểm tra tin nhắn nghi lừa đảo và giúp đội vận hành fintech xử lý báo cáo thành hồ sơ điều tra có bằng chứng.
+**Trạng thái (21/11/2026): ĐANG LÀM SLICE DỮ LIỆU P0** (nhánh `feat/data-p0`, chưa merge). Slice nền móng + walking skeleton (system-design §1–§8: monorepo, `/api/health`, trang skeleton, Postgres local bằng Docker, CI) đã merge vào `main` (PR #2), `npm run verify` xanh ở local; chưa deploy. Slice dữ liệu P0: schema Drizzle 8 bảng + migration `0000_p0_tables` + test tích hợp trên Postgres local; chưa chạy trên DB deploy, chưa có seed/reset. **Chưa được viết mã** cho phần còn lại (pipeline phân tích, seed, FraudOps, gọi Groq) cho tới khi owner duyệt slice tương ứng. Owner đã chốt Q-01…Q-10 (spec §7; còn mở model Q-08 và danh sách Q-10). D-04 (Supabase tạm dừng) vẫn mở. MoMo Tech Talent 2026: **vòng loại nộp trước ngày 03/12/2026**, chung kết 11/12 (slide không được sửa sau khi nộp). Mục tiêu: một web app công khai giúp người dùng kiểm tra tin nhắn nghi lừa đảo và giúp đội vận hành fintech xử lý báo cáo thành hồ sơ điều tra có bằng chứng.
 
 ## Đọc trước khi làm bất cứ việc gì
 1. [docs/README.md](docs/README.md): mục lục, thứ tự đọc, **thứ tự ưu tiên khi các file lệch nhau**.
@@ -8,7 +8,7 @@
 3. [docs/architecture/system-design.md](docs/architecture/system-design.md): kiến trúc (chưa viết; tạo bằng `/sdlc:design`).
 4. [docs/conventions/](docs/conventions/README.md): cách viết code (chưa viết).
 5. [docs/runbook/plan.md](docs/runbook/plan.md): lộ trình, quyền của agent (§5), cắt việc (§7).
-- Hai tài liệu mâu thuẫn nhau thì **dừng và báo owner**, không tự chọn.
+- Hai tài liệu mâu thuẫn nhau mà thứ tự ưu tiên ở README không phân xử được thì **dừng và báo owner**, không tự chọn. Phân xử được (file cấp thấp lạc hậu so với file cấp cao) thì sửa theo mục "Đồng bộ tài liệu" bên dưới.
 
 ## Luật cứng
 - **Chỉ viết mã ứng dụng** (`apps/`, `packages/`) **cho slice đã được owner duyệt.** Spec hoặc design chưa duyệt thì chỉ được sửa tài liệu.
@@ -26,6 +26,20 @@
   - Bộ eval: file nhãn trong `eval/`; không sửa nhãn tập held-out để "đẹp số".
 - Dữ liệu mẫu và ví dụ chỉ dùng tên miền dành riêng (`*.example`, `example.com`, `*.test`). Giao diện không dùng logo hay màu nhận diện của MoMo hay tổ chức khác.
 - UI ScamShield luôn hiện disclaimer ở [spec §9](docs/spec/ScamShield-v1.md#9-ràng-buộc-và-yêu-cầu-phi-chức-năng). Không bao giờ hiển thị chữ "an toàn" như một verdict.
+
+## Đồng bộ tài liệu (tự động, làm trong cùng nhánh)
+Mỗi khi đổi mã (`apps/`, `packages/`), đổi hợp đồng dữ liệu, ghi nhận quyết định của owner hoặc đổi trạng thái slice, **tự rà và sửa tài liệu liên quan trước khi bàn giao**, không chờ owner nhắc:
+1. **Dòng "Trạng thái (ngày)"** ở AGENTS.md, `docs/README.md` (mục Trạng thái và cột trạng thái) và đầu file tài liệu bị ảnh hưởng: ngày, nhánh, đã merge/deploy hay chưa.
+2. **Hợp đồng:** đổi schema, enum, trường, mã lỗi thì sửa `contracts.md`, `api.md` (kể cả ví dụ JSON), `data-model.md`. Đổi tên thì `grep` tên cũ trên `docs/`, `packages/`, `apps/`.
+3. **Cấu trúc:** thêm thư mục, module, lệnh hoặc biến môi trường thì sửa `codebase.md`, `setup-and-bringup.md`, `.env.example`.
+4. **Tiến độ:** việc xong hoặc đang làm thì sửa cột `status` trong `docs/runbook/tasks.csv` và `docs/runbook/plan.md` §3. Giữ nguyên kiểu xuống dòng của file (`tasks.csv` dùng CRLF).
+5. **Quyết định:** ghi vào bảng Q/D/DB/P/A tương ứng, kèm ngày owner chốt.
+
+Khi phát hiện hai tài liệu lệch nhau:
+- **Phân xử được theo thứ tự ưu tiên** ở [docs/README.md](docs/README.md): sửa file cấp thấp cho khớp file cấp cao, và nêu trong bàn giao.
+- **Cùng cấp, hoặc cần đổi hành vi, P1–P5, phạm vi:** dừng và báo owner.
+- Không tự ghi "đã duyệt" hay "xong" khi chưa có bằng chứng (ví dụ test chưa chạy thì ghi "chưa chạy"). Không tự sửa quyết định đã chốt.
+- Có hook nhắc trong `.claude/settings.json` khi mã đổi mà tài liệu không đổi; hook chỉ nhắc, không thay việc rà này.
 
 ## Quy trình: dùng skill `sdlc`
 
@@ -49,7 +63,7 @@ Skill nằm trong plugin `sdlc` (submodule [`tools/sdlc-kit`](tools/sdlc-kit), r
 - Sửa nhỏ: `implement` → `verify` → `pr`.
 - Không bắt buộc đi đủ chuỗi. Chọn skill phù hợp với việc đang làm.
 
-**Bàn giao:** Cuối mỗi bước, nêu kết quả, những gì chưa kiểm, rủi ro còn lại, và đưa **đúng một** lệnh `/sdlc:<skill> <phạm vi>` kế tiếp. Không tự chạy lệnh đó.
+**Bàn giao:** Cuối mỗi bước, nêu kết quả, **tài liệu đã đồng bộ**, những gì chưa kiểm, rủi ro còn lại, và đưa **đúng một** lệnh `/sdlc:<skill> <phạm vi>` kế tiếp. Không tự chạy lệnh đó.
 
 **Subagent** (`sdlc:repo_explorer`, `implementation_worker`, `test_engineer`, `code_reviewer`): chỉ dùng khi việc đủ lớn.
 - Không cho hai agent sửa cùng một file.
@@ -64,6 +78,7 @@ Skill nằm trong plugin `sdlc` (submodule [`tools/sdlc-kit`](tools/sdlc-kit), r
 - `npm run verify` xanh: format, lint, typecheck, Vitest. Lệnh này sẽ được thêm ở slice nền móng.
 - Mỗi tiêu chí chấp nhận của slice có test ghi ID `SO-xx-ACnn` hoặc một bước kiểm tay có bằng chứng.
 - Thay đổi prompt hoặc quy tắc verdict thì chạy lại eval tập dev và ghi kết quả.
+- Tài liệu đã đồng bộ với mã và quyết định (mục "Đồng bộ tài liệu").
 - Báo đúng những gì **thật sự đã chạy**. Tách rõ kiểm tra local, kiểm tra trên bản deploy, và phần chưa kiểm.
 
 ## Ngôn ngữ
