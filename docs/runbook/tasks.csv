@@ -1,11 +1,11 @@
 id,slice,title,ac_ids,depends_on,planned_day,size,owner,status,priority,cut_order,done_when
 T-001,S0 Nền móng,Kiểm slice nền móng trên feat/foundation (/sdlc:verify),,,20/11,S,agent,todo,P0,,"Báo cáo verify: npm run verify xanh, /api/health 200/503 đúng local"
-T-002,S0 Nền móng,Review + mở PR slice nền móng,,T-001,21/11,S,agent,todo,P0,,"PR mở, owner yêu cầu"
+T-002,S0 Nền móng,Review + mở PR slice nền móng,,T-001,21/11,S,agent,done,P0,,"PR mở, owner yêu cầu"
 T-003,S0 Nền móng,"Tạo Supabase (Singapore), tắt Data API, kiểm chính sách tạm dừng (D-04)",,,21/11,S,owner,todo,P0,,Có chuỗi pooler; D-04 có kết luận
 T-004,S0 Nền móng,"Tạo project Vercel, đặt DATABASE_URL chỉ Production (D-03)",,T-003,21/11,S,owner,todo,P0,,"Project nối repo, region gần Singapore"
 T-005,S0 Nền móng,"Merge PR nền móng, kiểm /api/health trên production",,T-002;T-004,21/11,S,owner,todo,P0,,"Mốc walking skeleton: URL công khai, health 200, time đổi giữa 2 lần gọi"
-T-010,S1 Dữ liệu,"Thiết kế bảng nghiệp vụ, ràng buộc, RLS, seed/reset (/sdlc:database)",SO-04-AC03;SO-06-AC03;SO-10-AC04,T-001,21/11,M,agent,todo,P0,,"docs/architecture có mô hình dữ liệu, owner duyệt"
-T-011,S1 Dữ liệu,"Schema Drizzle + migration đầu tiên (analyses, reports/cases, decisions, indicators, staff_users, rate limit)",SO-06-AC05,T-010,22/11,M,agent,todo,P0,,Migration chạy được trên Postgres local; RLS bật mọi bảng
+T-010,S1 Dữ liệu,"Thiết kế bảng nghiệp vụ, ràng buộc, RLS, seed/reset (/sdlc:database)",SO-04-AC03;SO-06-AC03;SO-10-AC04,T-001,21/11,M,agent,done,P0,,"docs/architecture có mô hình dữ liệu, owner duyệt"
+T-011,S1 Dữ liệu,"Schema Drizzle + migration đầu tiên (analyses, reports/cases, decisions, indicators, staff_users, rate limit)",SO-06-AC05,T-010,22/11,M,agent,done,P0,,Migration chạy được trên Postgres local; RLS bật mọi bảng
 T-012,S1 Dữ liệu,Chạy migration lên Supabase,,T-011;T-005,22/11,S,owner,todo,P0,,
 T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3, B.2)",SO-09-AC01,,21/11,M,đội,todo,P0,,eval/cases/dev.jsonl có 20 dòng parse được
 T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,todo,P0,,

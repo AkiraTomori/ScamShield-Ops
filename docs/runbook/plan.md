@@ -31,11 +31,11 @@
 | Seed và tài khoản thử cho giám khảo (SO-10) | Đăng ký tài khoản, SSO |
 | — | Cuộc gọi/giọng nói, giám sát giao dịch, tích hợp API ngân hàng/MoMo, tự khoá tài khoản, dashboard thống kê phức tạp |
 
-## 3. Hiện trạng (20/11)
+## 3. Hiện trạng (21/11)
 
 - **Tài liệu:** spec, system-design, api, contracts, codebase, conventions, product, design, research, onboarding đều đã có bản nháp. Owner đã chốt Q-01…Q-10 (còn mở: model của Q-08, danh sách Phụ lục A của Q-10), D-01…D-03, O-01…O-03, O-05, A-01, A-02, C-01.
-- **Mã:** slice nền móng đang ở nhánh `feat/foundation`, chưa commit/merge. Chưa deploy, nên mốc walking skeleton (URL công khai + `/api/health`) chưa đạt.
-- **Chưa có:** bảng nghiệp vụ (`/sdlc:database`), thiết kế slice pipeline, bộ eval, `tasks.csv` (`/sdlc:to-tickets`).
+- **Mã:** slice nền móng đã merge vào `main` (PR #2). Slice dữ liệu P0 (schema 8 bảng + migration `0000_p0_tables`) ở nhánh `feat/data-p0`, chưa merge; test tích hợp trên Postgres local đã chạy xanh ngày 21/11 (12 file, 77 test, không test nào bị bỏ qua; owner chạy tay), gồm CHECK `analyses_inconclusive_has_reason`. Chưa deploy, nên mốc walking skeleton (URL công khai + `/api/health`) chưa đạt.
+- **Chưa có:** seed/reset demo, bản duyệt thiết kế slice pipeline (`design/analysis-pipeline.md` còn là bản nháp), bộ eval.
 
 ## 4. Quyết định cần chốt
 

@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (20/11/2026):** bản nháp, mới có slice nền móng. Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (21/11/2026):** bản nháp, có slice nền móng và schema P0 (chưa seed/reset). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -38,7 +38,7 @@ Không dán key vào chat, commit hay dòng lệnh.
 
 - `npm run db:generate`: sinh SQL từ schema (đọc lại file trước khi commit).
 - `npm run db:migrate`: dùng `DATABASE_URL_MIGRATE`, nếu trống thì `DATABASE_URL`. Với DB local thì tự chạy được; với DB đã deploy chỉ owner chạy.
-- Slice nền móng chưa có bảng nên chưa có migration.
+- Migration `0000_p0_tables` (8 bảng P0) đã có; test tích hợp `*.int.test.ts` chỉ chạy khi đặt `DATABASE_URL` trỏ tới Postgres local.
 
 ## 5. Lỗi thường gặp
 

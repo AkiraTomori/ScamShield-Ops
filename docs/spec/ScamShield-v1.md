@@ -110,17 +110,17 @@ Bảng ánh xạ với 6 tính năng P0 đã chốt:
 
 ### SO-03 Đánh giá rủi ro, giải thích và khuyến nghị
 
-- **SO-03-AC01** · LLM trích các signal ngữ nghĩa (thương hiệu bị mạo danh, áp lực thời gian, yêu cầu OTP/mật khẩu, yêu cầu chuyển tiền, hứa hẹn lợi ích, câu lệnh nhắm vào AI) và trả về **đúng JSON schema**. Đầu ra sai schema được thử lại tối đa 1 lần; vẫn sai thì verdict là `inconclusive` kèm lý do.
+- **SO-03-AC01** · LLM trích các signal ngữ nghĩa (tin xưng danh một tổ chức, áp lực thời gian, yêu cầu OTP/mật khẩu, yêu cầu chuyển tiền, hứa hẹn lợi ích, câu lệnh nhắm vào AI) và trả về **đúng JSON schema**. Đầu ra sai schema được thử lại tối đa 1 lần; vẫn sai thì verdict là `inconclusive` kèm lý do, **trừ khi** có bằng chứng tất định cứng (chỉ dấu đã xác minh SO-08, hoặc URL nằm trong danh sách đen) thì verdict là `high_risk` và kết quả vẫn ghi phần AI bị lỗi (owner chốt 20/11/2026, P-01).
 - **SO-03-AC02** · Verdict được tính bằng **quy tắc minh bạch** trên các signal (P4). Quy tắc nằm trong code và có test; cùng một tập signal luôn ra cùng verdict.
 - **SO-03-AC03** · Thiếu bằng chứng (ví dụ nội dung quá ngắn, không có signal nào và có phép kiểm `unavailable`) thì verdict là `inconclusive`. Hệ thống **không bao giờ** hiển thị chữ "an toàn"; mức thấp nhất là "Chưa phát hiện dấu hiệu lừa đảo", luôn kèm lời nhắc tự kiểm tra qua kênh chính thức.
 - **SO-03-AC04** · Kết quả hiển thị: verdict, danh sách signal (mỗi dòng ghi nguồn *Kiểm tra* hoặc *AI nhận định*), chỉ dấu đã trích kèm kết quả kiểm, và 2–4 khuyến nghị hành động cụ thể. **Không** hiển thị phần trăm xác suất.
 - **SO-03-AC05** · Phần giải thích chỉ nhắc tới signal và kết quả kiểm có trong analysis. Không được nêu sự kiện bên ngoài (ví dụ "tên miền này đã lừa 500 người") nếu không có phép kiểm nào trả về điều đó. Kiểm bằng test trên bộ eval.
-- **SO-03-AC06** · Toàn bộ lượt phân tích hoàn tất trong mục tiêu ở §9. Quá thời gian thì trả `inconclusive` kèm thông báo thử lại, không để màn hình chờ vô hạn.
+- **SO-03-AC06** · Toàn bộ lượt phân tích hoàn tất trong mục tiêu ở §9. Quá thời gian thì trả `inconclusive` kèm thông báo thử lại (cùng ngoại lệ bằng chứng cứng như SO-03-AC01), không để màn hình chờ vô hạn.
 
 ### SO-04 Gửi báo cáo sang FraudOps
 
 - **SO-04-AC01** · Cho một analysis đã có kết quả, khi người dùng bấm "Gửi báo cáo", thì hệ thống tạo một report và một case ở trạng thái `pending_review`, rồi hiện mã case (ví dụ `SC-0007`).
-- **SO-04-AC02** · Người dùng có thể thêm ghi chú ngắn (tuỳ chọn, giới hạn độ dài) và kênh nhận tin (SMS, Zalo, Messenger, email, khác).
+- **SO-04-AC02** · Người dùng có thể thêm ghi chú ngắn (tuỳ chọn, tối đa 500 ký tự) và kênh nhận tin (SMS, Zalo, Messenger, email, khác).
 - **SO-04-AC03** · Gửi lại cùng một analysis không tạo case trùng; hệ thống trả về mã case đã có. Mã bí mật **không** hiển thị lại (chỉ lưu dạng băm; owner chốt 20/11/2026).
 - **SO-04-AC04** · Khi gửi báo cáo, người dùng nhận mã case kèm một **mã bí mật ngắn** (Q-05). Nhập đúng cả hai thì tra được trạng thái case; sai một trong hai thì không lộ trạng thái hay sự tồn tại của case. Trạng thái hiển thị: `Đang chờ xem xét`, `Đã xác nhận lừa đảo`, `Không phát hiện lừa đảo`, `Chưa đủ bằng chứng`.
 
@@ -134,7 +134,7 @@ Bảng ánh xạ với 6 tính năng P0 đã chốt:
 
 - **SO-06-AC01** · Nhân viên phải đăng nhập mới vào được FraudOps. Người chưa đăng nhập bị chuyển tới trang đăng nhập; API FraudOps trả 401.
 - **SO-06-AC02** · Danh sách case lọc được theo trạng thái và verdict, sắp xếp mới nhất trước; tìm được theo mã case.
-- **SO-06-AC03** · Nhân viên chọn một kết luận (`confirmed_scam`, `not_scam`, `insufficient_evidence`) và **bắt buộc** ghi lý do ngắn. Case chuyển sang `closed`, lưu người kết luận và thời điểm.
+- **SO-06-AC03** · Nhân viên chọn một kết luận (`confirmed_scam`, `not_scam`, `insufficient_evidence`) và **bắt buộc** ghi lý do ngắn (10–500 ký tự). Case chuyển sang `closed`, lưu người kết luận và thời điểm.
 - **SO-06-AC04** · Kết luận của nhân viên có thể khác verdict của engine. Được coi là **đồng ý** khi: `confirmed_scam` với `high_risk` hoặc `suspicious`; `not_scam` với `no_signal`; `insufficient_evidence` với `inconclusive`. Mọi cặp khác là **khác** (owner chốt 20/11/2026). Khi khác, giao diện ghi nhận "Nhân viên không đồng ý với đánh giá AI". Dữ liệu này dùng cho eval.
 - **SO-06-AC05** · Tải lại trang, đăng nhập lại hay mở từ thiết bị khác thì case, kết luận và trạng thái vẫn còn nguyên.
 - **SO-06-AC06** · Hệ thống không có nút hay API nào khoá tài khoản, chặn giao dịch hay liên hệ bên thứ ba (P1).
@@ -223,7 +223,7 @@ Owner chốt toàn bộ ngày **20/11/2026** (`/sdlc:sign-off`). Cột *Quyết 
 Chi tiết schema và endpoint thuộc `/sdlc:design` và `/sdlc:database`, ghi vào [`../architecture/`](../architecture/system-design.md). Ở mức đặc tả, hệ thống cần lưu:
 
 - `analyses`: nội dung đã che, chỉ dấu, kết quả kiểm, signal, verdict, phiên bản prompt/quy tắc, độ trễ.
-- `reports` / `cases`: liên kết với analysis, trạng thái, loại rủi ro, tóm tắt AI, cờ `is_seed`.
+- `cases`: báo cáo và hồ sơ gộp một bảng (một báo cáo luôn sinh đúng một case; owner chốt 20/11/2026, DB-01): liên kết với analysis, kênh, ghi chú, mã bí mật đã băm, trạng thái, loại rủi ro, tóm tắt AI, cờ `is_seed`. Chi tiết ở [`../architecture/data-model.md`](../architecture/data-model.md).
 - `decisions`: kết luận, lý do, người kết luận, thời điểm, có khác verdict engine hay không.
 - `indicators` (chuẩn hoá, để liên kết SO-07) và `confirmed_indicators` (SO-08).
 - `staff_users`: tài khoản FraudOps.

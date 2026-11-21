@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (20/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng đã có mã (nhánh `feat/foundation`, chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (21/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng đã merge vào `main` (PR #2); slice dữ liệu P0 đang ở nhánh `feat/data-p0` (chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -63,7 +63,7 @@
 └── package.json                     npm workspaces + script gốc
 ```
 
-Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Slice nền móng chỉ tạo: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`).
+Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
 
 ## 2. Phụ thuộc giữa module trong `packages/core`
 
