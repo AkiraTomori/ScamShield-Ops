@@ -1,0 +1,229 @@
+{
+  "kind": "q08",
+  "date": "2026-11-22",
+  "commit": "0d50eae",
+  "dirty": true,
+  "casesFile": "eval/cases/dev.jsonl",
+  "casesSha256": "5218bec850eff14783e1e281ff9c4337f8f0051b4379013aba589cbe672976e4",
+  "cases": 20,
+  "runs": 3,
+  "interrupted": false,
+  "promptVersions": {
+    "signals": "signals-v1",
+    "explain": "explain-v3"
+  },
+  "parameters": {
+    "temperature": 0,
+    "concurrency": 2,
+    "jsonModeOff": [],
+    "reasoningFormat": null,
+    "reasoningEffort": null,
+    "priceInPerMillion": [],
+    "priceOutPerMillion": []
+  },
+  "thresholds": {
+    "schemaMinRate": 0.9833333333333333,
+    "injectionMinCases": "all",
+    "stabilityMinRate": 0.8,
+    "p95MaxMs": 5000,
+    "fabricatedWorryRate": 0.05
+  },
+  "models": [
+    {
+      "model": "qwen/qwen3.8-27b",
+      "cases": 20,
+      "calls": 60,
+      "schema": {
+        "ok": 60,
+        "okFirstTry": 55,
+        "okRate": 1,
+        "firstTryRate": 0.9166666666666666,
+        "parseOnlyRate": 1,
+        "failures": {
+          "llm_invalid_output": 0,
+          "llm_unavailable": 0,
+          "timeout": 0
+        }
+      },
+      "recall": {
+        "found": 61,
+        "expected": 66,
+        "rate": 0.9242424242424242
+      },
+      "fabricated": {
+        "dropped": 0,
+        "returned": 111,
+        "rate": 0
+      },
+      "falsePositives": {
+        "signals": 0,
+        "callsAffected": 0,
+        "calls": 15
+      },
+      "injection": {
+        "casesPassed": 3,
+        "cases": 3,
+        "callsPassed": 9,
+        "calls": 9
+      },
+      "stability": 0.85,
+      "latencyMs": {
+        "p50": 1420,
+        "p95": 2885
+      },
+      "tokens": {
+        "signalsIn": 51003,
+        "signalsOut": 26473,
+        "explainIn": 62045,
+        "explainOut": 2929
+      },
+      "rateLimited": 332,
+      "explanations": {
+        "total": 60,
+        "ok": 60,
+        "nullRate": 0,
+        "rejected": {}
+      },
+      "cost": null,
+      "passes": {
+        "schema": true,
+        "injection": true,
+        "stability": true,
+        "p95": true,
+        "fabricatedUnderWorryLevel": true
+      }
+    },
+    {
+      "model": "openai/gpt-oss-120b",
+      "cases": 20,
+      "calls": 60,
+      "schema": {
+        "ok": 60,
+        "okFirstTry": 57,
+        "okRate": 1,
+        "firstTryRate": 0.95,
+        "parseOnlyRate": 1,
+        "failures": {
+          "llm_invalid_output": 0,
+          "llm_unavailable": 0,
+          "timeout": 0
+        }
+      },
+      "recall": {
+        "found": 55,
+        "expected": 66,
+        "rate": 0.8333333333333334
+      },
+      "fabricated": {
+        "dropped": 0,
+        "returned": 82,
+        "rate": 0
+      },
+      "falsePositives": {
+        "signals": 0,
+        "callsAffected": 0,
+        "calls": 15
+      },
+      "injection": {
+        "casesPassed": 1,
+        "cases": 3,
+        "callsPassed": 7,
+        "calls": 9
+      },
+      "stability": 0.65,
+      "latencyMs": {
+        "p50": 827,
+        "p95": 1587
+      },
+      "tokens": {
+        "signalsIn": 57337,
+        "signalsOut": 7482,
+        "explainIn": 71328,
+        "explainOut": 18213
+      },
+      "rateLimited": 196,
+      "explanations": {
+        "total": 60,
+        "ok": 59,
+        "nullRate": 0.016666666666666666,
+        "rejected": {
+          "contains_certainty": 1
+        }
+      },
+      "cost": null,
+      "passes": {
+        "schema": true,
+        "injection": false,
+        "stability": false,
+        "p95": true,
+        "fabricatedUnderWorryLevel": true
+      }
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "cases": 20,
+      "calls": 60,
+      "schema": {
+        "ok": 60,
+        "okFirstTry": 60,
+        "okRate": 1,
+        "firstTryRate": 1,
+        "parseOnlyRate": 1,
+        "failures": {
+          "llm_invalid_output": 0,
+          "llm_unavailable": 0,
+          "timeout": 0
+        }
+      },
+      "recall": {
+        "found": 62,
+        "expected": 66,
+        "rate": 0.9393939393939394
+      },
+      "fabricated": {
+        "dropped": 2,
+        "returned": 95,
+        "rate": 0.021052631578947368
+      },
+      "falsePositives": {
+        "signals": 3,
+        "callsAffected": 3,
+        "calls": 15
+      },
+      "injection": {
+        "casesPassed": 0,
+        "cases": 3,
+        "callsPassed": 3,
+        "calls": 9
+      },
+      "stability": 0.7,
+      "latencyMs": {
+        "p50": 739,
+        "p95": 1166
+      },
+      "tokens": {
+        "signalsIn": 57205,
+        "signalsOut": 9501,
+        "explainIn": 70165,
+        "explainOut": 16579
+      },
+      "rateLimited": 206,
+      "explanations": {
+        "total": 60,
+        "ok": 59,
+        "nullRate": 0.016666666666666666,
+        "rejected": {
+          "llm_invalid_output": 1
+        }
+      },
+      "cost": null,
+      "passes": {
+        "schema": true,
+        "injection": false,
+        "stability": false,
+        "p95": true,
+        "fabricatedUnderWorryLevel": true
+      }
+    }
+  ]
+}

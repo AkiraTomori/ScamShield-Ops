@@ -31,7 +31,7 @@ export default defineConfig([
   },
   {
     // P5: user-supplied URLs are never fetched. All outbound HTTP goes through packages/core/src/http/.
-    files: ["packages/core/src/**/*.{ts,tsx}"],
+    files: ["packages/core/src/**/*.{ts,tsx}", "eval/**/*.ts"],
     ignores: ["packages/core/src/http/**"],
     rules: {
       "no-restricted-globals": [
