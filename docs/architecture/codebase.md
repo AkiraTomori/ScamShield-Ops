@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (21/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng đã merge vào `main` (PR #2); slice dữ liệu P0 đang ở nhánh `feat/data-p0` (chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (21/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2) và slice dữ liệu P0 (PR #3) đã merge vào `main`; slice S2 thử model đang ở nhánh `feat/model-spike` (chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -28,7 +28,7 @@
 │   │   ├── src/
 │   │   │   ├── enums.ts             contracts §1
 │   │   │   ├── analysis.ts  case.ts  report.ts  ops.ts  health.ts
-│   │   │   ├── llm.ts               schema đầu ra LLM (contracts §7)
+│   │   │   ├── llm.ts               schema đầu ra LLM (contracts §7); AiSignalType; SignalType ở enums.ts
 │   │   │   ├── errors.ts            ErrorCode + câu tiếng Việt
 │   │   │   ├── brands.ts            schema BrandList
 │   │   │   └── env.ts               schema biến môi trường (chỉ dùng ở server)
@@ -52,10 +52,12 @@
 │           ├── auth/                tài khoản nhân viên, mật khẩu, phiên
 │           └── demo/                seed, reset demo, tạo tài khoản thử
 ├── eval/
-│   ├── cases/dev.jsonl              tình huống có nhãn, tập dev
+│   ├── cases/dev.jsonl              tình huống có nhãn, tập dev (20 câu đầu, owner duyệt 21/11)
 │   ├── cases/heldout.jsonl          tập held-out, chỉ chạy khi đóng băng
-│   ├── run.ts                       runner gọi thẳng packages/core
-│   └── results/                     kết quả đã commit (SO-09-AC04)
+│   ├── src/                         case.ts (EvalCase), score.ts, estimate.ts, runner.ts, cache.ts, report.ts, args.ts, run-q08.ts (CLI thử model Q-08)
+│   ├── test/                        Vitest cho eval (không gọi mạng)
+│   ├── .cache/                      đầu ra thô, gitignore
+│   └── results/                     kết quả đã commit (SO-09-AC04); q08-<ngày>-<commit>.json
 ├── docs/
 ├── tools/sdlc-kit/                  submodule
 ├── docker-compose.yml               Postgres local
@@ -63,7 +65,7 @@
 └── package.json                     npm workspaces + script gốc
 ```
 
-Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
+Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
 
 ## 2. Phụ thuộc giữa module trong `packages/core`
 
@@ -87,6 +89,7 @@ lookup, llm ─→ http
 | `npm run db:migrate` | Chạy migration; DB deploy dùng `DATABASE_URL_MIGRATE` | **Owner** với DB deploy |
 | `npm run demo:seed` | Nạp case mẫu `is_seed`, tài khoản `judge1…judge5` | **Owner** với DB deploy |
 | `npm run demo:reset` | Xoá và nạp lại dữ liệu `is_seed`, giữ case giám khảo tạo (SO-10-AC04) | **Owner** |
+| `npm run eval:q08 -- --models <a>,<b> --runs 3` | Thử model Groq (Q-08): chỉ in ước tính; thêm `--confirm` mới gọi Groq (tốn tiền, cần `GROQ_API_KEY` trong `.env`). `--list-models` liệt kê model đang có. Tuỳ chọn: `--price-in/--price-out` (mỗi 1M token), `--resume`/`--fresh`, `--limit N`, `--retry-failed`, `--concurrency N`, `--reuse-signals-from <tag>`, `--no-json-mode <models>`, `--reasoning-format hidden\|parsed`, `--reasoning-effort <v>` | Đội; **hỏi owner trước khi `--confirm`** |
 | `npm run eval -- --set dev` | Chạy eval tập dev (tốn tiền LLM) | Hỏi owner nếu chạy toàn bộ nhiều lần |
 
 ## 4. Test theo tầng

@@ -11,7 +11,7 @@ Docs viết bằng tiếng Việt; định danh kỹ thuật giữ tiếng Anh.
 | 0 | [`onboarding/concepts.md`](./onboarding/concepts.md) | Nhập môn: đề bài, thủ đoạn lừa đảo, chỉ dấu, signal, verdict, kiểm URL, vai trò của AI, prompt injection, eval, hạ tầng | Bản nháp |
 | 1 | [`product/pitch.md`](./product/pitch.md) | Sản phẩm là gì, vì sao Workspace-first, ví dụ Input→Output, FAQ giám khảo | Bản nháp |
 | 2 | [`spec/ScamShield-v1.md`](./spec/ScamShield-v1.md) | **Nguồn sự thật về hành vi.** Nguyên tắc P1–P5, tính năng SO-01…SO-10, tiêu chí chấp nhận, quyết định Q-01…Q-10, kịch bản demo | **Bản nháp; Q-01…Q-10 đã chốt 20/11** |
-| 3 | [`architecture/system-design.md`](./architecture/system-design.md) | **Nguồn sự thật về kiến trúc.** Modular monolith, triển khai, ranh giới module, truy cập dữ liệu, health. Thiết kế từng slice ở `design/` (pipeline: [`design/analysis-pipeline.md`](./design/analysis-pipeline.md)) | **Bản nháp** |
+| 3 | [`architecture/system-design.md`](./architecture/system-design.md) | **Nguồn sự thật về kiến trúc.** Modular monolith, triển khai, ranh giới module, truy cập dữ liệu, health. Thiết kế từng slice ở `design/` (pipeline: [`design/analysis-pipeline.md`](./design/analysis-pipeline.md); thử model S2: [`design/model-spike.md`](./design/model-spike.md)) | **Bản nháp** |
 | 3b | [`architecture/data-model.md`](./architecture/data-model.md) | Bảng P0, ràng buộc, giao dịch, đồng thời, quyền riêng tư, seed/reset, kế hoạch migration | **Đã duyệt 21/11** (DB-05 còn là đề xuất) |
 | 4 | [`architecture/api.md`](./architecture/api.md) | Endpoint công khai và FraudOps, ví dụ request/response, mã lỗi | Bản nháp |
 | 5 | [`architecture/contracts.md`](./architecture/contracts.md) | Hợp đồng dữ liệu: enum, chỉ dấu, signal, kết quả, hồ sơ, đầu ra LLM, mã lỗi | Bản nháp |
@@ -21,7 +21,7 @@ Docs viết bằng tiếng Việt; định danh kỹ thuật giữ tiếng Anh.
 | 9 | [`product/design-system.md`](./product/design-system.md) | Token, component, pattern cho mọi UI | Bản nháp |
 | 10 | [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Mục tiêu, phạm vi, lộ trình theo ngày, quyền của agent, cắt việc, rủi ro, checklist nộp; tasks.csv: 48 việc theo slice, phụ thuộc, ngày, mức cắt | **Bản nháp** |
 | 11 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Chạy local, Postgres Docker, đổi key, migration, deploy (owner), lỗi thường gặp | Bản nháp |
-| 12 | [`research/result.md`](./research/result.md) | Cách thử chọn model Groq (Q-08), định dạng và chỉ số bộ eval (SO-09), nhật ký kết quả | Bản nháp, chưa có số liệu |
+| 12 | [`research/result.md`](./research/result.md) | Cách thử chọn model Groq (Q-08), định dạng và chỉ số bộ eval (SO-09), nhật ký kết quả | Bản nháp; A.6 có số liệu 21/11 và điểm tiếng Việt `explain-v3` 22/11, Q-08 đã chốt 22/11 |
 | 13 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, dữ liệu demo, checklist, xử lý sự cố, giai đoạn chấm | Bản nháp |
 
 ## Khi các file lệch nhau
@@ -41,4 +41,4 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Giai đoạn **đặc tả, thiết kế và dựng nền** (21/11/2026): owner đã chốt Q-01…Q-10; spec v1, kế hoạch và thiết kế pipeline là bản nháp. Slice nền móng đã merge vào `main` (PR #2). Slice dữ liệu P0 (schema 8 bảng, migration `0000_p0_tables`, đã được owner duyệt 21/11) đang ở nhánh `feat/data-p0`, chưa merge, chưa chạy trên DB deploy. Chưa có pipeline phân tích, seed, FraudOps hay gọi Groq. D-01…D-03 đã chốt; D-04 còn chờ kiểm, xem system-design §9.
+Giai đoạn **đặc tả, thiết kế và dựng nền** (22/11/2026): owner đã chốt Q-01…Q-10; spec v1, kế hoạch và thiết kế pipeline là bản nháp. Slice nền móng (PR #2) và slice dữ liệu P0 (schema 8 bảng, migration `0000_p0_tables`, PR #3) đã merge vào `main`; migration chưa chạy trên DB deploy. Slice S2 thử model ([design/model-spike](./design/model-spike.md)) đang ở nhánh `feat/model-spike` (chưa commit, chưa merge): client HTTP có allowlist, client Groq, `extractSignals`, `writeExplanation`, runner `eval/`; test xanh ở local; đã chạy Groq thật 21/11 trên 3 model ([research A.6](./research/result.md)), owner chốt Q-08 22/11; sau review, prompt giải thích đã đổi sang `explain-v3` và đã chạy lại bước giải thích 22/11 (3 model; điểm tiếng Việt AI chấm, owner duyệt: qwen 2,75, gpt-oss-120b 2,40, gpt-oss-20b 1,95; cột còn lại của A.6 giữ số 21/11 vì tái dùng signal). Chưa có pipeline phân tích đầy đủ (S3), seed, FraudOps. D-01…D-03 đã chốt; D-04 còn chờ kiểm, xem system-design §9.

@@ -14,5 +14,6 @@ Thêm thư viện ngoài danh sách này phải hỏi owner ([plan §5](../runbo
 | `tailwindcss` (+ plugin PostCSS/tích hợp Next.js theo tài liệu chính thức của phiên bản ghim) | Styling | O-05, 20/11/2026 ([ui-pages §8](../product/ui-pages.md#8-quyết-định-mở-cho-giao-diện)) |
 | `@playwright/test` | Test end-to-end luồng demo | C-01, 20/11/2026 ([frontend §9](./frontend.md#9-quyết-định)) |
 | `tldts` (hoặc thư viện tương đương dựa trên Public Suffix List, chọn lúc cài) | Tính tên miền đăng ký | P-02, 20/11/2026 ([analysis-pipeline §12](../design/analysis-pipeline.md#12-quyết-định)) |
+| `tsx` (devDependency) | Chạy script TypeScript trong `eval/` | S2-01, 21/11/2026 ([model-spike §9](../design/model-spike.md#9-quyết-định)) |
 
 Nguồn: [system-design §9](../architecture/system-design.md#9-quyết-định-cần-owner-chốt).

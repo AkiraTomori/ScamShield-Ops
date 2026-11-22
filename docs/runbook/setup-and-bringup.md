@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (21/11/2026):** bản nháp, có slice nền móng và schema P0 (chưa seed/reset). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (21/11/2026):** bản nháp, có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (nhánh `feat/model-spike`, đã chạy Groq thật 21/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -33,6 +33,18 @@ npm run verify
 | Mật khẩu Postgres local | Đổi `POSTGRES_PASSWORD` **và** mật khẩu trong `DATABASE_URL`; mật khẩu chỉ có hiệu lực khi volume mới: `docker compose down -v` rồi `up` | Không áp dụng |
 
 Không dán key vào chat, commit hay dòng lệnh.
+
+## 3b. Thử model Groq (slice S2)
+
+```bash
+npm run eval:q08 -- --list-models                          # cần GROQ_API_KEY trong .env; chỉ liệt kê model
+npm run eval:q08 -- --models <a>,<b> --runs 3 --price-in 0.5,0.2 --price-out 1,0.4   # chỉ in ước tính, không gọi
+npm run eval:q08 -- --models <a>,<b> --runs 3 --confirm    # chạy thật (tốn tiền): báo ước tính cho owner trước
+```
+
+- Runner đọc `.env` qua `process.loadEnvFile`; thiếu `GROQ_API_KEY` thì báo lỗi, không đoán.
+- Đầu ra thô ở `eval/.cache/q08/` (gitignore); kết quả đã tổng hợp ở `eval/results/q08-<ngày>-<commit>.json` (commit được). Dừng bằng Ctrl+C rồi chạy lại với `--resume`.
+- Tên model không ghi cứng: lấy từ `--list-models`, ghi vào [research A.6](../research/result.md).
 
 ## 4. Migration
 

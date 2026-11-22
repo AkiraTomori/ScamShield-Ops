@@ -170,7 +170,7 @@ Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `con
 
 | Phần | Thiết kế ở | Ghi chú đã biết |
 |---|---|---|
-| Pipeline phân tích 6 bước, quy tắc verdict, prompt (SO-01…SO-03) | **[design/analysis-pipeline.md](../design/analysis-pipeline.md)** (bản nháp) | Model Groq chốt sau thử nghiệm 20 câu dev (Q-08) |
+| Pipeline phân tích 6 bước, quy tắc verdict, prompt (SO-01…SO-03) | **[design/analysis-pipeline.md](../design/analysis-pipeline.md)** (bản nháp) | Model Groq đã chốt 22/11 sau thử nghiệm 20 câu dev (Q-08): chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` |
 | Nơi lưu bộ đếm rate limit 10 lượt/phút/IP (Q-06) | Slice pipeline | Hướng đề xuất: bảng Postgres, không thêm dịch vụ; không lưu IP thô quá thời gian cần (spec §9) |
 | Trần chi tiêu LLM (Q-06) | Slice pipeline | Kiểm Groq có trần cứng không; nếu không thì thêm trần lượt/ngày trong app |
 | Bảng nghiệp vụ, ràng buộc, seed, reset `is_seed` | **[data-model.md](./data-model.md)** (bản nháp) | Mọi bảng bật RLS, không policy (§4) |
