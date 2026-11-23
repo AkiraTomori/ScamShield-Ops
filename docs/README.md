@@ -23,6 +23,8 @@ Docs viết bằng tiếng Việt; định danh kỹ thuật giữ tiếng Anh.
 | 11 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Chạy local, Postgres Docker, đổi key, migration, deploy (owner), lỗi thường gặp | Bản nháp |
 | 12 | [`research/result.md`](./research/result.md) | Cách thử chọn model Groq (Q-08), định dạng và chỉ số bộ eval (SO-09), nhật ký kết quả | Bản nháp; A.6 có số liệu 21/11 và điểm tiếng Việt `explain-v3` 22/11, Q-08 đã chốt 22/11 |
 | 12a | [`research/project-proposal.md`](./research/project-proposal.md) | Proposal có dẫn chứng: chủ đề, pain points, tài nguyên, giải pháp hiện hữu, stakeholders, kiến trúc/workflow; kết quả S2, giả thuyết và nguồn tham khảo | **Bản đề xuất để review, 24/11/2026** |
+| 12b | [`research/dataset-catalog.md`](./research/dataset-catalog.md) + [`research/evaluation-protocol.md`](./research/evaluation-protocol.md) | Nguồn public data, quy tắc license/PII, gán nhãn, chống leakage và protocol đánh giá SO-09 | Bản đề xuất để review, 24/11/2026 |
+| 12c | [`PROJECT-REQUIREMENTS.md`](./PROJECT-REQUIREMENTS.md) + [`architecture/ARCHITECTURE.md`](./architecture/ARCHITECTURE.md) | Tổng quan yêu cầu, traceability SO-xx và sơ đồ kiến trúc/workflow theo thiết kế đã chốt | Bản tóm tắt, không thay nguồn sự thật |
 | 13 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, dữ liệu demo, checklist, xử lý sự cố, giai đoạn chấm | Bản nháp |
 
 ## Khi các file lệch nhau
