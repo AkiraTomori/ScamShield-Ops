@@ -7,7 +7,7 @@
 
 > **Đề xuất cốt lõi:** Chuyển tin nhắn đáng ngờ và báo cáo của người dùng thành hồ sơ điều tra có bằng chứng, trong đó AI hỗ trợ nhận diện, tổng hợp và giải thích; con người là người xác minh và đưa ra quyết định cuối cùng.
 
-**Quy ước về bằng chứng:** [I1]–[I8] là tài liệu **nội bộ dự án** (quyết định/thiết kế/số đo tại thời điểm kiểm tra); [E1]–[E11] là **nguồn công khai** (báo cáo, tài liệu chính thức của sản phẩm hoặc nhà cung cấp). Các nhận xét về nhu cầu, khả năng giảm thời gian xử lý và khác biệt cạnh tranh được ghi rõ là **giả thuyết/định vị đề xuất**, không được coi là kết quả khảo sát hay benchmark. Những thiết kế chưa triển khai không được mô tả như chức năng đã hoạt động.
+**Quy ước về bằng chứng:** [I1]–[I8] là tài liệu **nội bộ dự án** (quyết định/thiết kế/số đo tại thời điểm kiểm tra); [E1]–[E12] là **nguồn công khai** (báo cáo, tài liệu chính thức của sản phẩm hoặc nhà cung cấp). Các nhận xét về nhu cầu, khả năng giảm thời gian xử lý và khác biệt cạnh tranh được ghi rõ là **giả thuyết/định vị đề xuất**, không được coi là kết quả khảo sát hay benchmark. Những thiết kế chưa triển khai không được mô tả như chức năng đã hoạt động.
 
 ## 1. Giới thiệu chủ đề và định vị sản phẩm
 
@@ -43,7 +43,9 @@ Theo thông tin Bộ Công an được VOV dẫn ngày 30/12/2025, từ năm 202
 
 Khảo sát trực tuyến của Hiệp hội An ninh mạng quốc gia (NCA) trên hơn **60.300 người trả lời** trong tháng 12/2025 cho thấy, trong số những người cho biết đã bị lừa, **32,12% trình báo cơ quan chức năng** và **12,03% chấp nhận thiệt hại mà không hành động** [E2]. Số liệu dựa vào mẫu tự nguyện và hành vi khai báo; **không được suy rộng trực tiếp thành tỷ lệ của toàn bộ dân số** hoặc tỷ lệ gửi báo cáo vào fintech.
 
-Cổng thông tin Chính phủ cũng ghi nhận các thủ đoạn liên quan đến mạo danh, tin nhắn trúng thưởng và lời mời đầu tư đáng ngờ, cho thấy nhu cầu cảnh báo không giới hạn ở một mẫu URL độc hại [E3]. Những nguồn này hỗ trợ tính cấp thiết của **bài toán chống lừa đảo**, nhưng **không chứng minh** rằng mọi đội vận hành fintech hiện đều có cùng quy trình hay cùng mức độ tốn công.
+Cổng thông tin Chính phủ cũng ghi nhận các thủ đoạn liên quan đến mạo danh, tin nhắn trúng thưởng và lời mời đầu tư đáng ngờ, cho thấy nhu cầu cảnh báo không giới hạn ở một mẫu URL độc hại [E3].
+
+**Liên hệ trực tiếp với hệ sinh thái fintech:** ngày **13/11/2026**, Bộ Công an đưa tin NCA, Google, Liên minh Niềm tin số và **MoMo** cùng tổ chức tọa đàm về **mạng lưới chia sẻ tín hiệu rủi ro** (URL, số tài khoản, số điện thoại) để cải thiện phòng chống lừa đảo [E12]. Sự kiện chứng minh vấn đề liên kết những tín hiệu rời rạc đang được thảo luận công khai, **không** có nghĩa ScamShield Ops tham gia mạng lưới, có quan hệ với MoMo hay đã triển khai chia sẻ liên tổ chức. Những nguồn này hỗ trợ tính cấp thiết của **bài toán chống lừa đảo**, nhưng **không chứng minh** rằng mọi đội vận hành fintech hiện đều có cùng quy trình hay cùng mức độ tốn công.
 
 ### 2.2. Hai nhóm pain point liên kết với nhau
 
@@ -287,5 +289,6 @@ Tách trách nhiệm **theo module**, nhưng không tách quyền sở hữu ch�
 - **[E9]** Google Cloud — [Web Risk documentation](https://docs.cloud.google.com/web-risk/docs) cho nhu cầu kiểm URL ở môi trường thương mại.
 - **[E10]** VirusTotal — [Public vs Premium API](https://docs.virustotal.com/reference/public-vs-premium-api) về giới hạn sử dụng Public API.
 - **[E11]** Sift — [Fraud Platform](https://sift.com/platform/) về risk decisioning, workflow, reporting và case management; nội dung tự công bố của nhà cung cấp, **không** phải đánh giá độc lập.
+- **[E12]** Bộ Công an, 13/11/2026 — [Tọa đàm xây dựng mạng lưới cảnh báo rủi ro trực tuyến tại Việt Nam](https://mps.gov.vn/bai-viet/xay-dung-mang-luoi-canh-bao-rui-ro-truc-tuyen-tai-viet-nam-chia-se-tin-hieu-rui-ro-chu-dong-phong-chong-lua-dao-1794563239), có sự tham gia phối hợp tổ chức của NCA, Google, Liên minh Niềm tin số và MoMo; dùng làm **bối cảnh định hướng**, không chứng minh hiệu quả ScamShield Ops.
 
 **Ghi chú tài liệu:** proposal là bản tổng hợp/định vị có dẫn chứng, không thay thế spec, contracts hay các quyết định có thứ bậc trong [docs/README](../README.md). Các câu hỏi còn mở và kết quả test tiếp theo phải được cập nhật vào đúng nguồn sự thật của repo trước khi đưa số liệu vào slide.
