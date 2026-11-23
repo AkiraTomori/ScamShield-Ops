@@ -1,6 +1,6 @@
 # ScamShield Ops — Đề xuất sản phẩm và tổng hợp nghiên cứu
 
-**Phiên bản:** Proposal v1.0 · **Ngày tổng hợp:** 24/11/2026 · **Trạng thái:** Đề xuất để review, không thay thế đặc tả đã chốt  
+**Phiên bản:** Proposal v1.1 · **Ngày tổng hợp:** 24/11/2026 · **Trạng thái:** Đề xuất để review, không thay thế đặc tả đã chốt  
 **Bối cảnh:** MoMo Tech Talent 2026 — *Imagine the Future Workspace (Human Centered. AI Powered)*  
 **Chủ đề đăng ký:** **Chống lừa đảo** (trọng tâm) và **Trợ lý AI** (kết hợp); có kỹ thuật liên quan đến an ninh mạng.  
 **Phạm vi trình bày:** MVP ScamShield Ops trong cuộc thi, không phải một sản phẩm fintech đã sẵn sàng vận hành thương mại.
@@ -260,6 +260,21 @@ Tách trách nhiệm **theo module**, nhưng không tách quyền sở hữu ch�
 | **Scope creep trước deadline** | Giữ P0/SO-09; SO-07/08 chỉ khi còn nguồn lực | Không chuyển sang multi-agent, OCR, phân công nhiều cấp trong vòng loại |
 
 **Kết luận đề xuất:** ScamShield Ops là một **sản phẩm lai Chống lừa đảo + Trợ lý AI**, lấy **FraudOps workspace** làm trọng tâm thay đổi công việc và ScamShield làm điểm chạm giúp người dùng phòng ngừa. Lợi thế mà đội **định kiểm chứng** không nằm ở tuyên bố sở hữu model phát hiện độc quyền, mà ở luồng **đầu vào → bằng chứng có nguồn → hỗ trợ AI → human review → kết luận lưu bền**. S2 đã tạo bằng chứng kỹ thuật ban đầu; thước đo thuyết phục cuối cùng phải đến từ end-to-end demo và đánh giá held-out, không phải demo lựa chọn LLM riêng lẻ.
+
+---
+
+## 9. Tài liệu hỗ trợ triển khai và nghiên cứu dữ liệu
+
+Để chuyển từ proposal sang hiện thực hóa MVP, sử dụng bốn tài liệu bổ trợ sau. Các tài liệu này **không thay thế** spec, contracts, system design, cũng không có nghĩa các nguồn dữ liệu đã được ingest:
+
+| Mục đích | Tài liệu | Phạm vi |
+|---|---|---|
+| **Required Document / requirements overview** | [Project Requirements](../PROJECT-REQUIREMENTS.md) | Stakeholder, scope P0/P1, traceability SO-xx, NFR, acceptance gate |
+| **Architecture overview** | [Architecture](../architecture/ARCHITECTURE.md) | Sơ đồ context/sequence/domain, trust boundaries, quyết định kiến trúc và trạng thái |
+| **Public data sources** | [Dataset Catalog](./dataset-catalog.md) | SMS tiếng Việt, PhishVN, URL feeds, license, provenance, privacy, overlap |
+| **Đánh giá & gán nhãn** | [Evaluation Protocol](./evaluation-protocol.md) | Chấm nhãn, tách dev/held-out, tránh leakage, metrics và release test matrix |
+
+**Ưu tiên triển khai:** tiếp tục S3 phân tích end-to-end → UI ScamShield → report/case → FraudOps; nghiên cứu public data làm song song với giới hạn thời gian. Kết quả S2 chọn model chưa phải kết quả đánh giá detection end-to-end. Data public có thể chứa URL độc hại, PII và nhãn sai: không truy cập URL, không commit raw, không biến nhãn spam thành verdict lừa đảo.
 
 ---
 
