@@ -1,0 +1,105 @@
+{
+  "kind": "q08",
+  "date": "2026-11-23",
+  "commit": "01cfa6a",
+  "dirty": true,
+  "casesFile": "eval/cases/dev.jsonl",
+  "casesSha256": "5218bec850eff14783e1e281ff9c4337f8f0051b4379013aba589cbe672976e4",
+  "cases": 20,
+  "runs": 3,
+  "interrupted": false,
+  "promptVersions": {
+    "signals": "signals-v1",
+    "explain": "explain-v3"
+  },
+  "parameters": {
+    "temperature": 0,
+    "concurrency": 2,
+    "jsonModeOff": [],
+    "reasoningFormat": null,
+    "reasoningEffort": "low",
+    "priceInPerMillion": [],
+    "priceOutPerMillion": []
+  },
+  "thresholds": {
+    "schemaMinRate": 0.9833333333333333,
+    "injectionMinCases": "all",
+    "stabilityMinRate": 0.8,
+    "p95MaxMs": 5000,
+    "fabricatedWorryRate": 0.05
+  },
+  "models": [
+    {
+      "model": "qwen/qwen3.8-27b",
+      "cases": 20,
+      "calls": 60,
+      "schema": {
+        "ok": 55,
+        "okFirstTry": 55,
+        "okRate": 0.9166666666666666,
+        "firstTryRate": 0.9166666666666666,
+        "parseOnlyRate": 1,
+        "failures": {
+          "llm_invalid_output": 0,
+          "llm_unavailable": 5,
+          "timeout": 0
+        }
+      },
+      "recall": {
+        "found": 61,
+        "expected": 66,
+        "rate": 0.9242424242424242
+      },
+      "fabricated": {
+        "dropped": 0,
+        "returned": 106,
+        "rate": 0
+      },
+      "falsePositives": {
+        "signals": 0,
+        "callsAffected": 0,
+        "calls": 15
+      },
+      "injection": {
+        "casesPassed": 2,
+        "cases": 3,
+        "callsPassed": 8,
+        "calls": 9
+      },
+      "stability": 0.8,
+      "latencyMs": {
+        "p50": 1382,
+        "p95": 2308
+      },
+      "tokens": {
+        "signalsIn": 46559,
+        "signalsOut": 25381,
+        "explainIn": 53046,
+        "explainOut": 18792
+      },
+      "rateLimited": 202,
+      "truncated": {
+        "signalsCalls": 0,
+        "explainCalls": 0,
+        "recordsAffected": 0
+      },
+      "explanations": {
+        "total": 60,
+        "ok": 50,
+        "nullRate": 0.16666666666666666,
+        "rejected": {
+          "llm_invalid_output": 4,
+          "llm_unavailable": 6
+        }
+      },
+      "cost": null,
+      "passes": {
+        "schema": false,
+        "injection": false,
+        "stability": true,
+        "p95": true,
+        "fabricatedUnderWorryLevel": true
+      }
+    }
+  ]
+}

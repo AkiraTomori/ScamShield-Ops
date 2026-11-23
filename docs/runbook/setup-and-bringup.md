@@ -43,7 +43,7 @@ npm run eval:q08 -- --models <a>,<b> --runs 3 --confirm    # chạy thật (tố
 ```
 
 - Runner đọc `.env` qua `process.loadEnvFile`; thiếu `GROQ_API_KEY` thì báo lỗi, không đoán.
-- Đầu ra thô ở `eval/.cache/q08/` (gitignore); kết quả đã tổng hợp ở `eval/results/q08-<ngày>-<commit>.json` (commit được). Dừng bằng Ctrl+C rồi chạy lại với `--resume`.
+- Đầu ra thô ở `eval/.cache/q08/` (gitignore); kết quả đã tổng hợp ở `eval/results/q08-<ngày>-<commit>.json` và bảng chấm tiếng Việt `eval/results/q08-grading-<model>__<hash câu>__<tag prompt>.md` (commit được; runner không ghi đè bảng đã có điểm). Dừng bằng Ctrl+C rồi chạy lại với `--resume`.
 - Tên model không ghi cứng: lấy từ `--list-models`, ghi vào [research A.6](../research/result.md).
 
 ## 4. Migration
