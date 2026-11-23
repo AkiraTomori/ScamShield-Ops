@@ -6,7 +6,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   oxc: { jsx: { runtime: "automatic" } },
   test: {
-    include: ["apps/**/*.test.{ts,tsx}", "packages/**/*.test.{ts,tsx}"],
+    include: ["apps/**/*.test.{ts,tsx}", "packages/**/*.test.{ts,tsx}", "eval/**/*.test.ts"],
     exclude: ["**/node_modules/**", "**/.next/**"],
   },
 });

@@ -7,7 +7,8 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "eval"
   ],
   "scripts": {
     "dev": "npm run dev -w @scamshield/web",
@@ -19,7 +20,8 @@
     "test": "vitest run",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "db:generate": "npm run db:generate -w @scamshield/core",
-    "db:migrate": "npm run db:migrate -w @scamshield/core"
+    "db:migrate": "npm run db:migrate -w @scamshield/core",
+    "eval:q08": "tsx eval/src/run-q08.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.6",
@@ -28,6 +30,7 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.6",
     "prettier": "3.10.1",
+    "tsx": "4.23.15",
     "typescript": "6.0.3",
     "vitest": "5.1.1"
   }

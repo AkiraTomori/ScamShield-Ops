@@ -42,3 +42,27 @@ export type CaseStatus = z.infer<typeof CaseStatus>;
 
 export const Decision = z.enum(["confirmed_scam", "not_scam", "insufficient_evidence"]);
 export type Decision = z.infer<typeof Decision>;
+
+export const SignalSource = z.enum(["deterministic", "ai"]);
+export type SignalSource = z.infer<typeof SignalSource>;
+
+/** Every signal the product can emit, AI-derived and deterministic (contracts §3, analysis-pipeline §6.9). */
+export const SignalType = z.enum([
+  "claims_organization",
+  "urgency",
+  "threat",
+  "credential_request",
+  "payment_request",
+  "reward_promise",
+  "ai_directed_instruction",
+  "brand_domain_mismatch",
+  "lookalike_domain",
+  "brand_in_subdomain",
+  "shortened_url",
+  "ip_url",
+  "risky_tld",
+  "new_domain",
+  "blocklisted_url",
+  "verified_indicator",
+]);
+export type SignalType = z.infer<typeof SignalType>;

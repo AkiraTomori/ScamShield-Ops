@@ -1,5 +1,5 @@
 id,slice,title,ac_ids,depends_on,planned_day,size,owner,status,priority,cut_order,done_when
-T-001,S0 Nền móng,Kiểm slice nền móng trên feat/foundation (/sdlc:verify),,,20/11,S,agent,todo,P0,,"Báo cáo verify: npm run verify xanh, /api/health 200/503 đúng local"
+T-001,S0 Nền móng,Kiểm slice nền móng trên feat/foundation (/sdlc:verify),,,20/11,S,agent,done,P0,,"Báo cáo verify: npm run verify xanh, /api/health 200/503 đúng local"
 T-002,S0 Nền móng,Review + mở PR slice nền móng,,T-001,21/11,S,agent,done,P0,,"PR mở, owner yêu cầu"
 T-003,S0 Nền móng,"Tạo Supabase (Singapore), tắt Data API, kiểm chính sách tạm dừng (D-04)",,,21/11,S,owner,todo,P0,,Có chuỗi pooler; D-04 có kết luận
 T-004,S0 Nền móng,"Tạo project Vercel, đặt DATABASE_URL chỉ Production (D-03)",,T-003,21/11,S,owner,todo,P0,,"Project nối repo, region gần Singapore"
@@ -7,10 +7,10 @@ T-005,S0 Nền móng,"Merge PR nền móng, kiểm /api/health trên production"
 T-010,S1 Dữ liệu,"Thiết kế bảng nghiệp vụ, ràng buộc, RLS, seed/reset (/sdlc:database)",SO-04-AC03;SO-06-AC03;SO-10-AC04,T-001,21/11,M,agent,done,P0,,"docs/architecture có mô hình dữ liệu, owner duyệt"
 T-011,S1 Dữ liệu,"Schema Drizzle + migration đầu tiên (analyses, reports/cases, decisions, indicators, staff_users, rate limit)",SO-06-AC05,T-010,22/11,M,agent,done,P0,,Migration chạy được trên Postgres local; RLS bật mọi bảng
 T-012,S1 Dữ liệu,Chạy migration lên Supabase,,T-011;T-005,22/11,S,owner,todo,P0,,
-T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3, B.2)",SO-09-AC01,,21/11,M,đội,todo,P0,,eval/cases/dev.jsonl có 20 dòng parse được
-T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,todo,P0,,
-T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,todo,P0,,Script chạy 20 câu × 3 lần cho 1 model
-T-023,S2 Thử model,"Chạy thử 2–3 model, điền research A.6, chốt Q-08 (/sdlc:sign-off)",,T-020;T-022,22/11,S,đội+owner,todo,P0,,Q-08 có model chính + dự phòng
+T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3, B.2)",SO-09-AC01,,21/11,M,đội,done,P0,,eval/cases/dev.jsonl có 20 dòng parse được
+T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,done,P0,,
+T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,done,P0,,Script chạy 20 câu × 3 lần cho 1 model
+T-023,S2 Thử model,"Chạy thử 2–3 model, điền research A.6, chốt Q-08 (/sdlc:sign-off)",,T-020;T-022,22/11,S,đội+owner,done,P0,,Q-08 có model chính + dự phòng
 T-030,S3 Pipeline,"Thiết kế slice pipeline: quy tắc verdict, SignalType (A-03), prompt, rate limit (/sdlc:design)",SO-03-AC02,T-023,22/11,M,agent,todo,P0,,Owner duyệt bảng quy tắc
 T-031,S3 Pipeline,Kiểm đầu vào + che OTP/mật khẩu/số thẻ (TDD),SO-01-AC02;SO-01-AC03,T-030,22/11,M,agent,todo,P0,,Test AC xanh
 T-032,S3 Pipeline,"Trích + chuẩn hoá chỉ dấu (URL, tên miền, SĐT VN, số tài khoản) (TDD)",SO-02-AC01;SO-02-AC04;SO-07-AC02,T-030,22/11,M,agent,todo,P0,,Cùng đầu vào cùng danh sách

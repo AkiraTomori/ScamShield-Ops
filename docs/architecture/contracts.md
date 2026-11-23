@@ -1,6 +1,6 @@
 # ScamShield Ops — Hợp đồng dữ liệu
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (21/11/2026):** BẢN NHÁP; `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2). Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 **Thứ bậc:** khi `packages/shared` đã có schema, **schema thắng** file này; lệch thì sửa file này trong cùng PR ([conventions/contracts.md](../conventions/contracts.md)). Endpoint dùng các hình dạng này ở [api.md](./api.md). Quy tắc tính verdict **không** nằm ở đây; nó thuộc thiết kế slice pipeline (system-design §10).
 
@@ -121,6 +121,8 @@ Mỗi lời gọi có schema riêng, dạng JSON, parse bằng zod; sai thì th�
 | `LlmCaseSummaryOutput` | Nội dung đã che + signal + check + ghi chú người báo cáo, trong khối phân tách | `{ summary: string, nextSteps: string[] }` (3–5 câu; 1–3 bước, chỉ là văn bản) |
 
 `evidence` phải là chuỗi con của nội dung đã che; code kiểm lại và bỏ signal nào có `evidence` không khớp (chống bịa).
+
+Trong `packages/shared/src/llm.ts`: `LlmSignalRawOutput` (dạng dây: `type` là chuỗi tuỳ ý, `mentionedBrands` mặc định rỗng) là thứ model phải trả; code bỏ loại không thuộc `AiSignalType` mà **không** coi là sai schema. `LlmSignalOutput` (đúng bảng trên) là dạng sau khi code đã lọc. `LlmExplanationOutput` = `{ explanation }`. Bộ lọc giải thích (≤ 800 ký tự, cấm `an toàn`, `%`, `chắc chắn`, số lạ) nằm ở `packages/core/src/llm/write-explanation.ts`.
 
 ## 8. Lỗi
 
