@@ -63,6 +63,49 @@ const cases = [
   }),
 ];
 
+const rawOk = (step: "signals" | "explain", finishReason: string | null) => ({
+  step,
+  result: {
+    ok: true as const,
+    text: "t",
+    usage: { input: 1, output: 1 },
+    latencyMs: 1,
+    finishReason,
+  },
+});
+
+describe("scoreModel truncation", () => {
+  it("counts finishReason=length per step, apart from other failures", () => {
+    const cut = rec("dev-001", 1, okSignals(["urgency"], { attempts: 2 }));
+    cut.raw = [rawOk("signals", "length"), rawOk("signals", "stop"), rawOk("explain", "stop")];
+    const cutBoth = rec("dev-001", 2, okSignals(["urgency"], { attempts: 2 }));
+    cutBoth.raw = [
+      rawOk("signals", "length"),
+      rawOk("signals", "length"),
+      rawOk("explain", "length"),
+    ];
+    const clean = rec("dev-001", 3, okSignals(["urgency"]));
+    clean.raw = [rawOk("signals", "stop"), rawOk("explain", null)];
+    const s = scoreModel("m", cases, [cut, cutBoth, clean]);
+    expect(s.truncated).toEqual({ signalsCalls: 3, explainCalls: 1, recordsAffected: 2 });
+    // A cut-off call that ends in a failure is still reported as an invalid-output failure.
+    expect(s.schema.failures.llm_invalid_output).toBe(0);
+  });
+
+  it("ignores failed provider calls and is zero with no records", () => {
+    const r = rec("dev-001", 1, okSignals([]));
+    r.raw = [
+      { step: "signals", result: { ok: false, kind: "unavailable", status: 429, latencyMs: 1 } },
+    ];
+    expect(scoreModel("m", cases, [r]).truncated).toEqual({
+      signalsCalls: 0,
+      explainCalls: 0,
+      recordsAffected: 0,
+    });
+    expect(scoreModel("m", cases, []).truncated.recordsAffected).toBe(0);
+  });
+});
+
 describe("scoreModel", () => {
   it("recall counts only AI-sourced expected signals", () => {
     // expected AI: urgency, credential_request (brand_domain_mismatch is deterministic)

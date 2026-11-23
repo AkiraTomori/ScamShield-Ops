@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import type { ChatJsonRequest, ChatJsonResult } from "@scamshield/core";
+import {
+  EXPLANATION_MAX_TOKENS,
+  SIGNALS_MAX_TOKENS,
+  type ChatJsonRequest,
+  type ChatJsonResult,
+} from "@scamshield/core";
 import { parseQ08Args, pricesFor, ArgError } from "../src/args";
 import { estimateRun } from "../src/estimate";
 import { labelExplanationInput } from "../src/explanation-input";
@@ -146,7 +151,7 @@ describe("grading sheet", () => {
   it("is keyed by model, case-file hash and prompt versions so runs never share a sheet", () => {
     const a = gradingSheetPath("d", "openai/gpt-oss-20b", "5218bec8ffff", "signals-v1-explain-v3");
     const b = gradingSheetPath("d", "openai/gpt-oss-20b", "5218bec8ffff", "signals-v1-explain-v4");
-    expect(a).toBe("d/openai_gpt-oss-20b__5218bec8__signals-v1-explain-v3-grading.md");
+    expect(a).toBe("d/q08-grading-openai_gpt-oss-20b__5218bec8__signals-v1-explain-v3.md");
     expect(b).not.toBe(a);
   });
 
@@ -154,6 +159,7 @@ describe("grading sheet", () => {
     const blank = formatGradingSheet("m", [c1], []);
     expect(hasGradedScores(blank)).toBe(false);
     expect(hasGradedScores("## dev-001\n- Điểm: _\n")).toBe(false);
+    expect(hasGradedScores("## dev-001\n- Điểm: \\_\n")).toBe(false);
     expect(hasGradedScores("## dev-001\n- Điểm: 3\n")).toBe(true);
     expect(hasGradedScores("## dev-001\n- Điểm: 2 (nêu sự kiện ngoài)\n")).toBe(true);
   });
@@ -173,7 +179,7 @@ describe("estimate and args", () => {
     });
     expect(e.calls).toBe(2 * 3 * 3 * 2);
     expect(e.inputTokens).toBeGreaterThan(0);
-    expect(e.outputTokensMax).toBe(2 * 9 * 1200);
+    expect(e.outputTokensMax).toBe(2 * 9 * (SIGNALS_MAX_TOKENS + EXPLANATION_MAX_TOKENS));
     expect(e.cost?.max).toBeGreaterThan(e.cost?.min ?? Infinity);
   });
 

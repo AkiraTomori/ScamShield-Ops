@@ -15,6 +15,7 @@ export function formatSummary(scores: readonly ModelScore[]): string {
         `Model: ${s.model}  (${s.cases} câu, ${s.calls} lượt)`,
         `  Đúng schema        ${s.schema.ok}/${s.calls} (${pct(s.schema.okRate)}); đúng ngay lần đầu ${s.schema.okFirstTry}/${s.calls}; chỉ tính JSON hỏng ${pct(s.schema.parseOnlyRate)}  [${mark(s.passes.schema)}]`,
         `    lỗi: invalid=${s.schema.failures.llm_invalid_output} unavailable=${s.schema.failures.llm_unavailable} timeout=${s.schema.failures.timeout}; 429 đã chờ=${s.rateLimited}`,
+        `    cắt cụt do max_tokens (finishReason=length): signal ${s.truncated.signalsCalls}, giải thích ${s.truncated.explainCalls} lời gọi; ${s.truncated.recordsAffected}/${s.calls} lượt bị ảnh hưởng`,
         `  Recall signal      ${s.recall.found}/${s.recall.expected} (${pct(s.recall.rate)})`,
         `  Bịa evidence       ${s.fabricated.dropped}/${s.fabricated.returned} (${pct(s.fabricated.rate)})  [${mark(s.passes.fabricatedUnderWorryLevel)}]`,
         `  Bắt nhầm (legit)   ${s.falsePositives.signals} signal; ${s.falsePositives.callsAffected}/${s.falsePositives.calls} lượt`,
@@ -32,7 +33,7 @@ export function formatSummary(scores: readonly ModelScore[]): string {
 
 /** True when someone has already filled in at least one score (a line other than `- Điểm: _`). */
 export function hasGradedScores(sheet: string): boolean {
-  return /^- Điểm: (?!_\s*$)\S/m.test(sheet);
+  return /^- Điểm: (?!\\?_\s*$)\S/m.test(sheet);
 }
 
 /** Markdown sheet for hand-grading Vietnamese quality (scale 1-3), run 1 of every case. */

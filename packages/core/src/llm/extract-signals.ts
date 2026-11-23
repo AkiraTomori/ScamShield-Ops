@@ -5,7 +5,8 @@ import type { CallOptions, LlmDeps, TokenUsage } from "./types";
 
 /** Minimum time left to afford the single retry (analysis-pipeline §6.8). */
 export const RETRY_MIN_REMAINING_MS = 5_000;
-export const SIGNALS_MAX_TOKENS = 600;
+/** Reasoning models spend part of this before answering; 600 cut qwen3.8-27b off on 7/60 calls. */
+export const SIGNALS_MAX_TOKENS = 1200;
 const EVIDENCE_MAX_CHARS = 200;
 const MAX_BRANDS = 10;
 

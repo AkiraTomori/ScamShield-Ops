@@ -194,13 +194,16 @@ async function main(): Promise<number> {
   console.log(`\nKết quả: ${resultFile}`);
 
   for (const model of args.models) {
-    const sheet = gradingSheetPath(cacheDir, model, casesSha, promptTag);
+    const sheet = gradingSheetPath(resultsDir, model, casesSha, promptTag);
     // Never overwrite scores typed by hand; delete the file to regenerate it on purpose.
     if (existsSync(sheet) && hasGradedScores(readFileSync(sheet, "utf8"))) {
       console.log(`Bảng chấm đã có điểm, giữ nguyên (xoá file nếu muốn tạo lại): ${sheet}`);
       continue;
     }
-    writeFileSync(sheet, formatGradingSheet(model, cases, all));
+    // Prettier-formatted like the result JSON, so `npm run verify` stays green once committed.
+    const sheetText = formatGradingSheet(model, cases, all);
+    const sheetConfig = (await resolveConfig(sheet)) ?? {};
+    writeFileSync(sheet, await format(sheetText, { ...sheetConfig, parser: "markdown" }));
     console.log(`Bảng chấm tiếng Việt: ${sheet}`);
   }
   return 0;

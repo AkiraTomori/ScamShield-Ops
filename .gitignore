@@ -16,7 +16,7 @@ coverage/
 **/next-env.d.ts
 **/*.tsbuildinfo
 
-# Local eval runs (committed results go to eval/results/)
+# Local eval runs (committed results and hand-graded sheets go to eval/results/)
 eval/.cache/
 
 # Local Claude settings

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractSignals, SIGNALS_PROMPT_VERSION } from "../../src/llm";
+import { extractSignals, SIGNALS_MAX_TOKENS, SIGNALS_PROMPT_VERSION } from "../../src/llm";
 import { SIGNALS_SYSTEM_PROMPT } from "../../src/llm/prompts/signals-v1";
 import { fakeLlm, makeDeps, okText } from "./helpers";
 
@@ -167,7 +167,9 @@ describe("extractSignals", () => {
     expect(req.system).not.toContain("vi-xac-minh.example");
     expect(req.system).not.toContain(CONTENT);
     expect(req.user).toContain(`<<<TIN_NHAN_abc123>>>\n${CONTENT}\n<<<HET_abc123>>>`);
-    expect(req).toMatchObject({ model: "test-model", maxTokens: 600 });
+    expect(req).toMatchObject({ model: "test-model", maxTokens: SIGNALS_MAX_TOKENS });
+    // qwen3.8-27b hit the old 600 cap on 7/60 calls in the 21/11 run (finishReason "length").
+    expect(SIGNALS_MAX_TOKENS).toBeGreaterThanOrEqual(1200);
   });
 
   it("SO-01-AC05: strips delimiter-looking strings out of the content before sending", async () => {

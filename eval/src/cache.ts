@@ -14,14 +14,17 @@ export function cachePath(dir: string, model: string, casesSha: string, promptTa
   return join(dir, `${slug(model)}__${casesSha.slice(0, 8)}__${promptTag}.jsonl`);
 }
 
-/** Hand-grading sheet for the same (model, case-file hash, prompt versions) as the cache file. */
+/**
+ * Hand-grading sheet for the same (model, case-file hash, prompt versions) as the cache file.
+ * Lives in the committed results folder, so the scores typed by hand are kept with the numbers.
+ */
 export function gradingSheetPath(
   dir: string,
   model: string,
   casesSha: string,
   promptTag: string,
 ): string {
-  return join(dir, `${slug(model)}__${casesSha.slice(0, 8)}__${promptTag}-grading.md`);
+  return join(dir, `q08-grading-${slug(model)}__${casesSha.slice(0, 8)}__${promptTag}.md`);
 }
 
 export function readCache(path: string): RunRecord[] {

@@ -49,6 +49,12 @@ export interface ModelScore {
   latencyMs: { p50: number | null; p95: number | null };
   tokens: { signalsIn: number; signalsOut: number; explainIn: number; explainOut: number };
   rateLimited: number;
+  /**
+   * Provider calls cut off by `max_tokens` (`finishReason: "length"`), counted apart from schema
+   * failures: a model that reasons at length can be cut before it answers, which says the budget
+   * is too small, not that the model cannot follow the schema.
+   */
+  truncated: { signalsCalls: number; explainCalls: number; recordsAffected: number };
   explanations: {
     total: number;
     ok: number;
@@ -178,6 +184,16 @@ export function scoreModel(
         })()
       : null;
 
+  const truncated = { signalsCalls: 0, explainCalls: 0, recordsAffected: 0 };
+  for (const r of records) {
+    const cut = r.raw.filter((x) => x.result.ok && x.result.finishReason === "length");
+    if (cut.length > 0) truncated.recordsAffected += 1;
+    for (const x of cut) {
+      if (x.step === "signals") truncated.signalsCalls += 1;
+      else truncated.explainCalls += 1;
+    }
+  }
+
   const rate = (a: number, b: number) => (b === 0 ? null : a / b);
   const p95 = percentile(latencies, 95);
   const fabricatedRate = rate(dropped, returned);
@@ -207,6 +223,7 @@ export function scoreModel(
     latencyMs: { p50: percentile(latencies, 50), p95 },
     tokens,
     rateLimited: sum((r) => r.rateLimited),
+    truncated,
     explanations: {
       total: records.length,
       ok: explanationOk,
