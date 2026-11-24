@@ -1,6 +1,6 @@
 # Thiết kế slice pipeline phân tích (SO-01…SO-03)
 
-**Trạng thái (20/11/2026):** BẢN NHÁP, **chưa duyệt**. Mục ghi *(đề xuất, chờ owner)* hoặc nằm ở §12 chưa được chốt. Chưa được viết mã cho tới khi owner duyệt slice.
+**Trạng thái (24/11/2026):** **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)).
 
 **Căn cứ và thứ bậc:**
 - [spec](../spec/ScamShield-v1.md): SO-01…SO-03, P1–P5, Q-04, Q-06.
@@ -52,7 +52,7 @@ sequenceDiagram
     
 ```
 
-**Ngân sách** *(đề xuất; chỉnh theo số đo ở research A.6)*. `T0` là lúc route nhận request.
+**Ngân sách** *(owner duyệt 24/11; chỉnh theo số đo ở research A.6)*. `T0` là lúc route nhận request.
 
 | Bước | Thời hạn | Khi quá hạn hoặc lỗi |
 |---|---|---|
@@ -225,7 +225,7 @@ ESLint cấm `fetch` ở nơi khác trong `packages/core` (backend.md §5).
 
 **Bắt injection tất định** (song song với LLM, nguồn `deterministic`): mẫu tiếng Việt và tiếng Anh rõ ràng như `bỏ qua (mọi|tất cả|các)? (hướng dẫn|chỉ dẫn|yêu cầu) (trước|ở trên)`, `ignore (all )?(previous|prior|above) instructions`, `(đánh giá|kết luận|trả lời) .{0,30}(là )?(an toàn|không lừa đảo)`, `system prompt`, `you are (now )?an? (AI|assistant)`. Khớp → signal `ai_directed_instruction`. LLM cũng báo được loại này; nếu cả hai cùng báo thì giữ bản tất định.
 
-### 6.9 `SignalType` (P-07 đã chốt; bảng nhóm chờ duyệt cùng §7)
+### 6.9 `SignalType` (P-07 đã chốt 20/11; bảng nhóm owner duyệt 24/11 cùng §7)
 
 So với bản nháp ở contracts §3, đổi một mục:
 - Bỏ `brand_impersonation` (nguồn AI). Tên này sẽ dán nhãn "mạo danh" lên cả tin thật của ngân hàng, ví (ví dụ tin M2).
@@ -406,7 +406,7 @@ analyzeMessage(content: string, deps: AnalysisDeps, opts?: { deadlineMs?: number
 | P-01 | **Spec tự mâu thuẫn:** SO-03-AC01/AC06 yêu cầu `inconclusive` khi LLM lỗi hoặc quá thời gian; SO-08-AC02 yêu cầu `high_risk` khi có chỉ dấu đã xác minh. LLM lỗi + tin chứa tên miền đã xác minh thì theo bên nào? (Safe Browsing khớp cũng vậy) | (a) **Bằng chứng cứng thắng:** đặt R0 sau R1. Người dùng vẫn được cảnh báo khi LLM sập; phải sửa câu chữ SO-03-AC01/AC06. (b) **Theo đúng SO-03:** R0 đứng đầu. Nhất quán "thiếu AI thì chưa kết luận", nhưng bỏ lỡ cảnh báo chắc chắn đúng | **(a)**, owner chốt 20/11. Đã sửa SO-03-AC01, AC06 |
 | P-02 | Tính tên miền đăng ký cần danh sách hậu tố công khai (PSL) | (a) Thêm thư viện dựa trên PSL (ví dụ `tldts`; phiên bản ghim lúc cài): đúng với mọi hậu tố, thêm một phụ thuộc. (b) Tự giữ danh sách hậu tố nhiều cấp (`.com.vn`, `.gov.vn`, `.edu.vn`, …): không thêm thư viện, dễ sót | **(a)**, owner chốt 20/11; ghi ở libraries.md |
 | P-03 | Chạm trần gọi LLM trong ngày | (a) Bỏ bước LLM, trả `inconclusive` (`llm_unavailable`), phép kiểm tất định vẫn chạy. (b) Từ chối hẳn bằng lỗi mới "hệ thống tạm quá tải". (c) Không đặt trần trong app nếu Groq có trần chi tiêu cứng | **(a)**, owner chốt 20/11; vẫn kiểm Groq (Q-06) |
-| P-04 | Danh sách dịch vụ rút gọn URL và TLD rủi ro chứa tên miền thật, hàm ý đánh giá uy tín | Đặt trong file dữ liệu `packages/shared/data/url-lists.json`, mỗi mục ghi nguồn công bố; owner duyệt nội dung. Agent không điền từ trí nhớ | Chờ owner |
-| P-05 | Ngưỡng `lookalike` (≤ 1 / ≤ 2 ký tự) và tuổi tên miền mới (< 30 ngày) | Đề xuất ban đầu, chỉnh theo eval tập dev | Chờ eval |
-| P-06 | Độ rộng của `insufficient_evidence` (§7.1) | Hẹp (đề xuất) giữ M2 ra `no_signal`; rộng hơn thì an toàn hơn nhưng nhiều tin thật bị "chưa kết luận" | Đề xuất hẹp; chờ eval |
+| P-04 | Danh sách dịch vụ rút gọn URL và TLD rủi ro chứa tên miền thật, hàm ý đánh giá uy tín | Đặt trong file dữ liệu `packages/shared/data/url-lists.json`, mỗi mục ghi nguồn công bố; owner duyệt nội dung. Agent không điền từ trí nhớ | **Agent đề xuất từ nguồn công bố, mỗi mục ghi nguồn; owner duyệt nội dung trong PR S3**, owner chốt 24/11 |
+| P-05 | Ngưỡng `lookalike` (≤ 1 / ≤ 2 ký tự) và tuổi tên miền mới (< 30 ngày) | Đề xuất ban đầu, chỉnh theo eval tập dev | Dùng đề xuất làm giá trị ban đầu, owner chốt 24/11; chỉnh theo eval tập dev |
+| P-06 | Độ rộng của `insufficient_evidence` (§7.1) | Hẹp (đề xuất) giữ M2 ra `no_signal`; rộng hơn thì an toàn hơn nhưng nhiều tin thật bị "chưa kết luận" | Hẹp, owner chốt 24/11 làm giá trị ban đầu; chỉnh theo eval tập dev |
 | P-07 | Đổi `brand_impersonation` (signal AI) thành `claims_organization` (§6.9) | Tránh dán nhãn "mạo danh" lên tin thật | **Đổi**, owner chốt 20/11 |

@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (21/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2) và slice dữ liệu P0 (PR #3) đã merge vào `main`; slice S2 thử model đang ở nhánh `feat/model-spike` (chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (24/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -80,17 +80,19 @@ lookup, llm ─→ http
 
 ## 3. Lệnh
 
-| Lệnh | Làm gì | Ai chạy |
-|---|---|---|
-| `npm run dev` | Chạy Next.js local | Mọi người |
-| `npm run verify` | Format, lint, typecheck, Vitest trên mọi workspace | Mọi người, CI |
-| `npm run test:e2e` | Playwright với app + Postgres local | Mọi người |
-| `npm run db:generate` | Sinh file migration SQL từ schema | Người viết slice |
-| `npm run db:migrate` | Chạy migration; DB deploy dùng `DATABASE_URL_MIGRATE` | **Owner** với DB deploy |
-| `npm run demo:seed` | Nạp case mẫu `is_seed`, tài khoản `judge1…judge5` | **Owner** với DB deploy |
-| `npm run demo:reset` | Xoá và nạp lại dữ liệu `is_seed`, giữ case giám khảo tạo (SO-10-AC04) | **Owner** |
-| `npm run eval:q08 -- --models <a>,<b> --runs 3` | Thử model Groq (Q-08): chỉ in ước tính; thêm `--confirm` mới gọi Groq (tốn tiền, cần `GROQ_API_KEY` trong `.env`). `--list-models` liệt kê model đang có. Tuỳ chọn: `--price-in/--price-out` (mỗi 1M token), `--resume`/`--fresh`, `--limit N`, `--retry-failed`, `--concurrency N`, `--reuse-signals-from <tag>`, `--no-json-mode <models>`, `--reasoning-format hidden\|parsed`, `--reasoning-effort <v>` | Đội; **hỏi owner trước khi `--confirm`** |
-| `npm run eval -- --set dev` | Chạy eval tập dev (tốn tiền LLM) | Hỏi owner nếu chạy toàn bộ nhiều lần |
+Cột *Có chưa* cho biết lệnh đã có trong `package.json` hay mới là dự kiến (kiểm 24/11/2026).
+
+| Lệnh | Làm gì | Ai chạy | Có chưa |
+|---|---|---|---|
+| `npm run dev` | Chạy Next.js local | Mọi người | Có |
+| `npm run verify` | Format, lint, typecheck, Vitest trên mọi workspace | Mọi người, CI | Có |
+| `npm run test:e2e` | Playwright với app + Postgres local | Mọi người | Chưa (slice sau) |
+| `npm run db:generate` | Sinh file migration SQL từ schema | Người viết slice | Có |
+| `npm run db:migrate` | Chạy migration; DB deploy dùng `DATABASE_URL_MIGRATE` | **Owner** với DB deploy | Có |
+| `npm run demo:seed` | Nạp case mẫu `is_seed`, tài khoản `judge1…judge5` | **Owner** với DB deploy | Chưa (slice sau) |
+| `npm run demo:reset` | Xoá và nạp lại dữ liệu `is_seed`, giữ case giám khảo tạo (SO-10-AC04) | **Owner** | Chưa (slice sau) |
+| `npm run eval:q08 -- --models <a>,<b> --runs 3` | Thử model Groq (Q-08): chỉ in ước tính; thêm `--confirm` mới gọi Groq (tốn tiền, cần `GROQ_API_KEY` trong `.env`). `--list-models` liệt kê model đang có. Tuỳ chọn: `--price-in/--price-out` (mỗi 1M token), `--resume`/`--fresh`, `--limit N`, `--retry-failed`, `--concurrency N`, `--reuse-signals-from <tag>`, `--no-json-mode <models>`, `--reasoning-format hidden\|parsed`, `--reasoning-effort <v>` | Đội; **hỏi owner trước khi `--confirm`** | Có |
+| `npm run eval -- --set dev` | Chạy eval tập dev (tốn tiền LLM) | Hỏi owner nếu chạy toàn bộ nhiều lần | Chưa (slice sau) |
 
 ## 4. Test theo tầng
 

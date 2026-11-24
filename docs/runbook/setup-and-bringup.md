@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (21/11/2026):** bản nháp, có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (nhánh `feat/model-spike`, đã chạy Groq thật 21/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (24/11/2026):** bản nháp, có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -77,5 +77,5 @@ Thứ tự cho lần đầu (chi tiết và lý do ở [system-design §8](../ar
 - Gọi lại sau vài giây: `time` phải khác lần trước (không bị cache lúc build).
 - Mở `/` ở chế độ ẩn danh trên điện thoại: có disclaimer, không cuộn ngang.
 
-**Giữ link sống 03/12–11/12:** xem D-04 ở system-design §9 và lịch kiểm hằng ngày ở [demo.md §5](./demo.md#5-giai-đoạn-chấm-0312112).
+**Giữ link sống 03/12–11/12:** xem D-04 ở system-design §9 và lịch kiểm hằng ngày ở [demo.md §5](./demo.md#5-giai-đoạn-chấm-03121112).
 

@@ -1,49 +1,49 @@
-id,slice,title,ac_ids,depends_on,planned_day,size,owner,status,priority,cut_order,done_when
-T-001,S0 Nền móng,Kiểm slice nền móng trên feat/foundation (/sdlc:verify),,,20/11,S,agent,done,P0,,"Báo cáo verify: npm run verify xanh, /api/health 200/503 đúng local"
-T-002,S0 Nền móng,Review + mở PR slice nền móng,,T-001,21/11,S,agent,done,P0,,"PR mở, owner yêu cầu"
-T-003,S0 Nền móng,"Tạo Supabase (Singapore), tắt Data API, kiểm chính sách tạm dừng (D-04)",,,21/11,S,owner,todo,P0,,Có chuỗi pooler; D-04 có kết luận
-T-004,S0 Nền móng,"Tạo project Vercel, đặt DATABASE_URL chỉ Production (D-03)",,T-003,21/11,S,owner,todo,P0,,"Project nối repo, region gần Singapore"
-T-005,S0 Nền móng,"Merge PR nền móng, kiểm /api/health trên production",,T-002;T-004,21/11,S,owner,todo,P0,,"Mốc walking skeleton: URL công khai, health 200, time đổi giữa 2 lần gọi"
-T-010,S1 Dữ liệu,"Thiết kế bảng nghiệp vụ, ràng buộc, RLS, seed/reset (/sdlc:database)",SO-04-AC03;SO-06-AC03;SO-10-AC04,T-001,21/11,M,agent,done,P0,,"docs/architecture có mô hình dữ liệu, owner duyệt"
-T-011,S1 Dữ liệu,"Schema Drizzle + migration đầu tiên (analyses, reports/cases, decisions, indicators, staff_users, rate limit)",SO-06-AC05,T-010,22/11,M,agent,done,P0,,Migration chạy được trên Postgres local; RLS bật mọi bảng
-T-012,S1 Dữ liệu,Chạy migration lên Supabase,,T-011;T-005,22/11,S,owner,todo,P0,,
-T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3, B.2)",SO-09-AC01,,21/11,M,đội,done,P0,,eval/cases/dev.jsonl có 20 dòng parse được
-T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,done,P0,,
-T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,done,P0,,Script chạy 20 câu × 3 lần cho 1 model
-T-023,S2 Thử model,"Chạy thử 2–3 model, điền research A.6, chốt Q-08 (/sdlc:sign-off)",,T-020;T-022,22/11,S,đội+owner,done,P0,,Q-08 có model chính + dự phòng
-T-030,S3 Pipeline,"Thiết kế slice pipeline: quy tắc verdict, SignalType (A-03), prompt, rate limit (/sdlc:design)",SO-03-AC02,T-023,22/11,M,agent,todo,P0,,Owner duyệt bảng quy tắc
-T-031,S3 Pipeline,Kiểm đầu vào + che OTP/mật khẩu/số thẻ (TDD),SO-01-AC02;SO-01-AC03,T-030,22/11,M,agent,todo,P0,,Test AC xanh
-T-032,S3 Pipeline,"Trích + chuẩn hoá chỉ dấu (URL, tên miền, SĐT VN, số tài khoản) (TDD)",SO-02-AC01;SO-02-AC04;SO-07-AC02,T-030,22/11,M,agent,todo,P0,,Cùng đầu vào cùng danh sách
-T-033,S3 Pipeline,brands.json từ Phụ lục A sau khi owner kiểm tên miền (Q-10),SO-02-AC02,,22/11,S,owner+agent,todo,P0,,File parse được bằng BrandList
-T-034,S3 Pipeline,"Phép kiểm URL tất định: tên miền chính thức, nhái, punycode, subdomain, rút gọn, IP, TLD (TDD)",SO-02-AC02,T-032;T-033,23/11,L,agent,todo,P0,,Test từng phép kiểm
-T-035,S3 Pipeline,"Tra cứu ngoài RDAP + Safe Browsing có timeout, unavailable (kiểm điều khoản Safe Browsing trước)",SO-02-AC03,T-034,23/11,M,agent,todo,P1,3,Lỗi/timeout ra unavailable
-T-036,S3 Pipeline,Quy tắc verdict + khuyến nghị câu mẫu (A-01) (TDD),SO-03-AC02;SO-03-AC03;SO-01-AC05,T-030,23/11,M,agent,todo,P0,,Cùng signal cùng verdict; không có 'an toàn'
-T-037,S3 Pipeline,LLM trích signal + kiểm evidence là chuỗi con; LLM viết giải thích chỉ từ signal/check,SO-03-AC01;SO-03-AC05,T-022;T-036,23/11,M,agent,todo,P0,,
-T-038,S3 Pipeline,Điều phối analysis + trần 20 giây + lưu DB + rate limit 10/phút/IP băm,SO-01-AC01;SO-01-AC04;SO-03-AC06,T-031;T-034;T-037;T-011,23/11,M,agent,todo,P0,,curl tin mẫu ra JSON đúng schema
-T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4",SO-03-AC04,T-038,23/11,S,agent,todo,P0,,
-T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,todo,P0,,
-T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-039,24/11,M,agent,todo,P0,,Dán tin trên điện thoại ra kết quả
-T-042,S4 ScamShield,"Khối kết quả: verdict, giải thích, signal + nguồn, chỉ dấu + phép kiểm, khuyến nghị, disclaimer",SO-03-AC03;SO-03-AC04;SO-05-AC03,T-041,25/11,M,agent,todo,P0,,Ảnh chụp 360px; URL không bấm được
-T-050,S5 Báo cáo,"POST report: tạo report + case + mã bí mật băm + tóm tắt AI (A-02), chống trùng",SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01;SO-05-AC02,T-038,26/11,M,agent,todo,P0,,Gửi 2 lần ra 1 case
-T-051,S5 Báo cáo,Form gửi báo cáo + màn thành công có mã (UI),SO-04-AC01;SO-04-AC02,T-050;T-042,26/11,S,agent,todo,P0,,
-T-052,S5 Báo cáo,POST /api/case-status + trang /tra-cuu,SO-04-AC04,T-050,27/11,S,agent,todo,P1,4,Sai mã ra một thông báo chung
-T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,todo,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401"
-T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,todo,P0,5 (lọc/tìm),
-T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,todo,P0,,
-T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,todo,P0,,Tải lại vẫn còn kết luận
-T-070,S7 Liên kết hồ sơ,Hồ sơ liên quan theo chỉ dấu chuẩn hoá + cột Liên quan,SO-07-AC01;SO-07-AC02,T-062,29/11,M,agent,todo,P1,2,
-T-080,S8 Chỉ dấu xác minh,Ghi chỉ dấu khi confirmed_scam; signal verified_indicator ở engine,SO-08-AC01;SO-08-AC02,T-063;T-038,29/11,M,agent,todo,P1,1,
-T-081,S8 Chỉ dấu xác minh,Trang /ops/chi-dau + gỡ có lý do,SO-08-AC03,T-080,29/11,S,agent,todo,P1,1,
-T-090,S9 Demo,"Seed 20–40 case is_seed (gồm 3 case chung vi-xac-minh.example), judge1…judge5, demo:reset",SO-10-AC02;SO-10-AC03;SO-10-AC04,T-063,28/11,M,agent,todo,P0,,
-T-091,S9 Demo,Chạy seed + tạo tài khoản thử trên production,,T-090;T-012,29/11,S,owner,todo,P0,,
-T-092,S9 Demo,Playwright: luồng 6 bước plan §1,SO-10-AC01,T-063;T-051,29/11,M,agent,todo,P0,,
-T-093,S9 Demo,Soạn tin M1/M2/M3 (R-01) và 3–4 tin mẫu trên trang,SO-10-AC05,T-033,25/11,S,đội,todo,P0,,
-T-100,S10 Eval,"Hoàn thành 60–100 tình huống, chia dev/held-out, 5–10 injection",SO-09-AC01;SO-09-AC02,T-020,29/11,L,đội,todo,P0,,
-T-101,S10 Eval,"Runner eval đủ chỉ số research B.3, 3 lần/tình huống, xuất eval/results",SO-09-AC03,T-039,28/11,M,agent,todo,P0,,
-T-102,S10 Eval,"Đóng băng tính năng, chạy end-to-end trên production",,T-092;T-091,30/11,S,đội,todo,P0,,Không còn lỗi chặn luồng demo
-T-103,S10 Eval,"Chạy held-out một lần, điền research B.4/B.5",SO-09-AC04,T-100;T-101;T-102,01/12,S,đội+owner,todo,P0,,
-T-110,S11 Nộp bài,"README: cách chạy, công nghệ, tài sản (font), thư viện, công cụ AI, số eval",SO-09-AC04,T-103,01/12,S,agent,todo,P0,,
-T-111,S11 Nộp bài,Hướng dẫn 1 trang A4 (PDF) có link + tài khoản thử,SO-10-AC02,T-091,02/12,S,đội,todo,P0,,
-T-112,S11 Nộp bài,"Slide ≤ 10 trang (PDF), kiểm kỹ vì không sửa được",,T-103,02/12,M,đội,todo,P0,,
-T-113,S11 Nộp bài,Quay video ≤ 3 phút theo demo.md,,T-102;T-093,02/12,M,đội,todo,P0,,
-T-114,S11 Nộp bài,"Zip mã nguồn kèm submodule, kiểm không có .env/key; mở link ẩn danh trên máy tính + điện thoại; nộp",,T-110;T-111;T-112;T-113,03/12,S,owner,todo,P0,,
+id,slice,title,ac_ids,depends_on,planned_day,size,owner,status,priority,cut_order,done_when,assignee
+T-001,S0 Nền móng,Kiểm slice nền móng trên feat/foundation (/sdlc:verify),,,20/11,S,agent,done,P0,,"Báo cáo verify: npm run verify xanh, /api/health 200/503 đúng local",
+T-002,S0 Nền móng,Review + mở PR slice nền móng,,T-001,21/11,S,agent,done,P0,,"PR mở, owner yêu cầu",
+T-003,S0 Nền móng,"Tạo Supabase (Singapore), tắt Data API, kiểm chính sách tạm dừng (D-04)",,,21/11,S,owner,todo,P0,,Có chuỗi pooler; D-04 có kết luận,C
+T-004,S0 Nền móng,"Tạo project Vercel, đặt DATABASE_URL chỉ Production (D-03)",,T-003,21/11,S,owner,todo,P0,,"Project nối repo, region gần Singapore",C
+T-005,S0 Nền móng,"Merge PR nền móng, kiểm /api/health trên production",,T-002;T-004,21/11,S,owner,todo,P0,,"Mốc walking skeleton: URL công khai, health 200, time đổi giữa 2 lần gọi",C
+T-010,S1 Dữ liệu,"Thiết kế bảng nghiệp vụ, ràng buộc, RLS, seed/reset (/sdlc:database)",SO-04-AC03;SO-06-AC03;SO-10-AC04,T-001,21/11,M,agent,done,P0,,"docs/architecture có mô hình dữ liệu, owner duyệt",
+T-011,S1 Dữ liệu,"Schema Drizzle + migration đầu tiên (analyses, reports/cases, decisions, indicators, staff_users, rate limit)",SO-06-AC05,T-010,22/11,M,agent,done,P0,,Migration chạy được trên Postgres local; RLS bật mọi bảng,
+T-012,S1 Dữ liệu,Chạy migration lên Supabase,,T-011;T-005,22/11,S,owner,todo,P0,,,C
+T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3, B.2)",SO-09-AC01,,21/11,M,đội,done,P0,,eval/cases/dev.jsonl có 20 dòng parse được,
+T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,done,P0,,,
+T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,done,P0,,Script chạy 20 câu × 3 lần cho 1 model,
+T-023,S2 Thử model,"Chạy thử 2–3 model, điền research A.6, chốt Q-08 (/sdlc:sign-off)",,T-020;T-022,22/11,S,đội+owner,done,P0,,Q-08 có model chính + dự phòng,
+T-030,S3 Pipeline,"Thiết kế slice pipeline: quy tắc verdict, SignalType (A-03), prompt, rate limit (/sdlc:design)",SO-03-AC02,T-023,22/11,M,agent,done,P0,,Owner duyệt bảng quy tắc,
+T-031,S3 Pipeline,Kiểm đầu vào + che OTP/mật khẩu/số thẻ (TDD),SO-01-AC02;SO-01-AC03,T-030,22/11,M,agent,todo,P0,,Test AC xanh,A
+T-032,S3 Pipeline,"Trích + chuẩn hoá chỉ dấu (URL, tên miền, SĐT VN, số tài khoản) (TDD)",SO-02-AC01;SO-02-AC04;SO-07-AC02,T-030,22/11,M,agent,todo,P0,,Cùng đầu vào cùng danh sách,A
+T-033,S3 Pipeline,brands.json từ Phụ lục A (Q-10; owner đã duyệt danh sách 24/11),SO-02-AC02,,22/11,S,owner+agent,todo,P0,,File parse được bằng BrandList,A
+T-034,S3 Pipeline,"Phép kiểm URL tất định: tên miền chính thức, nhái, punycode, subdomain, rút gọn, IP, TLD (TDD)",SO-02-AC02,T-032;T-033,23/11,L,agent,todo,P0,,Test từng phép kiểm,A
+T-035,S3 Pipeline,"Tra cứu ngoài RDAP + Safe Browsing có timeout, unavailable (kiểm điều khoản Safe Browsing trước)",SO-02-AC03,T-034,23/11,M,agent,todo,P1,3,Lỗi/timeout ra unavailable,A
+T-036,S3 Pipeline,Quy tắc verdict + khuyến nghị câu mẫu (A-01) (TDD),SO-03-AC02;SO-03-AC03;SO-01-AC05,T-030,23/11,M,agent,todo,P0,,Cùng signal cùng verdict; không có 'an toàn',A
+T-037,S3 Pipeline,LLM trích signal + kiểm evidence là chuỗi con; LLM viết giải thích chỉ từ signal/check,SO-03-AC01;SO-03-AC05,T-022;T-036,23/11,M,agent,todo,P0,,,A
+T-038,S3 Pipeline,Điều phối analysis + trần 20 giây + lưu DB + rate limit 10/phút/IP băm,SO-01-AC01;SO-01-AC04;SO-03-AC06,T-031;T-034;T-037;T-011,23/11,M,agent,todo,P0,,curl tin mẫu ra JSON đúng schema,C
+T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4",SO-03-AC04,T-038,23/11,S,agent,todo,P0,,,C
+T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,todo,P0,,,B
+T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-039,24/11,M,agent,todo,P0,,Dán tin trên điện thoại ra kết quả,B
+T-042,S4 ScamShield,"Khối kết quả: verdict, giải thích, signal + nguồn, chỉ dấu + phép kiểm, khuyến nghị, disclaimer",SO-03-AC03;SO-03-AC04;SO-05-AC03,T-041,25/11,M,agent,todo,P0,,Ảnh chụp 360px; URL không bấm được,B
+T-050,S5 Báo cáo,"POST report: tạo report + case + mã bí mật băm + tóm tắt AI (A-02), chống trùng",SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01;SO-05-AC02,T-038,26/11,M,agent,todo,P0,,Gửi 2 lần ra 1 case,C
+T-051,S5 Báo cáo,Form gửi báo cáo + màn thành công có mã (UI),SO-04-AC01;SO-04-AC02,T-050;T-042,26/11,S,agent,todo,P0,,,B
+T-052,S5 Báo cáo,POST /api/case-status + trang /tra-cuu,SO-04-AC04,T-050,27/11,S,agent,todo,P1,4,Sai mã ra một thông báo chung,B
+T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,todo,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401",C
+T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,todo,P0,5 (lọc/tìm),,B (UI) + C (API)
+T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,todo,P0,,,B (UI) + C (API)
+T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,todo,P0,,Tải lại vẫn còn kết luận,B (UI) + C (API)
+T-070,S7 Liên kết hồ sơ,Hồ sơ liên quan theo chỉ dấu chuẩn hoá + cột Liên quan,SO-07-AC01;SO-07-AC02,T-062,29/11,M,agent,todo,P1,2,,C
+T-080,S8 Chỉ dấu xác minh,Ghi chỉ dấu khi confirmed_scam; signal verified_indicator ở engine,SO-08-AC01;SO-08-AC02,T-063;T-038,29/11,M,agent,todo,P1,1,,A
+T-081,S8 Chỉ dấu xác minh,Trang /ops/chi-dau + gỡ có lý do,SO-08-AC03,T-080,29/11,S,agent,todo,P1,1,,B
+T-090,S9 Demo,"Seed 20–40 case is_seed (gồm 3 case chung vi-xac-minh.example), judge1…judge5, demo:reset",SO-10-AC02;SO-10-AC03;SO-10-AC04,T-063,28/11,M,agent,todo,P0,,,C
+T-091,S9 Demo,Chạy seed + tạo tài khoản thử trên production,,T-090;T-012,29/11,S,owner,todo,P0,,,C
+T-092,S9 Demo,Playwright: luồng 6 bước plan §1,SO-10-AC01,T-063;T-051,29/11,M,agent,todo,P0,,,C
+T-093,S9 Demo,Soạn tin M1/M2/M3 (R-01) và 3–4 tin mẫu trên trang,SO-10-AC05,T-033,25/11,S,đội,todo,P0,,,B
+T-100,S10 Eval,"Hoàn thành 60–100 tình huống, chia dev/held-out, 5–10 injection",SO-09-AC01;SO-09-AC02,T-020,29/11,L,đội,todo,P0,,,A (chính) + B + C
+T-101,S10 Eval,"Runner eval đủ chỉ số research B.3, 3 lần/tình huống, xuất eval/results",SO-09-AC03,T-039,28/11,M,agent,todo,P0,,,A
+T-102,S10 Eval,"Đóng băng tính năng, chạy end-to-end trên production",,T-092;T-091,30/11,S,đội,todo,P0,,Không còn lỗi chặn luồng demo,C
+T-103,S10 Eval,"Chạy held-out một lần, điền research B.4/B.5",SO-09-AC04,T-100;T-101;T-102,01/12,S,đội+owner,todo,P0,,,A
+T-110,S11 Nộp bài,"README: cách chạy, công nghệ, tài sản (font), thư viện, công cụ AI, số eval",SO-09-AC04,T-103,01/12,S,agent,todo,P0,,,C
+T-111,S11 Nộp bài,Hướng dẫn 1 trang A4 (PDF) có link + tài khoản thử,SO-10-AC02,T-091,02/12,S,đội,todo,P0,,,C
+T-112,S11 Nộp bài,"Slide ≤ 10 trang (PDF), kiểm kỹ vì không sửa được",,T-103,02/12,M,đội,todo,P0,,,B
+T-113,S11 Nộp bài,Quay video ≤ 3 phút theo demo.md,,T-102;T-093,02/12,M,đội,todo,P0,,,B
+T-114,S11 Nộp bài,"Zip mã nguồn kèm submodule, kiểm không có .env/key; mở link ẩn danh trên máy tính + điện thoại; nộp",,T-110;T-111;T-112;T-113,03/12,S,owner,todo,P0,,,A + B + C
