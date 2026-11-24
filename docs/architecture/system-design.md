@@ -1,6 +1,6 @@
 # ScamShield Ops — Thiết kế hệ thống
 
-**Trạng thái (21/11/2026):** BẢN NHÁP. Thiết kế **slice nền móng + walking skeleton** (§1–§9; đã merge vào `main`); slice dữ liệu P0 ở [data-model.md](./data-model.md). Các phần khác ghi "chưa thiết kế" ở §10. Owner đã chốt D-01…D-03 ngày 20/11/2026 (§9); D-04 còn chờ kiểm. Thiết kế đã chốt **chưa** phải duyệt slice: chỉ viết mã khi owner duyệt slice nền móng.
+**Trạng thái (21/11/2026):** BẢN NHÁP. Thiết kế **slice nền móng + walking skeleton** (§1–§9; đã merge vào `main`); slice dữ liệu P0 ở [data-model.md](./data-model.md). Các phần khác ghi ở §10. **§11 có sơ đồ toàn hệ thống** cho người mới (đích MVP). Owner đã chốt D-01…D-03 ngày 20/11/2026 (§9); D-04 còn chờ kiểm.
 
 Căn cứ: [spec v1](../spec/ScamShield-v1.md) (hành vi, P1–P5, Q-01…Q-10 đã chốt), [plan](../runbook/plan.md) (lịch, quyền của agent). File này thắng các file khác về **kiến trúc** ([docs/README.md](../README.md#khi-các-file-lệch-nhau)).
 
@@ -170,9 +170,82 @@ Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `con
 
 | Phần | Thiết kế ở | Ghi chú đã biết |
 |---|---|---|
-| Pipeline phân tích 6 bước, quy tắc verdict, prompt (SO-01…SO-03) | **[design/analysis-pipeline.md](../design/analysis-pipeline.md)** (bản nháp) | Model Groq đã chốt 22/11 sau thử nghiệm 20 câu dev (Q-08): chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` |
+| Pipeline phân tích 6 bước, quy tắc verdict, prompt (SO-01…SO-03) | **[design/analysis-pipeline.md](../design/analysis-pipeline.md)** (owner duyệt 24/11/2026) | Model Groq đã chốt 22/11 sau thử nghiệm 20 câu dev (Q-08): chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` |
 | Nơi lưu bộ đếm rate limit 10 lượt/phút/IP (Q-06) | Slice pipeline | Hướng đề xuất: bảng Postgres, không thêm dịch vụ; không lưu IP thô quá thời gian cần (spec §9) |
 | Trần chi tiêu LLM (Q-06) | Slice pipeline | Kiểm Groq có trần cứng không; nếu không thì thêm trần lượt/ngày trong app |
-| Bảng nghiệp vụ, ràng buộc, seed, reset `is_seed` | **[data-model.md](./data-model.md)** (bản nháp) | Mọi bảng bật RLS, không policy (§4) |
+| Bảng nghiệp vụ, ràng buộc, seed, reset `is_seed` | **[data-model.md](./data-model.md)** (đã duyệt 21/11) | Mọi bảng bật RLS, không policy (§4) |
 | Đăng nhập FraudOps (SO-06-AC01) | Slice FraudOps | Cookie cùng origin (D-01) |
 | Mô hình mối đe doạ đầy đủ (prompt injection, spam, lộ dữ liệu) | Slice pipeline | P5: không fetch URL người dùng gửi, kể cả trong test |
+
+## 11. Sơ đồ toàn hệ thống (đích MVP)
+
+Ba sơ đồ dưới cho người mới hình dung cả hệ thống. Đây là **đích** của MVP: phần ngoài nền móng, dữ liệu P0 và S2 chưa có mã. Chi tiết từng bước ở [design/analysis-pipeline.md](../design/analysis-pipeline.md) và [data-model.md](./data-model.md).
+
+**Bối cảnh và ranh giới tin cậy**
+
+```mermaid
+flowchart LR
+  Reporter["Người dùng ScamShield<br/>(không đăng nhập)"] -->|HTTPS| App["apps/web (Next.js)<br/>ScamShield + FraudOps + /api/*"]
+  Analyst["Nhân viên FraudOps<br/>(đăng nhập)"] -->|HTTPS| App
+  App --> Core["packages/core<br/>nghiệp vụ, không phụ thuộc Next"]
+  App --> Shared["packages/shared<br/>zod schema"]
+  Core --> DB[("PostgreSQL")]
+  Core --> Groq["Groq LLM<br/>signal, giải thích, tóm tắt hồ sơ"]
+  Core -. "chỉ metadata, allowlist (Q-03)" .-> Intel["RDAP / Safe Browsing"]
+  Eval["eval/ (chạy offline)"] --> Core
+```
+
+**Thứ tự xử lý một tin nhắn và một hồ sơ**
+
+```mermaid
+sequenceDiagram
+  participant U as Người dùng
+  participant R as API (Next.js)
+  participant C as Core
+  participant L as Groq
+  participant D as PostgreSQL
+  participant A as Nhân viên
+  U->>R: POST /api/analyses (văn bản)
+  R->>C: kiểm đầu vào + rate limit
+  C->>C: che dữ liệu nạn nhân; trích chỉ dấu; kiểm URL dạng chuỗi
+  C->>L: trích signal (nội dung đã che)
+  L-->>C: signal đúng schema, có evidence
+  C->>C: quy tắc tính verdict + khuyến nghị
+  C->>L: giải thích chỉ từ bằng chứng
+  C->>D: lưu analysis đã che
+  C-->>U: verdict + signal + khuyến nghị
+  U->>R: gửi báo cáo
+  R->>L: chuẩn bị tóm tắt hồ sơ (trước giao dịch; lỗi thì null)
+  R->>D: tạo case pending_review + ai_summary trong cùng giao dịch
+  A->>R: đăng nhập, xem danh sách và chi tiết case
+  R->>D: đọc bằng chứng và trạng thái
+  A->>R: kết luận + lý do
+  R->>D: ghi decision, đóng case
+```
+
+Tra cứu ngoài có thể chạy song song với bước LLM; lỗi hoặc quá giờ thì ghi `unavailable`, không bao giờ coi là "sạch". LLM lỗi khi tóm tắt hồ sơ thì `ai_summary` để trống, nhân viên vẫn xử lý được (SO-05).
+
+**Dữ liệu chính**
+
+```mermaid
+erDiagram
+    analyses ||--o{ analysis_indicators : includes
+    analyses ||--o| cases : reported_as
+    cases ||--o| decisions : resolved_by
+    staff_users ||--o{ decisions : records
+    staff_users ||--o{ staff_sessions : has
+```
+
+Không có bảng `reports` riêng: báo cáo chính là `cases` (DB-01). Mỗi analysis có tối đa một case, mỗi case tối đa một decision; case đi từ `pending_review` sang `closed`.
+
+**Ranh giới dữ liệu**
+
+| Ranh giới | Quy tắc |
+|---|---|
+| Trình duyệt → API | zod, tối đa 2.000 ký tự, 10 lượt/phút/IP, FraudOps phải đăng nhập |
+| Văn bản người dùng → LLM | Che OTP, mật khẩu, số thẻ trước; văn bản nằm trong khối phân tách, là dữ liệu chứ không phải chỉ dẫn |
+| LLM → quy tắc | Kiểm schema, kiểm evidence là chuỗi con; LLM không đặt verdict (P4) |
+| URL trong tin → bên ngoài | Không mở, render, tải URL (P5); chỉ gọi dịch vụ metadata trong allowlist |
+| API → DB | Chỉ lưu bản đã che; ràng buộc và giao dịch ở DB; chuỗi kết nối chỉ ở biến môi trường server |
+| Nhân viên → kết luận | Bắt buộc lý do; được phép khác verdict của hệ thống |
+

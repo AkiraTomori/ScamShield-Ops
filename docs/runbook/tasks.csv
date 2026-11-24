@@ -11,10 +11,10 @@ T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3
 T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,done,P0,,
 T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,done,P0,,Script chạy 20 câu × 3 lần cho 1 model
 T-023,S2 Thử model,"Chạy thử 2–3 model, điền research A.6, chốt Q-08 (/sdlc:sign-off)",,T-020;T-022,22/11,S,đội+owner,done,P0,,Q-08 có model chính + dự phòng
-T-030,S3 Pipeline,"Thiết kế slice pipeline: quy tắc verdict, SignalType (A-03), prompt, rate limit (/sdlc:design)",SO-03-AC02,T-023,22/11,M,agent,todo,P0,,Owner duyệt bảng quy tắc
+T-030,S3 Pipeline,"Thiết kế slice pipeline: quy tắc verdict, SignalType (A-03), prompt, rate limit (/sdlc:design)",SO-03-AC02,T-023,22/11,M,agent,done,P0,,Owner duyệt bảng quy tắc
 T-031,S3 Pipeline,Kiểm đầu vào + che OTP/mật khẩu/số thẻ (TDD),SO-01-AC02;SO-01-AC03,T-030,22/11,M,agent,todo,P0,,Test AC xanh
 T-032,S3 Pipeline,"Trích + chuẩn hoá chỉ dấu (URL, tên miền, SĐT VN, số tài khoản) (TDD)",SO-02-AC01;SO-02-AC04;SO-07-AC02,T-030,22/11,M,agent,todo,P0,,Cùng đầu vào cùng danh sách
-T-033,S3 Pipeline,brands.json từ Phụ lục A sau khi owner kiểm tên miền (Q-10),SO-02-AC02,,22/11,S,owner+agent,todo,P0,,File parse được bằng BrandList
+T-033,S3 Pipeline,brands.json từ Phụ lục A (Q-10; owner đã duyệt danh sách 24/11),SO-02-AC02,,22/11,S,owner+agent,todo,P0,,File parse được bằng BrandList
 T-034,S3 Pipeline,"Phép kiểm URL tất định: tên miền chính thức, nhái, punycode, subdomain, rút gọn, IP, TLD (TDD)",SO-02-AC02,T-032;T-033,23/11,L,agent,todo,P0,,Test từng phép kiểm
 T-035,S3 Pipeline,"Tra cứu ngoài RDAP + Safe Browsing có timeout, unavailable (kiểm điều khoản Safe Browsing trước)",SO-02-AC03,T-034,23/11,M,agent,todo,P1,3,Lỗi/timeout ra unavailable
 T-036,S3 Pipeline,Quy tắc verdict + khuyến nghị câu mẫu (A-01) (TDD),SO-03-AC02;SO-03-AC03;SO-01-AC05,T-030,23/11,M,agent,todo,P0,,Cùng signal cùng verdict; không có 'an toàn'

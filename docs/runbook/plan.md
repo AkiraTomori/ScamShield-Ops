@@ -33,16 +33,16 @@
 
 ## 3. Hiện trạng (21/11)
 
-- **Tài liệu:** spec, system-design, api, contracts, codebase, conventions, product, design, research, onboarding đều đã có bản nháp. Owner đã chốt Q-01…Q-10 (còn mở: danh sách Phụ lục A của Q-10; Q-08 đã chốt 22/11), D-01…D-03, O-01…O-03, O-05, A-01, A-02, C-01.
+- **Tài liệu:** spec, system-design, api, contracts, codebase, conventions, product, design, research, onboarding đều đã có bản nháp. Owner đã chốt Q-01…Q-10 (danh sách Phụ lục A của Q-10 và Q-11 vai trò dataset SO-09 chốt 24/11; Q-08 đã chốt 22/11), D-01…D-03, O-01…O-03, O-05, A-01, A-02, C-01.
 - **Mã:** slice nền móng đã merge vào `main` (PR #2). Slice dữ liệu P0 (schema 8 bảng + migration `0000_p0_tables`) đã merge vào `main` (PR #3); test tích hợp trên Postgres local đã chạy xanh ngày 21/11 (12 file, 77 test, không test nào bị bỏ qua; owner chạy tay), gồm CHECK `analyses_inconclusive_has_reason`. Chưa deploy, nên mốc walking skeleton (URL công khai + `/api/health`) chưa đạt.
-- **S2 thử model (nhánh `feat/model-spike`, chưa merge):** đã có client HTTP allowlist, client Groq, `extractSignals`, `writeExplanation`, runner `npm run eval:q08` và 20 câu dev nháp; test xanh ở local; **đã chạy Groq thật 21/11** trên 3 model (research A.6): owner chốt Q-08 22/11: chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b`; còn nhập giá. Sau review 22/11: prompt giải thích `explain-v3`, đã chạy lại bước giải thích 22/11 và có điểm tiếng Việt (AI chấm, owner duyệt; gpt-oss-120b dưới ngưỡng A.5, owner giữ làm dự phòng 22/11, chấp nhận rủi ro; xem A.6/A.7), `stripDelimiters` lặp, bảng chấm không bị ghi đè; 22/11: `SIGNALS_MAX_TOKENS` 1200, mục `truncated` trong kết quả (đã đo lại qwen 23/11, 5/60 lượt còn lỗi 429; xem A.6).
-- **Chưa có:** seed/reset demo, bản duyệt thiết kế slice pipeline (`design/analysis-pipeline.md` còn là bản nháp), phần còn lại của bộ eval (60–100 tình huống, runner đầy đủ).
+- **S2 thử model (đã merge vào `main`, PR #4, 24/11/2026):** đã có client HTTP allowlist, client Groq, `extractSignals`, `writeExplanation`, runner `npm run eval:q08` và 20 câu dev nháp; test xanh ở local; **đã chạy Groq thật 21/11** trên 3 model (research A.6): owner chốt Q-08 22/11: chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b`; còn nhập giá. Sau review 22/11: prompt giải thích `explain-v3`, đã chạy lại bước giải thích 22/11 và có điểm tiếng Việt (AI chấm, owner duyệt; gpt-oss-120b dưới ngưỡng A.5, owner giữ làm dự phòng 22/11, chấp nhận rủi ro; xem A.6/A.7), `stripDelimiters` lặp, bảng chấm không bị ghi đè; 22/11: `SIGNALS_MAX_TOKENS` 1200, mục `truncated` trong kết quả (đã đo lại qwen 23/11, 5/60 lượt còn lỗi 429; xem A.6).
+- **Chưa có:** seed/reset demo, mã slice S3 pipeline (thiết kế `design/analysis-pipeline.md` owner đã duyệt 24/11; S3 trễ so với lịch 22–23/11, owner chưa yêu cầu cắt việc theo §7), phần còn lại của bộ eval (60–100 tình huống, runner đầy đủ).
 
 ## 4. Quyết định cần chốt
 
 | Loại | Ở đâu | Hạn | Trạng thái |
 |---|---|---|---|
-| Quyết định sản phẩm Q-01…Q-07, Q-10 | [spec §7](../spec/ScamShield-v1.md#7-quyết-định-mở-owner-chốt) | 21/11 | Đã chốt 20/11; danh sách thương hiệu Q-10 chờ owner kiểm |
+| Quyết định sản phẩm Q-01…Q-07, Q-10 | [spec §7](../spec/ScamShield-v1.md#7-quyết-định-mở-owner-chốt) | 21/11 | Đã chốt 20/11; danh sách thương hiệu Q-10 chốt 24/11 |
 | Q-08 model Groq (sau khi thử 20 câu dev) | spec §7, [`../research/result.md`](../research/result.md) | 22/11 | Đã chốt 22/11: chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` (giữ sau khi có điểm tiếng Việt, dưới ngưỡng, owner chấp nhận rủi ro); còn nhập giá |
 | Q-09 hạ tầng | spec §7 | 21/11 | Đã chốt: Vercel + Supabase (có thể xem lại sau 25/11) |
 | Kiến trúc, API contract | [`../architecture/`](../architecture/system-design.md) | 21/11 | Bản nháp |

@@ -1,12 +1,19 @@
 # ScamShield Ops — Agent Context
 
-**Trạng thái (22/11/2026): ĐANG LÀM SLICE S2 THỬ MODEL** (nhánh `feat/model-spike`, đã commit và mở PR nháp #4, chưa merge). Slice nền móng + walking skeleton (system-design §1–§8: monorepo, `/api/health`, trang skeleton, Postgres local bằng Docker, CI) đã merge vào `main` (PR #2), `npm run verify` xanh ở local; chưa deploy. Slice dữ liệu P0 (schema Drizzle 8 bảng + migration `0000_p0_tables`) đã merge vào `main` (PR #3); chưa chạy trên DB deploy, chưa có seed/reset. Slice S2 (owner yêu cầu `/sdlc:implement` ngày 21/11, design [model-spike](docs/design/model-spike.md)): `packages/core/src/http` + `llm` (client Groq, `extractSignals`, `writeExplanation`), `eval/` (runner `npm run eval:q08`, chấm điểm, 20 câu dev **nháp**); `npm run verify` xanh ở local; đã chạy Groq thật ngày 21/11 trên 3 model (số ở research A.6); owner chốt Q-08 ngày 22/11: `qwen/qwen3.8-27b` chính, `openai/gpt-oss-120b` dự phòng. Sau review 22/11: prompt giải thích đổi `explain-v2` → `explain-v3` (bộ lọc chặn thêm `đảm bảo/bảo đảm/tuyệt đối`; đã chạy lại bước giải thích 22/11 trên 3 model, signal tái dùng từ `explain-v2`; điểm tiếng Việt AI chấm, owner duyệt: qwen 2,75 đạt, gpt-oss-120b 2,40 dưới ngưỡng A.5 nhưng owner giữ làm dự phòng, chấp nhận rủi ro (22/11), gpt-oss-20b 1,95; số ở research A.6), `stripDelimiters` lặp tới khi ổn định, bảng chấm tiếng Việt không bị ghi đè (nay ở `eval/results/`). 22/11: `SIGNALS_MAX_TOKENS` 600 → 1200 vì qwen bị cắt `length` ở 7/60 lời gọi; đã đo lại qwen 23/11: 0 lần cắt trên 55/60 lượt signal thành công, 8/55 lời gọi dùng hơn 600 token (cao nhất 959), 5/60 lượt vẫn lỗi 429 nên chưa đủ 60 lượt (research A.6); file kết quả có mục `truncated`. **Chưa được viết mã** cho phần còn lại (pipeline phân tích S3, seed, FraudOps) cho tới khi owner duyệt slice tương ứng. Owner đã chốt Q-01…Q-10 (spec §7; còn mở danh sách Q-10). D-04 (Supabase tạm dừng) vẫn mở. MoMo Tech Talent 2026: **vòng loại nộp trước ngày 03/12/2026**, chung kết 11/12 (slide không được sửa sau khi nộp). Mục tiêu: một web app công khai giúp người dùng kiểm tra tin nhắn nghi lừa đảo và giúp đội vận hành fintech xử lý báo cáo thành hồ sơ điều tra có bằng chứng.
+**Trạng thái (24/11/2026)** — chi tiết ở [docs/README.md § Trạng thái](docs/README.md#trạng-thái):
+- **Đã merge vào `main`:** nền móng + walking skeleton (PR #2), schema 8 bảng P0 (PR #3), S2 thử model (PR #4), proposal cho vòng loại (PR #5). `npm run verify` xanh ở local. **Chưa deploy**, migration chưa chạy trên DB deploy.
+- **Được viết mã:** slice S3 pipeline phân tích (owner duyệt [thiết kế](docs/design/analysis-pipeline.md) 24/11; T-031…T-039). S3 trễ so với lịch 22–23/11, owner chưa yêu cầu cắt việc.
+- **Chưa được viết mã** cho tới khi owner duyệt slice: seed/reset, giao diện ScamShield, báo cáo, FraudOps.
+- **Quyết định:** Q-01…Q-11 đã chốt ([spec §7](docs/spec/ScamShield-v1.md#7-quyết-định-mở-owner-chốt)); model Groq chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` (Q-08, số đo ở [research A.6](docs/research/result.md)). D-04 (Supabase tạm dừng) còn mở.
+- **Hạn:** đóng băng tính năng 30/11; nộp vòng loại trước **03/12/2026**; chung kết 11/12 (slide không sửa được sau khi nộp).
+
+**Mục tiêu:** một web app công khai giúp người dùng kiểm tra tin nhắn nghi lừa đảo, và giúp đội vận hành fintech biến báo cáo thành hồ sơ điều tra có bằng chứng. Giới thiệu ngắn: [docs/product/pitch.md](docs/product/pitch.md).
 
 ## Đọc trước khi làm bất cứ việc gì
 1. [docs/README.md](docs/README.md): mục lục, thứ tự đọc, **thứ tự ưu tiên khi các file lệch nhau**.
 2. [docs/spec/ScamShield-v1.md](docs/spec/ScamShield-v1.md): hành vi, nguyên tắc P1–P5 và tiêu chí chấp nhận `SO-xx-ACnn`. **Spec đã duyệt là quyền cao nhất về hành vi.**
-3. [docs/architecture/system-design.md](docs/architecture/system-design.md): kiến trúc (chưa viết; tạo bằng `/sdlc:design`).
-4. [docs/conventions/](docs/conventions/README.md): cách viết code (chưa viết).
+3. [docs/architecture/system-design.md](docs/architecture/system-design.md): kiến trúc; sơ đồ toàn hệ thống ở §11.
+4. [docs/conventions/](docs/conventions/README.md): cách viết code và thư viện được phép.
 5. [docs/runbook/plan.md](docs/runbook/plan.md): lộ trình, quyền của agent (§5), cắt việc (§7).
 - Hai tài liệu mâu thuẫn nhau mà thứ tự ưu tiên ở README không phân xử được thì **dừng và báo owner**, không tự chọn. Phân xử được (file cấp thấp lạc hậu so với file cấp cao) thì sửa theo mục "Đồng bộ tài liệu" bên dưới.
 
@@ -21,7 +28,7 @@
 - Không commit, push, tạo PR, merge hay deploy nếu owner chưa yêu cầu. Hỏi trước khi chạy migration/seed lên CSDL đã có dữ liệu, gọi dịch vụ ngoài tốn tiền ở quy mô lớn (chạy toàn bộ eval nhiều lần), hoặc làm việc huỷ dữ liệu.
 - Secret (API key LLM, chuỗi kết nối DB, mật khẩu tài khoản thử) chỉ ở `.env` (đã gitignore) hoặc biến môi trường của nền tảng deploy, không bao giờ xuất hiện trong mã, commit, log, chat hay dòng lệnh.
 - **Nguồn sự thật duy nhất:**
-  - Hình dạng request/response và đầu ra của LLM: zod schema trong `packages/shared` (sẽ tạo ở slice nền móng). Không có tài liệu API viết tay lệch với schema.
+  - Hình dạng request/response và đầu ra của LLM: zod schema trong `packages/shared`. Không có tài liệu API viết tay lệch với schema.
   - Danh sách thương hiệu và tên miền chính thức: một file dữ liệu duy nhất (chốt ở Q-10), không rải trong mã.
   - Bộ eval: file nhãn trong `eval/`; không sửa nhãn tập held-out để "đẹp số".
 - Dữ liệu mẫu và ví dụ chỉ dùng tên miền dành riêng (`*.example`, `example.com`, `*.test`). Giao diện không dùng logo hay màu nhận diện của MoMo hay tổ chức khác.
@@ -75,7 +82,7 @@ Skill nằm trong plugin `sdlc` (submodule [`tools/sdlc-kit`](tools/sdlc-kit), r
 - Trễ lịch quá 1 ngày thì báo owner và đề xuất cắt theo plan §7. Không âm thầm giảm chất lượng.
 
 ## Định nghĩa xong
-- `npm run verify` xanh: format, lint, typecheck, Vitest. Lệnh này sẽ được thêm ở slice nền móng.
+- `npm run verify` xanh: format, lint, typecheck, Vitest.
 - Mỗi tiêu chí chấp nhận của slice có test ghi ID `SO-xx-ACnn` hoặc một bước kiểm tay có bằng chứng.
 - Thay đổi prompt hoặc quy tắc verdict thì chạy lại eval tập dev và ghi kết quả.
 - Tài liệu đã đồng bộ với mã và quyết định (mục "Đồng bộ tài liệu").

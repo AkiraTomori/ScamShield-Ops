@@ -9,6 +9,11 @@ Một sản phẩm, hai giao diện, dùng chung một AI engine:
 
 > MoMo Tech Talent 2026 · *Imagine the Future Workspace (Human Centered. AI Powered)* · Chủ đề: **Chống lừa đảo**, **Trợ lý AI**
 
+**Ví dụ.** Người dùng dán: *"[Ví XYZ] Tài khoản của bạn sẽ bị khoá trong 2 giờ. Xác minh ngay tại vi-xac-minh.example và nhập mã OTP vừa nhận."*
+
+- **ScamShield trả lời** (minh hoạ): **Nguy cơ cao**, vì tên miền không thuộc tên miền chính thức của thương hiệu được nhắc tới *(Kiểm tra)*, tin tạo áp lực thời gian và đòi mã OTP *(AI nhận định)*. Nên làm: không bấm đường dẫn, không đưa OTP, liên hệ ví qua kênh chính thức, gửi báo cáo.
+- **FraudOps nhận** hồ sơ `SC-0007`: nội dung đã che dữ liệu nhạy cảm, chỉ dấu `vi-xac-minh.example` kèm kết quả từng phép kiểm, tóm tắt 3–5 câu. Nhân viên chọn kết luận và ghi lý do.
+
 ## Hệ thống chạy thế nào
 
 ```mermaid
@@ -42,18 +47,18 @@ flowchart LR
 - **Mỗi tín hiệu ghi rõ nguồn:** *Kiểm tra* (code) hay *AI nhận định*.
 - **Không chắc thì nói không chắc** (`inconclusive`).
 
-## Cấu trúc repo (dự kiến)
+## Cấu trúc repo
 
 | Thư mục | Nội dung |
 |---|---|
-| `apps/web` | Next.js: giao diện ScamShield, FraudOps và API (route handlers), deploy một lần lên Vercel |
-| `packages/core` | Module nghiệp vụ không phụ thuộc Next.js: DB, Analysis, Reports, Cases, Auth (eval gọi trực tiếp) |
+| `apps/web` | Next.js: giao diện ScamShield, FraudOps và API (route handlers), deploy một lần lên Vercel. Hiện có trang skeleton và `/api/health` |
+| `packages/core` | Nghiệp vụ không phụ thuộc Next.js, eval gọi trực tiếp. Hiện có: DB (schema 8 bảng, migration), HTTP client có allowlist, client Groq, trích signal, viết giải thích. Sắp có (S3): phân tích đầy đủ; sau đó: báo cáo, hồ sơ, đăng nhập |
 | `packages/shared` | Zod schema (request/response, đầu ra LLM), mã lỗi kèm câu tiếng Việt |
-| `eval` | Bộ tình huống có nhãn và script đánh giá |
+| `eval` | Bộ tình huống có nhãn (`eval/cases/`, hiện 20 câu dev nháp) và script đánh giá (`npm run eval:q08`) |
 | `docs` | Tài liệu sản phẩm và kỹ thuật, viết bằng tiếng Việt |
 | `tools/sdlc-kit` | Submodule quy trình SDLC cho coding agent ([my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit)) |
 
-**Trạng thái:** đang viết spec (20/11/2026). Chưa có mã ứng dụng. Kế hoạch: [`docs/runbook/plan.md`](docs/runbook/plan.md).
+**Trạng thái (24/11/2026):** đã có nền móng, schema dữ liệu và phần gọi LLM (PR #2–#4); pipeline phân tích (S3) đã duyệt thiết kế, chưa có mã. Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
 
 ## Quy trình làm việc (sdlc-kit)
 
@@ -100,16 +105,16 @@ npm run verify           # format + lint + typecheck + test
 |---|---|---|
 | Framework | Next.js, Node.js, TypeScript | Web và API |
 | Cơ sở dữ liệu | PostgreSQL (Supabase managed) | Analyses, cases, decisions |
-| Mô hình AI | Groq (model chốt sau thử nghiệm Q-08) | Trích tín hiệu, giải thích, tóm tắt hồ sơ |
-| Thư viện mã nguồn mở | *(liệt kê khi cài)* | |
+| Mô hình AI | Groq: `qwen/qwen3.8-27b` (chính), `openai/gpt-oss-120b` (dự phòng), chốt sau thử nghiệm Q-08 | Trích tín hiệu, giải thích, tóm tắt hồ sơ |
+| Thư viện mã nguồn mở | React, zod, Drizzle ORM, postgres.js, Vitest, ESLint, Prettier, tsx (phiên bản ghim trong `package.json`) | Giao diện, schema, truy cập DB, test, chất lượng mã |
 | Công cụ AI hỗ trợ phát triển | Claude Code + [my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit) | Viết spec, thiết kế, mã và test |
 
 ## Đọc tiếp
 
 | Bạn là | Đọc |
 |---|---|
-| Giám khảo | [`docs/product/pitch.md`](docs/product/pitch.md) *(chưa viết)* |
-| Người viết code | [`docs/spec/ScamShield-v1.md`](docs/spec/ScamShield-v1.md), [`AGENTS.md`](AGENTS.md) |
+| Giám khảo, người mới | [`docs/product/pitch.md`](docs/product/pitch.md) (5 phút), rồi [`docs/onboarding/concepts.md`](docs/onboarding/concepts.md) nếu cần giải thích thuật ngữ |
+| Người viết code, agent | [`AGENTS.md`](AGENTS.md), rồi [`docs/spec/ScamShield-v1.md`](docs/spec/ScamShield-v1.md) |
 | Muốn xem hết | [`docs/README.md`](docs/README.md) |
 
 *Kết quả mang tính tham khảo. Hãy xác minh qua kênh chính thức của tổ chức trước khi chuyển tiền hoặc cung cấp thông tin.*

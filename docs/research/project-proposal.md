@@ -29,11 +29,7 @@
 
 ### 1.3. Nguyên tắc vận hành
 
-- **P1 — Human decision:** hệ thống không tự khóa ví, chặn thanh toán, xác định danh tính kẻ gian hoặc ra phán quyết pháp lý.
-- **P2 — Evidence-grounded:** mỗi signal phải có nguồn **kiểm tra tất định** hoặc **AI nhận định**; phần diễn giải chỉ được dùng bằng chứng có trong analysis.
-- **P3 — Uncertainty-aware:** trường hợp không đủ bằng chứng phải trả về **inconclusive**; “chưa phát hiện dấu hiệu” không tương đương “an toàn”.
-- **P4 — Deterministic verdict:** luật tính mức rủi ro nằm trong code có kiểm thử, thay vì dựa vào một câu trả lời không kiểm chứng của LLM.
-- **P5 — No unsafe browsing:** không tải, render hoặc truy cập URL do người dùng cung cấp; phép kiểm chỉ dựa trên chuỗi URL và, nếu bật, dịch vụ metadata/threat-list được phép [I1, I4].
+Năm nguyên tắc P1–P5 của [spec §1](../spec/ScamShield-v1.md) chi phối mọi thiết kế: **con người quyết định** (không tự khoá ví, chặn giao dịch hay kết luận ai là kẻ gian), **mọi tín hiệu có nguồn** (kiểm tra bằng code hay AI nhận định), **không chắc thì nói không chắc** (`inconclusive`, không bao giờ nói "an toàn"), **mức rủi ro do quy tắc trong code**, và **không mở URL người dùng gửi** [I1, I4].
 
 ## 2. Pain points, bằng chứng và giả thuyết cần kiểm chứng
 
@@ -71,10 +67,10 @@ Cổng thông tin Chính phủ cũng ghi nhận các thủ đoạn liên quan đ
 
 | Nhóm | Thành phần và trạng thái | Ý nghĩa |
 |---|---|---|
-| **Thông số nghiệp vụ** | Spec SO-01…SO-10, nguyên tắc P1–P5, Q-01…Q-10 được chốt một phần/đa phần [I1] | Mốc tham chiếu cho acceptance criteria và giới hạn công việc |
+| **Thông số nghiệp vụ** | Spec SO-01…SO-10, nguyên tắc P1–P5, đã chốt Q-01…Q-10, kể cả danh sách thương hiệu Q-10 (24/11/2026) [I1] | Mốc tham chiếu cho acceptance criteria và giới hạn công việc |
 | **Nền tảng phần mềm** | Monorepo npm workspaces; Next.js/TypeScript; Zod; Drizzle + postgres.js; Vitest; Docker PostgreSQL local; CI [I3] | Tái sử dụng một codebase cho UI, API, nghiệp vụ và evaluation |
 | **Cơ sở dữ liệu** | Thiết kế/migration 8 bảng P0, PR #3 đã merge; dữ liệu production/demo chưa được xác nhận triển khai [I3, I6] | Lưu analysis, report, case và decision |
-| **LLM và S2** | Groq client, `extractSignals`, `writeExplanation`, prompt/version, 20 tình huống dev, runner Q-08; PR #4 đã merge ngày 23–24/11 [I5, I8] | Có kết quả thử thật, không chỉ ý tưởng gọi AI |
+| **LLM và S2** | Groq client, `extractSignals`, `writeExplanation`, prompt/version, 20 tình huống dev, runner Q-08; PR #4 đã merge ngày 24/11/2026 [I5, I8] | Có kết quả thử thật, không chỉ ý tưởng gọi AI |
 | **Hạ tầng đích** | Vercel + Supabase đã chọn; **chưa xác nhận deployment công khai** ở tài liệu kế hoạch [I3, I6] | Để giám khảo tự kiểm tra hai giao diện |
 | **Đánh giá** | 20 dev cases dùng cho S2; **chưa** có kết quả full-pipeline 60–100 cases/held-out [I5] | Dữ liệu ban đầu để thiết lập kiểm thử có kiểm soát |
 
@@ -142,21 +138,7 @@ Trong kiến trúc này, **AI là năng lực hỗ trợ**, không phải một 
 
 ### 6.1. Kiến trúc triển khai MVP
 
-```mermaid
-flowchart TB
-  User["Người dùng ScamShield"] --> Web["Next.js apps/web: UI + /api/* Route Handlers"]
-  Analyst["Fraud Analyst"] --> Web
-  Web --> Core["packages/core: analysis, reports, cases, auth"]
-  Web --> Shared["packages/shared: Zod contracts"]
-  Core --> Rules["Extractors + URL checks + deterministic rules"]
-  Core --> LLM["Groq: signal extraction / explanation / case summary"]
-  Core --> DB[("PostgreSQL: analysis / report / case / decision")]
-  Core -. "optional: metadata only, allowlist" .-> Intel["RDAP / threat-list provider"]
-  Eval["eval/: dev + held-out"] --> Core
-  CI["GitHub Actions"] -. "verify" .-> Web
-```
-
-**Hình dạng đã chọn:** một ứng dụng Next.js chạy UI và API, nghiệp vụ ở `packages/core`, hợp đồng dữ liệu ở `packages/shared`, PostgreSQL local qua Docker; đích triển khai Vercel + Supabase. Đây là **modular monolith**, không chia microservices chỉ để trông phức tạp [I3]. Sơ đồ mô tả **kiến trúc đích**; các module ngoài nền móng/S2 vẫn đang cần triển khai.
+Một ứng dụng Next.js chạy cả giao diện lẫn API; nghiệp vụ ở `packages/core`, hợp đồng dữ liệu ở `packages/shared`; PostgreSQL (local bằng Docker, đích deploy Vercel + Supabase). Đây là **modular monolith**, không chia microservices chỉ để trông phức tạp. Sơ đồ bối cảnh, thứ tự xử lý và bảng dữ liệu ở [system-design §11](../architecture/system-design.md#11-sơ-đồ-toàn-hệ-thống-đích-mvp) [I3].
 
 ### 6.2. Workflow người dùng → điều tra
 
@@ -181,24 +163,12 @@ flowchart TD
 
 **Bốn verdict:** `high_risk`, `suspicious`, `no_signal` (chưa phát hiện dấu hiệu), `inconclusive` (không đủ bằng chứng). Không dùng nhãn “safe”. Từ report, case bắt đầu ở trạng thái chờ duyệt; nhân viên chỉ đóng khi có lựa chọn và lý do [I1].
 
-### 6.3. Ranh giới dữ liệu và an toàn
+### 6.3. Ranh giới dữ liệu, an toàn và phạm vi
 
-- **Trước LLM và trước lưu trữ:** che mã OTP, mật khẩu, số thẻ của nạn nhân. URL/điện thoại/tài khoản nhận tiền của bên gửi được giữ như **chỉ dấu**, cần xử lý tối thiểu và bảo vệ quyền truy cập.
-- **Trong AI:** nội dung người dùng là **untrusted input**, không được biến thành hướng dẫn hệ thống; LLM trả dữ liệu đúng schema; evidence phải có căn cứ trong input; phần giải thích không được bổ sung sự kiện ngoài signal/check.
-- **Ở rule engine:** điểm/verdict không được lấy từ câu tự khẳng định của LLM. Lỗi provider, timeout, dữ liệu mơ hồ hoặc metadata không truy xuất được phải có trạng thái lỗi/không chắc chắn rõ ràng.
-- **Ở FraudOps:** API cần xác thực; analyst thấy dữ liệu đầu vào đã che, bằng chứng, nguồn tín hiệu và có quyền không đồng ý với AI; quyết định phải có lý do.
-- **Dữ liệu demo:** dùng nội dung và tên miền giả lập, không kết nối tài khoản/transaction thật. Những yêu cầu retention, bảo mật secret, log PII và tuân thủ pháp lý sẽ cần kiểm định riêng trước khi triển khai thương mại [I1, I3, I4].
+- **Dữ liệu và an toàn:** che OTP, mật khẩu, số thẻ của nạn nhân trước khi gửi AI và trước khi lưu; nội dung người dùng là dữ liệu, không phải chỉ dẫn; FraudOps phải đăng nhập; dữ liệu demo hoàn toàn giả lập. Bảng ranh giới đầy đủ ở [system-design §11](../architecture/system-design.md#11-sơ-đồ-toàn-hệ-thống-đích-mvp) [I1, I3, I4].
+- **Phạm vi:** P0 là SO-01…SO-06, SO-09, SO-10; SO-07, SO-08 chỉ làm khi P0 chạy trọn; OCR, giám sát cuộc gọi, tích hợp ví/ngân hàng thật, phân công/SLA và multi-agent nằm ngoài MVP. Danh sách chính thức ở [spec §4](../spec/ScamShield-v1.md#4-phạm-vi) [I1, I6].
 
-### 6.4. Phạm vi P0 và giới hạn đã chọn
-
-| P0 — bắt buộc cho demo | P1 — chỉ triển khai khi P0 chạy trọn | Không làm trong MVP |
-|---|---|---|
-| SO-01/02/03: nhập tin, phân tích, verdict, giải thích | SO-07: liên kết các hồ sơ chung indicator | OCR, voice/call monitoring |
-| SO-04: gửi report, tạo case, tra cứu cơ bản theo spec | SO-08: chỉ dấu đã xác minh trở lại engine | Tích hợp MoMo/ngân hàng thật, realtime transaction fraud |
-| SO-05/06: xem case, summary, human decision, đóng case | — | Phân công analyst, SLA, nhiều cấp duyệt |
-| SO-09: evaluation; SO-10: dữ liệu/tài khoản demo | — | Multi-agent, tự động khóa/chặn giao dịch |
-
-Tính năng báo cáo, auth, case và final decision thuộc **đích MVP**, không suy ra chúng đã chạy chỉ vì đã có spec. Mọi thay đổi phạm vi phải tham chiếu các tiêu chí SO-xx và plan [I1, I6].
+Báo cáo, đăng nhập, case và kết luận là **đích MVP**; có spec chưa có nghĩa là đã chạy.
 
 ## 7. Kiểm chứng tính khả thi và tình trạng thực hiện
 
@@ -214,7 +184,7 @@ S2 có mục đích lựa chọn model cho trích semantic signals, giải thíc
 
 **Diễn giải đúng số đo:** các cột schema, recall, injection, ổn định từ lần chạy signal 21/11/2026; **điểm tiếng Việt** từ giải thích `explain-v3` 22/11, được AI chấm và owner duyệt, chưa phải đánh giá mù độc lập. Trên lần thử Qwen mới ngày 23/11 sau khi nâng giới hạn signal output từ 600 lên 1.200 token, **55/55 lượt trả signal thành công không bị cắt** nhưng **5/60 lượt vẫn lỗi 429**, nên không được trình bày thành 60/60 thành công ở cấu hình mới. Model dự phòng bị thua ngưỡng chống injection và chất lượng giải thích; owner chủ động chấp nhận rủi ro [I5].
 
-S2 đã đưa vào repo client HTTP allowlist, Groq client, schema/validator, `extractSignals`, `writeExplanation`, test và runner `eval:q08`. **PR #4 đã merge**; các file tài liệu còn ghi “chưa merge” là snapshot cũ, không phải trạng thái PR hiện tại [I8].
+S2 đã đưa vào repo client HTTP allowlist, Groq client, schema/validator, `extractSignals`, `writeExplanation`, test và runner `eval:q08`. **PR #4 đã merge vào `main` ngày 24/11/2026** [I8].
 
 ### 7.2. Những điều chưa được chứng minh
 
@@ -245,7 +215,7 @@ Theo plan hiện hành, **30/11** là mốc feature freeze; **03/12** là hạn 
 | Backend / Data / Integration | Thành viên C | Report/case/auth/decision, database, deploy, end-to-end wiring |
 | Chung | Cả ba | Review API contract, threat model, thử nghiệm demo, kiểm chứng nguồn, slide/video |
 
-Tách trách nhiệm **theo module**, nhưng không tách quyền sở hữu chất lượng: thành viên không viết engine cần kiểm thử những tình huống gây false positive; thành viên backend và frontend xác nhận contract trước khi tích hợp. Product owner vẫn chịu trách nhiệm chốt thay đổi phạm vi, chi phí và deployment theo charter [I6].
+Tách trách nhiệm **theo module**, nhưng không tách quyền sở hữu chất lượng: thành viên không viết engine cần kiểm thử những tình huống gây false positive; thành viên backend và frontend xác nhận contract trước khi tích hợp. Product owner vẫn chịu trách nhiệm chốt thay đổi phạm vi, chi phí và deployment theo charter ở [plan §5](../runbook/plan.md#5-charter-coding-agent-được-tự-quyết-tới-đâu) [I6].
 
 ## 8. Rủi ro, giới hạn và nguyên tắc truyền thông
 
@@ -265,13 +235,12 @@ Tách trách nhiệm **theo module**, nhưng không tách quyền sở hữu ch�
 
 ## 9. Tài liệu hỗ trợ triển khai và nghiên cứu dữ liệu
 
-Để chuyển từ proposal sang hiện thực hóa MVP, sử dụng bốn tài liệu bổ trợ sau. Các tài liệu này **không thay thế** spec, contracts, system design, cũng không có nghĩa các nguồn dữ liệu đã được ingest:
+Để chuyển từ proposal sang hiện thực hóa MVP, sử dụng ba tài liệu bổ trợ sau. Các tài liệu này **không thay thế** spec, contracts, system design, cũng không có nghĩa các nguồn dữ liệu đã được ingest:
 
 | Mục đích | Tài liệu | Phạm vi |
 |---|---|---|
-| **Required Document / requirements overview** | [Project Requirements](../PROJECT-REQUIREMENTS.md) | Stakeholder, scope P0/P1, traceability SO-xx, NFR, acceptance gate |
-| **Architecture overview** | [Architecture](../architecture/ARCHITECTURE.md) | Sơ đồ context/sequence/domain, trust boundaries, quyết định kiến trúc và trạng thái |
-| **Public data sources** | [Dataset Catalog](./dataset-catalog.md) | SMS tiếng Việt, PhishVN, URL feeds, license, provenance, privacy, overlap |
+| **Kiến trúc tổng quan** | [System Design §11](../architecture/system-design.md#11-sơ-đồ-toàn-hệ-thống-đích-mvp) | Sơ đồ bối cảnh, thứ tự xử lý, bảng dữ liệu, ranh giới dữ liệu |
+| **Public data sources** | [Dataset Catalog](./dataset-catalog.md) | Vai trò dataset đã chốt (Q-11, 24/11): tự soạn là chính, D1 chỉ tham khảo, D3 kiểm URL offline; license, provenance, privacy, overlap |
 | **Đánh giá & gán nhãn** | [Evaluation Protocol](./evaluation-protocol.md) | Chấm nhãn, tách dev/held-out, tránh leakage, metrics và release test matrix |
 
 **Ưu tiên triển khai:** tiếp tục S3 phân tích end-to-end → UI ScamShield → report/case → FraudOps; nghiên cứu public data làm song song với giới hạn thời gian. Kết quả S2 chọn model chưa phải kết quả đánh giá detection end-to-end. Data public có thể chứa URL độc hại, PII và nhãn sai: không truy cập URL, không commit raw, không biến nhãn spam thành verdict lừa đảo.

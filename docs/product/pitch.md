@@ -20,6 +20,16 @@
 
 **Vì sao trọng tâm là workspace:** chủ đề cuộc thi là *Imagine the Future Workspace*. Kiểm tra tin nhắn đơn lẻ giúp một người; biến báo cáo của nhiều người thành hồ sơ có bằng chứng giúp **cả đội vận hành** làm nhanh và nhất quán hơn. ScamShield là kênh tiếp nhận và phòng ngừa; FraudOps là nơi quy trình thay đổi.
 
+## Ai dùng sản phẩm
+
+| Ai | Làm gì trên sản phẩm | Không được làm |
+|---|---|---|
+| **Người dùng** nhận tin đáng ngờ | Dán tin, xem kết quả và lý do, gửi báo cáo, tra trạng thái bằng mã hồ sơ + mã bí mật. Không cần tài khoản | Xem hồ sơ nội bộ |
+| **Nhân viên vận hành** (fraud analyst) | Đăng nhập FraudOps, xem hồ sơ và bằng chứng, chọn kết luận kèm lý do, đóng hồ sơ | Tự khoá tài khoản hay chặn giao dịch (hệ thống không có chức năng này) |
+| **Giám khảo** | Thử cả hai giao diện bằng tin mẫu và tài khoản `judge1…judge5` | Dùng dữ liệu hay giao dịch thật |
+
+Trưởng nhóm (phân công, SLA, duyệt nhiều cấp) nằm ngoài bản demo.
+
 ## Ví dụ đầu vào → đầu ra
 
 **Đầu vào** (người dùng dán):
