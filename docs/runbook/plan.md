@@ -75,6 +75,8 @@
 | **03/12** | Dự phòng. Kiểm mọi link ở chế độ ẩn danh. **Nộp sớm trong ngày** | Đã nộp |
 | 04–11/12 | Giữ link chạy, tập trình bày, chuẩn bị câu hỏi của giám khảo. **Không sửa slide** | — |
 
+**Phân công:** việc của từng thành viên (vai A/B/C) và mốc ngày để kịp đóng băng 30/11 ở [team-split.md](./team-split.md); cột `assignee` trong `tasks.csv`.
+
 ## 7. Cắt việc khi trễ (theo thứ tự)
 
 1. SO-08 vòng phản hồi chỉ dấu đã xác minh.

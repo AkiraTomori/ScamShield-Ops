@@ -63,7 +63,8 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 
 | File | Nội dung | Trạng thái |
 |---|---|---|
-| [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Lộ trình theo ngày, quyền của agent (§5), cắt việc khi trễ (§7), rủi ro, checklist nộp; 48 việc theo slice | Bản nháp |
+| [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Lộ trình theo ngày, quyền của agent (§5), cắt việc khi trễ (§7), rủi ro, checklist nộp; 48 việc theo slice, cột `assignee` theo team-split | Bản nháp |
+| [`runbook/team-split.md`](./runbook/team-split.md) | Phân công ba thành viên (vai A/B/C): việc từng người theo ngày, chỗ giao nhau, nhịp làm việc | Đề xuất 24/11, chưa điền tên |
 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Chạy local, Postgres Docker, đổi key, migration, deploy (owner), lỗi thường gặp | Bản nháp |
 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, dữ liệu demo, checklist, xử lý sự cố | Bản nháp |
 

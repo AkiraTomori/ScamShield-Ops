@@ -206,14 +206,9 @@ S2 đã đưa vào repo client HTTP allowlist, Groq client, schema/validator, `e
 
 Theo plan hiện hành, **30/11** là mốc feature freeze; **03/12** là hạn vòng loại và giai đoạn 04–11/12 để duy trì link và chuẩn bị chung kết [I6]. Đây là mốc kế hoạch dự án, không phải xác nhận đã nộp hoặc chắc chắn dự chung kết.
 
-### 7.4. Tổ chức thực hiện cho nhóm ba người *(đề xuất, chưa phải phân công chính thức)*
+### 7.4. Tổ chức thực hiện cho nhóm ba người *(đề xuất 24/11, chưa điền tên)*
 
-| Luồng công việc | Người chịu trách nhiệm chính | Deliverable |
-|---|---|---|
-| AI / Risk / Evaluation | Thành viên A | SO-01–03, prompt, parser/rules, dữ liệu đánh giá, báo cáo độ tin cậy |
-| Product UI / UX | Thành viên B | ScamShield + FraudOps pages, trạng thái lỗi, mobile, luồng người dùng |
-| Backend / Data / Integration | Thành viên C | Report/case/auth/decision, database, deploy, end-to-end wiring |
-| Chung | Cả ba | Review API contract, threat model, thử nghiệm demo, kiểm chứng nguồn, slide/video |
+Ba vai: **A — AI / Engine / Eval** (pipeline phân tích, prompt, bộ eval), **B — Giao diện** (ScamShield, FraudOps, slide, video), **C — Backend / Dữ liệu / Deploy** (API, báo cáo, hồ sơ, đăng nhập, seed, deploy, E2E). Cả ba cùng soạn bộ eval và kiểm thử demo. Việc cụ thể theo ngày ở [runbook/team-split.md](../runbook/team-split.md) [I6].
 
 Tách trách nhiệm **theo module**, nhưng không tách quyền sở hữu chất lượng: thành viên không viết engine cần kiểm thử những tình huống gây false positive; thành viên backend và frontend xác nhận contract trước khi tích hợp. Product owner vẫn chịu trách nhiệm chốt thay đổi phạm vi, chi phí và deployment theo charter ở [plan §5](../runbook/plan.md#5-charter-coding-agent-được-tự-quyết-tới-đâu) [I6].
 
