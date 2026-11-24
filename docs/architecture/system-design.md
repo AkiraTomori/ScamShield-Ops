@@ -207,7 +207,7 @@ sequenceDiagram
   participant A as Nhân viên
   U->>R: POST /api/analyses (văn bản)
   R->>C: kiểm đầu vào + rate limit
-  C->>C: che dữ liệu nạn nhân; trích chỉ dấu; kiểm URL dạng chuỗi
+  C->>C: che dữ liệu nạn nhân, trích chỉ dấu, kiểm URL dạng chuỗi
   C->>L: trích signal (nội dung đã che)
   L-->>C: signal đúng schema, có evidence
   C->>C: quy tắc tính verdict + khuyến nghị
@@ -215,7 +215,7 @@ sequenceDiagram
   C->>D: lưu analysis đã che
   C-->>U: verdict + signal + khuyến nghị
   U->>R: gửi báo cáo
-  R->>L: chuẩn bị tóm tắt hồ sơ (trước giao dịch; lỗi thì null)
+  R->>L: chuẩn bị tóm tắt hồ sơ (trước giao dịch, lỗi thì null)
   R->>D: tạo case pending_review + ai_summary trong cùng giao dịch
   A->>R: đăng nhập, xem danh sách và chi tiết case
   R->>D: đọc bằng chứng và trạng thái
