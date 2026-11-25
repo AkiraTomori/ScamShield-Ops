@@ -54,6 +54,7 @@ Skill nằm trong plugin `sdlc` (submodule [`tools/sdlc-kit`](tools/sdlc-kit), r
 
 | Khi nào | Skill | Đầu ra trong repo này |
 |---|---|---|
+| Ý tưởng còn mơ hồ, cần hỏi kỹ trước | `/sdlc:grill <ý tưởng>` | Tóm tắt quyết định đã chốt (ghi vào spec khi owner yêu cầu) |
 | Làm rõ hành vi, phạm vi, tiêu chí chấp nhận | `/sdlc:spec <phạm vi>` | `docs/spec/` (ID `SO-xx`, `SO-xx-ACnn`, quyết định mở `Q-xx`) |
 | Slice có pipeline AI, luồng giữa hai giao diện hoặc cấu trúc module mới | `/sdlc:design <slice>` | `docs/architecture/` (hoặc `docs/design/<slice>.md` nếu chỉ riêng slice đó) |
 | Bảng PostgreSQL, ràng buộc, migration, seed | `/sdlc:database <phạm vi>` | Mô hình dữ liệu + kế hoạch migrate |
@@ -64,8 +65,12 @@ Skill nằm trong plugin `sdlc` (submodule [`tools/sdlc-kit`](tools/sdlc-kit), r
 | Xem lại thay đổi trước khi mở PR | `/sdlc:review <nhánh hoặc PR>` | Danh sách phát hiện theo mức độ |
 | Mở PR | `/sdlc:pr <phạm vi>` | PR nháp hoặc PR, không merge |
 | Quyết định ảnh hưởng phạm vi, an toàn hoặc chi phí (đổi P1–P5, đổi LLM, thêm tra cứu ngoài, đổi hạ tầng) | `/sdlc:sign-off <quyết định>` | Ghi quyết định vào spec |
+| Bug khó, test chập chờn, chạy chậm | `/sdlc:diagnose <triệu chứng>` | Lệnh tái hiện + nguyên nhân; sửa khi owner cho phép |
+| Chuyển việc sang phiên mới | `/sdlc:handoff <việc phiên sau>` | Tài liệu bàn giao ở thư mục tạm |
 
 **Luồng gợi ý:**
+- Ý tưởng mơ hồ: `grill` → `spec` → …
+- Sửa bug: `diagnose` → `implement` (+`tdd`) → `verify` → `pr`.
 - Slice lớn: `spec` → `design` (+`database`) → `implement` (+`tdd`) → `verify` → `review` → `pr`.
 - Sửa nhỏ: `implement` → `verify` → `pr`.
 - Không bắt buộc đi đủ chuỗi. Chọn skill phù hợp với việc đang làm.
