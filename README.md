@@ -58,7 +58,7 @@ flowchart LR
 | `docs` | Tài liệu sản phẩm và kỹ thuật, viết bằng tiếng Việt |
 | `tools/sdlc-kit` | Submodule quy trình SDLC cho coding agent ([my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit)) |
 
-**Trạng thái (26/11/2026):** đã có nền móng, schema dữ liệu và phần gọi LLM (PR #2–#4). Pipeline phân tích (S3) và `POST /api/analyses` có trên nhánh `feat/s3-pipeline`, chưa merge. Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
+**Trạng thái (26/11/2026):** đã có nền móng, schema dữ liệu và phần gọi LLM (PR #2–#4). Pipeline phân tích (S3) và `POST /api/analyses` có trên nhánh `feat/s3-pipeline` (PR #46), chưa merge. Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
 
 ## Quy trình làm việc (sdlc-kit)
 
