@@ -1,0 +1,128 @@
+[
+  {
+    "id": "momo",
+    "name": "MoMo",
+    "kind": "wallet",
+    "aliases": ["MoMo", "Ví MoMo", "M_Service"],
+    "domains": ["momo.vn"]
+  },
+  {
+    "id": "zalopay",
+    "name": "ZaloPay",
+    "kind": "wallet",
+    "aliases": ["ZaloPay", "Zalo Pay"],
+    "domains": ["zalopay.vn"]
+  },
+  {
+    "id": "vnpay",
+    "name": "VNPAY",
+    "kind": "wallet",
+    "aliases": ["VNPAY", "VNPay", "VNPAY-QR"],
+    "domains": ["vnpay.vn", "vivnpay.vn"]
+  },
+  {
+    "id": "shopeepay",
+    "name": "ShopeePay",
+    "kind": "wallet",
+    "aliases": ["ShopeePay", "Shopee Pay", "AirPay"],
+    "domains": ["shopee.vn", "shopeepay.vn"]
+  },
+  {
+    "id": "viettel-money",
+    "name": "Viettel Money",
+    "kind": "wallet",
+    "aliases": ["Viettel Money", "ViettelPay"],
+    "domains": ["viettelmoney.vn", "viettel.com.vn"]
+  },
+  {
+    "id": "vietcombank",
+    "name": "Vietcombank",
+    "kind": "bank",
+    "aliases": ["Vietcombank", "VCB"],
+    "domains": ["vietcombank.com.vn"]
+  },
+  {
+    "id": "vietinbank",
+    "name": "VietinBank",
+    "kind": "bank",
+    "aliases": ["VietinBank", "CTG"],
+    "domains": ["vietinbank.vn"]
+  },
+  {
+    "id": "bidv",
+    "name": "BIDV",
+    "kind": "bank",
+    "aliases": ["BIDV"],
+    "domains": ["bidv.com.vn"]
+  },
+  {
+    "id": "agribank",
+    "name": "Agribank",
+    "kind": "bank",
+    "aliases": ["Agribank"],
+    "domains": ["agribank.com.vn"]
+  },
+  {
+    "id": "techcombank",
+    "name": "Techcombank",
+    "kind": "bank",
+    "aliases": ["Techcombank", "TCB"],
+    "domains": ["techcombank.com", "techcombank.com.vn"]
+  },
+  {
+    "id": "mb",
+    "name": "MB",
+    "kind": "bank",
+    "aliases": ["MB", "MB Bank", "MBBank"],
+    "domains": ["mbbank.com.vn"]
+  },
+  {
+    "id": "vpbank",
+    "name": "VPBank",
+    "kind": "bank",
+    "aliases": ["VPBank"],
+    "domains": ["vpbank.com.vn"]
+  },
+  {
+    "id": "acb",
+    "name": "ACB",
+    "kind": "bank",
+    "aliases": ["ACB"],
+    "domains": ["acb.com.vn"]
+  },
+  {
+    "id": "tpbank",
+    "name": "TPBank",
+    "kind": "bank",
+    "aliases": ["TPBank", "TP Bank"],
+    "domains": ["tpb.vn", "tpb.com.vn"]
+  },
+  {
+    "id": "sacombank",
+    "name": "Sacombank",
+    "kind": "bank",
+    "aliases": ["Sacombank", "STB"],
+    "domains": ["sacombank.com.vn"]
+  },
+  {
+    "id": "hdbank",
+    "name": "HDBank",
+    "kind": "bank",
+    "aliases": ["HDBank"],
+    "domains": ["hdbank.com.vn"]
+  },
+  {
+    "id": "vib",
+    "name": "VIB",
+    "kind": "bank",
+    "aliases": ["VIB"],
+    "domains": ["vib.com.vn"]
+  },
+  {
+    "id": "shb",
+    "name": "SHB",
+    "kind": "bank",
+    "aliases": ["SHB"],
+    "domains": ["shb.com.vn"]
+  }
+]

@@ -58,7 +58,7 @@ flowchart LR
 | `docs` | Tài liệu sản phẩm và kỹ thuật, viết bằng tiếng Việt |
 | `tools/sdlc-kit` | Submodule quy trình SDLC cho coding agent ([my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit)) |
 
-**Trạng thái (24/11/2026):** đã có nền móng, schema dữ liệu và phần gọi LLM (PR #2–#4); pipeline phân tích (S3) đã duyệt thiết kế, chưa có mã. Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
+**Trạng thái (26/11/2026):** đã có nền móng, schema dữ liệu và phần gọi LLM (PR #2–#4). Pipeline phân tích (S3) và `POST /api/analyses` có trên nhánh `feat/s3-pipeline` (PR #46), chưa merge. Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
 
 ## Quy trình làm việc (sdlc-kit)
 
@@ -106,7 +106,8 @@ npm run verify           # format + lint + typecheck + test
 | Framework | Next.js, Node.js, TypeScript | Web và API |
 | Cơ sở dữ liệu | PostgreSQL (Supabase managed) | Analyses, cases, decisions |
 | Mô hình AI | Groq: `qwen/qwen3.8-27b` (chính), `openai/gpt-oss-120b` (dự phòng), chốt sau thử nghiệm Q-08 | Trích tín hiệu, giải thích, tóm tắt hồ sơ |
-| Thư viện mã nguồn mở | React, zod, Drizzle ORM, postgres.js, Vitest, ESLint, Prettier, tsx (phiên bản ghim trong `package.json`) | Giao diện, schema, truy cập DB, test, chất lượng mã |
+| Thư viện mã nguồn mở | React, zod, Drizzle ORM, postgres.js, Vitest, ESLint, Prettier, tsx, tldts (phiên bản ghim trong `package.json`) | Giao diện, schema, truy cập DB, test, chất lượng mã |
+| Dữ liệu công bố | [PeterDaveHello/url-shorteners](https://github.com/PeterDaveHello/url-shorteners) (CC BY-SA 4.0, trích một phần); [bảng xếp hạng TLD của Interisle, 5/2025–4/2026](https://www.cybercrimeinfocenter.org/phishing-activity-in-tlds-may-april-2026) | Danh sách dịch vụ rút gọn và TLD rủi ro trong `packages/shared/data/url-lists.json` |
 | Công cụ AI hỗ trợ phát triển | Claude Code + [my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit) | Viết spec, thiết kế, mã và test |
 
 ## Đọc tiếp

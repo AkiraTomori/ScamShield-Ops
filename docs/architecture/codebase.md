@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (24/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (26/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 có mã trên nhánh `feat/s3-pipeline` (26/11, PR #46, chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -28,16 +28,19 @@
 │   │   ├── src/
 │   │   │   ├── enums.ts             contracts §1
 │   │   │   ├── analysis.ts  case.ts  report.ts  ops.ts  health.ts
+│   │   │   ├── input.ts             normalizeInput + câu lỗi đầu vào (client dùng được)
+│   │   │   ├── url-lists.ts         schema UrlLists
 │   │   │   ├── llm.ts               schema đầu ra LLM (contracts §7); AiSignalType; SignalType ở enums.ts
 │   │   │   ├── errors.ts            ErrorCode + câu tiếng Việt
 │   │   │   ├── brands.ts            schema BrandList
 │   │   │   └── env.ts               schema biến môi trường (chỉ dùng ở server)
-│   │   └── data/brands.json         danh sách thương hiệu (Q-10)
+│   │   └── data/                    brands.json (Q-10), url-lists.json (P-04)
 │   └── core/                        nghiệp vụ; không import next
 │       └── src/
 │           ├── deps.ts              tạo phụ thuộc thật (db, llm, http, clock)
 │           ├── db/                  client, ping, schema/, migrations/
 │           ├── http/                client HTTP ra ngoài có danh sách host cho phép (P5)
+│           ├── text/                so khớp không dấu giữ vị trí gốc; cắt chuỗi (hàm thuần)
 │           ├── redaction/           che OTP, mật khẩu, số thẻ (hàm thuần)
 │           ├── indicators/          trích + chuẩn hoá chỉ dấu (hàm thuần)
 │           ├── url-checks/          phép kiểm tất định trên chuỗi URL (hàm thuần)
@@ -65,12 +68,14 @@
 └── package.json                     npm workspaces + script gốc
 ```
 
-Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
+Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: slice S3: `packages/shared/src/{analysis,input,brands,url-lists}.ts` + `data/`, `packages/core/src/{text,redaction,indicators,url-checks,verdict,analysis,rate-limit}/`, `apps/web/src/server/analyses.ts`, `apps/web/src/app/api/analyses/` (`lookup/` chưa tạo, chờ T-035); slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
 
 ## 2. Phụ thuộc giữa module trong `packages/core`
 
 ```
 analysis ─→ redaction, indicators, url-checks, lookup, llm, verdict, confirmed-indicators, rate-limit, db
+redaction ─→ indicators (để không che nhầm URL, SĐT, số tài khoản)
+url-checks ─→ indicators (kiểu);  verdict ─→ url-checks (so tên miền chính thức)
 reports  ─→ analysis (đọc), llm (tóm tắt), rate-limit, db
 cases    ─→ confirmed-indicators, db
 lookup, llm ─→ http

@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (24/11/2026):** bản nháp, có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (26/11/2026):** bản nháp; có thêm `POST /api/analyses` trên nhánh `feat/s3-pipeline` (PR #46, chưa merge); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -17,6 +17,17 @@ npm run verify
 - Một file `.env` ở gốc repo cho tất cả: Docker Compose, Next.js (qua `next.config.ts`), `drizzle-kit`. Biến đã có sẵn trong môi trường (shell, Vercel) thắng giá trị trong `.env`; thiếu `.env` (CI, Vercel) vẫn chạy.
 - Test tích hợp (`*.int.test.ts`) chỉ chạy khi có `DATABASE_URL` trong môi trường: `set -a; . ./.env; set +a; npx vitest run`. Thiếu thì tự bỏ qua. Test không bao giờ đọc `.env` tự động, để không chạm DB thật nhầm.
 
+### Gọi thử `POST /api/analyses`
+
+Cần đã chạy migration (§4) và đặt trong `.env`: `GROQ_API_KEY`, `GROQ_MODEL_SIGNALS`, `GROQ_MODEL_EXPLAIN`, `RATE_LIMIT_SALT` (xem `.env.example`). Mỗi lượt gọi Groq thật 1–3 lần.
+
+```bash
+curl -s http://localhost:3000/api/analyses -H 'content-type: application/json' \
+  -d '{"content":"Tài khoản của bạn sẽ bị khoá trong 2 giờ. Xác minh tại vi-xac-minh.example và nhập mã OTP."}'
+```
+
+Server log `llm_call_failed` với `unavailable_429` nghĩa là Groq đang giới hạn tần suất; `config_401` là sai `GROQ_API_KEY`, `config_404` là sai tên model.
+
 ## 2. Postgres local (Docker)
 
 - Image `postgres:${POSTGRES_VERSION}-bookworm` (Debian, glibc). Không dùng alpine vì musl có thể sắp xếp/so khớp chuỗi khác với Postgres managed. Đặt `POSTGRES_VERSION` trùng major version của project Supabase (kiểm trên dashboard lúc tạo project; mặc định 17 chỉ là giá trị tạm).
@@ -29,6 +40,7 @@ npm run verify
 | Muốn đổi | Local | Vercel |
 |---|---|---|
 | `GROQ_API_KEY` | Sửa `.env`, khởi động lại `npm run dev` | Sửa biến trong project settings, redeploy |
+| Đổi sang model dự phòng (`GROQ_MODEL_SIGNALS`, `GROQ_MODEL_EXPLAIN`) | Như trên | Như trên |
 | Trỏ `DATABASE_URL` từ Docker sang Supabase | Sửa một dòng trong `.env` (dùng transaction pooler), khởi động lại | Biến Production |
 | Mật khẩu Postgres local | Đổi `POSTGRES_PASSWORD` **và** mật khẩu trong `DATABASE_URL`; mật khẩu chỉ có hiệu lực khi volume mới: `docker compose down -v` rồi `up` | Không áp dụng |
 
@@ -68,7 +80,7 @@ Thứ tự cho lần đầu (chi tiết và lý do ở [system-design §8](../ar
 1. Tạo project Supabase ở region Singapore. Ghi lại major version Postgres và đặt `POSTGRES_VERSION` local cho khớp.
 2. Tắt Data API của project.
 3. Tạo project Vercel nối repo GitHub, root là gốc repo, region function gần Singapore.
-4. Đặt `DATABASE_URL` (chuỗi transaction pooler) **chỉ cho môi trường Production** (D-03). Preview không có DB, `/api/health` ở preview trả 503 là đúng.
+4. Đặt `DATABASE_URL` (chuỗi transaction pooler) **chỉ cho môi trường Production** (D-03). Từ slice S3 đặt thêm `GROQ_API_KEY`, `GROQ_MODEL_SIGNALS`, `GROQ_MODEL_EXPLAIN`, `RATE_LIMIT_SALT`, và kiểm gói Vercel cho phép `maxDuration` 30 s cùng header `x-forwarded-for` đáng tin. Preview không có DB, `/api/health` ở preview trả 503 là đúng.
 5. Merge PR vào `main` để deploy production.
 6. Có bảng rồi thì chạy migration từ máy owner: đặt `DATABASE_URL_MIGRATE` (kết nối trực tiếp hoặc session) trong `.env`, chạy `npm run db:migrate`. Không bao giờ chạy trong build.
 

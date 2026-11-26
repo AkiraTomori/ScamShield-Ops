@@ -1,0 +1,170 @@
+{
+  "sources": {
+    "peterdavehello-url-shorteners": {
+      "title": "PeterDaveHello/url-shorteners (CC BY-SA 4.0)",
+      "url": "https://github.com/PeterDaveHello/url-shorteners",
+      "retrieved": "2026-11-26"
+    },
+    "interisle-tld-2025-2026": {
+      "title": "Interisle: Phishing Activity in TLDs, May 2025 - April 2026, Table 2 (top 20 by phishing domain score)",
+      "url": "https://www.cybercrimeinfocenter.org/phishing-activity-in-tlds-may-april-2026",
+      "retrieved": "2026-11-26"
+    }
+  },
+  "shorteners": [
+    {
+      "value": "bit.ly",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "tinyurl.com",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "t.co",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "goo.gl",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "is.gd",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "ow.ly",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "buff.ly",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "rebrand.ly",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "cutt.ly",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "shorturl.at",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "tiny.cc",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "rb.gy",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "t.ly",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "bom.so",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "s.id",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "v.gd",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "shorturl.asia",
+      "source": "peterdavehello-url-shorteners"
+    },
+    {
+      "value": "ouo.io",
+      "source": "peterdavehello-url-shorteners"
+    }
+  ],
+  "riskyTlds": [
+    {
+      "value": "xin",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "win",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "icu",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "garden",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "cfd",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "pro",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "help",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "mom",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "rest",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "mobi",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "qpon",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "live",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "ink",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "best",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "lat",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "cyou",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "top",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "wang",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "life",
+      "source": "interisle-tld-2025-2026"
+    },
+    {
+      "value": "homes",
+      "source": "interisle-tld-2025-2026"
+    }
+  ]
+}

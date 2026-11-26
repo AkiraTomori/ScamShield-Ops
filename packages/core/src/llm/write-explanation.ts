@@ -1,9 +1,9 @@
-import { LlmExplanationOutput } from "@scamshield/shared";
+import { EXPLANATION_MAX_CHARS, LlmExplanationOutput } from "@scamshield/shared";
 import { normalizeText, parseModelJson } from "./json";
 import { buildExplanationPrompt, type ExplanationInput } from "./prompts/explain-v3";
 import type { CallOptions, LlmDeps, TokenUsage } from "./types";
 
-export const EXPLANATION_MAX_CHARS = 800;
+export { EXPLANATION_MAX_CHARS };
 export const EXPLANATION_MAX_TOKENS = 600;
 
 export type ExplanationRejection =
@@ -59,7 +59,8 @@ export async function writeExplanation(
   if (!parsed)
     return { ok: false, reason: "llm_invalid_output", latencyMs: result.latencyMs, usage };
 
-  const explanation = parsed.explanation.trim();
+  // JSON escapes can smuggle NUL or half a surrogate pair, which the database rejects.
+  const explanation = parsed.explanation.replace(/[\u0000\p{Cs}]/gu, "").trim();
   const rejection = filterExplanation(explanation, prompt.sentData);
   if (rejection) return { ok: false, reason: rejection, latencyMs: result.latencyMs, usage };
   return { ok: true, explanation, latencyMs: result.latencyMs, usage };

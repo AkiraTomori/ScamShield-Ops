@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` có mã trên nhánh `feat/s3-pipeline` (PR #46, chưa merge). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 
@@ -58,7 +58,8 @@ Content-Type: application/json
   "redactions": { "otp": 1, "password": 0, "card": 0 },
   "explanation": "…",
   "recommendations": ["…", "…", "…"],
-  "promptVersion": "signals-v1", "rulesVersion": "rules-v1",
+  "rule": "R3",
+  "promptVersion": "signals-v1+explain-v3", "rulesVersion": "rules-v1",
   "createdAt": "2026-11-22T03:10:00Z"
 }
 ```
@@ -75,9 +76,9 @@ Hết trần 20 giây ở bất kỳ bước nào sau bước 3 → vẫn **200*
 
 | Lỗi | Khi nào |
 |---|---|
-| 400 `validation_failed` | Bước 2 |
+| 400 `validation_failed` | Bước 2, kể cả body không phải JSON, có trường lạ hoặc lớn hơn 64 KB |
 | 429 `rate_limited` | Bước 1 |
-| 500 `internal` | Lỗi không dự đoán được (ví dụ không ghi được DB) |
+| 500 `internal` | Lỗi không dự đoán được (ví dụ không ghi được DB), bộ đếm tần suất lỗi hoặc quá 1 s, thiếu biến môi trường của pipeline |
 
 ### `POST /api/analyses/{analysisId}/report`
 

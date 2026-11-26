@@ -1,5 +1,11 @@
 export * from "./db";
 export * from "./http";
 export * from "./llm";
-export { createDeps, type Deps } from "./deps";
+export { createAnalysisDeps, createDeps, type Deps } from "./deps";
 export { logEvent, type LogFields } from "./log";
+export * from "./analysis";
+export { extractIndicators, type ExtractedIndicators } from "./indicators";
+export { consumeRateLimit, PUBLIC_LIMIT_PER_MINUTE, rateLimitKey } from "./rate-limit";
+export { redact } from "./redaction";
+export { checkDomain, checkUrl, detectInjection } from "./url-checks";
+export { decide, recommend, RULES_VERSION, type Decision, type DecisionInput } from "./verdict";

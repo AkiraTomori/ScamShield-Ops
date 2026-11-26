@@ -123,7 +123,7 @@ Trong mọi biến thể, chỉ dấu và phép kiểm vẫn hiện đầy đủ
 
 | Cần | Ở đâu | Ai làm | Khi nào |
 |---|---|---|---|
-| `AnalysisRequest` (zod, `{ content }`) và `AnalysisResult` theo contracts §5 | `packages/shared/src/analysis.ts` | **C** (team-split §3: C giữ schema; đổi schema thì báo cả nhóm) | **Tách thành PR nhỏ, làm trước T-038**, để B không phải đợi pipeline |
+| `CreateAnalysisRequest` (zod, `{ content }`) và `AnalysisResult` theo contracts §5 | `packages/shared/src/analysis.ts` | **C** (team-split §3: C giữ schema; đổi schema thì báo cả nhóm) | **Tách thành PR nhỏ, làm trước T-038**, để B không phải đợi pipeline |
 | Luật đếm ký tự dùng chung client/server (U-02) | `packages/shared` | A hoặc C (gắn với T-031) | Cùng PR trên |
 | Tên hiển thị thương hiệu cho `detail` `brand:<id>` | `brands.json` (T-033) | A | Trước khi xong T-042; chưa có thì dùng fallback (§5.3) |
 

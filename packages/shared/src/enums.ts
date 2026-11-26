@@ -66,3 +66,22 @@ export const SignalType = z.enum([
   "verified_indicator",
 ]);
 export type SignalType = z.infer<typeof SignalType>;
+
+/** Deterministic and external checks on an indicator (contracts §4). */
+export const CheckType = z.enum([
+  "official_domain",
+  "lookalike",
+  "punycode",
+  "subdomain_brand",
+  "shortener",
+  "ip_host",
+  "risky_tld",
+  "domain_age",
+  "blocklist",
+  "verified_indicator",
+]);
+export type CheckType = z.infer<typeof CheckType>;
+
+/** `pass` only means one check found nothing; it is never a verdict. */
+export const CheckStatus = z.enum(["warn", "pass", "unavailable"]);
+export type CheckStatus = z.infer<typeof CheckStatus>;

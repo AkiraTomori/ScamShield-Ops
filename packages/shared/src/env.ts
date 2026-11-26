@@ -48,3 +48,35 @@ export function parseRuntimeDatabaseEnv(source: Record<string, string | undefine
 export function parseServerEnv(source: Record<string, string | undefined>) {
   return ServerEnv.safeParse(source);
 }
+
+const optionalPositiveInt = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce.number().int().positive().optional(),
+);
+
+/**
+ * Variables of the analysis pipeline (analysis-pipeline §11). Parsed separately from the health
+ * check, which must keep working without any of them.
+ */
+export const AnalysisEnv = z.object({
+  DATABASE_URL: postgresUrl,
+  GROQ_API_KEY: z.string().min(1),
+  /** Q-08: switching to the fallback model is a change here, not in code. */
+  GROQ_MODEL_SIGNALS: z.string().min(1),
+  GROQ_MODEL_EXPLAIN: z.string().min(1),
+  /** Defaults to `low`, the setting measured in research A.6. */
+  GROQ_REASONING_EFFORT: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().min(1).default("low"),
+  ),
+  /** Secret for HMAC-SHA256 of the client IP. */
+  RATE_LIMIT_SALT: z.string().min(32),
+  SAFE_BROWSING_API_KEY: optionalString,
+  /** P-03: unset means no cap. */
+  LLM_DAILY_CALL_CAP: optionalPositiveInt,
+});
+export type AnalysisEnv = z.infer<typeof AnalysisEnv>;
+
+export function parseAnalysisEnv(source: Record<string, string | undefined>) {
+  return AnalysisEnv.safeParse(source);
+}

@@ -211,3 +211,24 @@ describe("extractSignals", () => {
     expect(llm.calls[0]!.signal.aborted).toBe(false);
   });
 });
+
+describe("per-attempt time limits (analysis-pipeline §2)", () => {
+  const caps = [8_000, 6_000];
+  const timeout = { ok: false, kind: "timeout", latencyMs: 8_000 } as const;
+
+  it("an attempt that hits its own limit is llm_unavailable", async () => {
+    const result = await extractSignals(CONTENT, makeDeps(fakeLlm([timeout])), {
+      deadline,
+      attemptTimeoutMs: caps,
+    });
+    expect(result).toMatchObject({ ok: false, reason: "llm_unavailable", attempts: 1 });
+  });
+
+  it("an attempt cut by the overall deadline is timeout", async () => {
+    const result = await extractSignals(CONTENT, makeDeps(fakeLlm([timeout])), {
+      deadline: NOW + 7_000,
+      attemptTimeoutMs: caps,
+    });
+    expect(result).toMatchObject({ ok: false, reason: "timeout" });
+  });
+});
