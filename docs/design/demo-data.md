@@ -24,7 +24,7 @@
 | id | Vai trò | Trên trang (chip) | Verdict mong đợi | Ràng buộc |
 |---|---|---|---|---|
 | `M1` | Tin lừa đảo chính trong video | "Khoá tài khoản" | `high_risk` | Mạo danh một thương hiệu thật có trong `brands.json` (R-01); tên miền `vi-xac-minh.example`; đòi OTP; áp lực thời gian |
-| `M2` | Tin OTP thật | "Tin OTP thật" | `no_signal` | Không có đường dẫn lạ; nếu có thì chỉ là tên miền chính thức |
+| `M2` | Tin OTP thật | "Tin OTP thật" | `no_signal` | Không có đường dẫn lạ; nếu có thì chỉ là tên miền chính thức. Không viết "trả lời / đánh giá / kết luận … an toàn" trong 30 ký tự, kể cả cách nhau bởi dấu chấm: bị bắt là chèn lệnh AI ([analysis-pipeline §13](./analysis-pipeline.md#13-ghi-chú-cài-đặt-26112026)) |
 | `M3` | Tin lừa đảo thứ hai | **Không** có chip; dán tay | `high_risk` | Nội dung khác M1 (ví dụ "hoàn tiền"), **cùng** tên miền `vi-xac-minh.example` |
 | `prize` | Trúng thưởng | "Trúng thưởng" | `high_risk` hoặc `suspicious` | Tên miền `*.example` khác `vi-xac-minh.example` |
 | `urgent` | Chuyển tiền gấp | "Chuyển tiền gấp" | `suspicious` | Không có URL; "người thân cấp cứu" kèm số tài khoản |

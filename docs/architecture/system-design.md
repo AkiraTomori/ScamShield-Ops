@@ -118,7 +118,10 @@ Schema `HealthResponse` nằm ở `packages/shared` và là nguồn sự thật.
 |---|---|---|
 | `DATABASE_URL` | Vercel **chỉ môi trường Production** (D-03), `.env` local | Transaction pooler |
 | `DATABASE_URL_MIGRATE` | Chỉ `.env` local của owner | Kết nối trực tiếp/session |
-| `GROQ_API_KEY` | Chưa cần ở slice này | Thêm ở slice pipeline |
+| `GROQ_API_KEY` | Vercel Production, `.env` local | Bắt buộc cho `/api/analyses` (từ slice S3) |
+| `GROQ_MODEL_SIGNALS`, `GROQ_MODEL_EXPLAIN` | Như trên | Bắt buộc cho `/api/analyses`; tên model theo Q-08 |
+| `RATE_LIMIT_SALT` | Như trên | Bắt buộc; chuỗi ngẫu nhiên ≥ 32 ký tự |
+| `GROQ_REASONING_EFFORT`, `LLM_DAILY_CALL_CAP`, `SAFE_BROWSING_API_KEY` | Tuỳ chọn | Mặc định `low`; không đặt trần; chưa dùng (T-035) |
 
 Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `config_missing` thay vì làm sập build. `/api/health` **chỉ** đọc và kiểm `DATABASE_URL`: giá trị sai ở `DATABASE_URL_MIGRATE` hay `GROQ_API_KEY` không được làm health thành 503 (có test hồi quy). `.env.example` chỉ chứa tên biến và giá trị giả.
 

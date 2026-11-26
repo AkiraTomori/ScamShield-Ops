@@ -46,7 +46,7 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 
 | File | Nội dung | Trạng thái | Cấp |
 |---|---|---|---|
-| [`design/analysis-pipeline.md`](./design/analysis-pipeline.md) | Slice S3: 6 bước phân tích, phép kiểm URL, quy tắc verdict, prompt | **Owner duyệt 24/11**, chưa có mã | 5 |
+| [`design/analysis-pipeline.md`](./design/analysis-pipeline.md) | Slice S3: 6 bước phân tích, phép kiểm URL, quy tắc verdict, prompt | **Owner duyệt 24/11**; mã trên nhánh `feat/s3-pipeline`, còn T-035 và eval dev | 5 |
 | [`design/scamshield-ui.md`](./design/scamshield-ui.md) | Slice S4: module và ranh giới client, state machine, phụ thuộc schema, bảng nhãn signal / mã detail, kiểm thử | **Owner duyệt 26/11**, chưa có mã | 5 |
 | [`design/report-flow.md`](./design/report-flow.md) | Slice S5: route báo cáo, tóm tắt AI, mã bí mật, tra trạng thái không lộ hồ sơ, sửa state machine S4 | **Owner duyệt 26/11**, chưa có mã | 5 |
 | [`design/fraudops.md`](./design/fraudops.md) | Slice S6: kiểm phiên sát dữ liệu, đăng nhập/phiên/Origin, danh sách, chi tiết, kết luận và xung đột | **Owner duyệt 26/11**, chưa có mã | 5 |
@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 26/11/2026 (owner duyệt S4–S11).
+Cập nhật 26/11/2026 (owner duyệt S4–S11; mã S3 trên nhánh `feat/s3-pipeline`).
 
 | Phần | Trạng thái |
 |---|---|
@@ -103,9 +103,9 @@ Cập nhật 26/11/2026 (owner duyệt S4–S11).
 | Dữ liệu P0 (schema 8 bảng, migration `0000_p0_tables`) | Đã merge (PR #3); migration chưa chạy trên DB deploy; chưa có seed/reset |
 | S2 thử model ([design](./design/model-spike.md)) | Đã merge (PR #4): HTTP client có allowlist, client Groq, `extractSignals`, `writeExplanation`, runner `npm run eval:q08`, 20 câu dev nháp. Chạy Groq thật 21–23/11, số ở [research A.6](./research/result.md) |
 | Proposal cho vòng loại | Đã merge (PR #5), bản đề xuất để review |
-| S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Owner duyệt thiết kế 24/11, **chưa có mã**; trễ so với lịch 22–23/11, owner chưa yêu cầu cắt việc |
-| S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); chưa có mã; trễ so với lịch 24–25/11; phụ thuộc schema `AnalysisResult` chưa có ở `packages/shared` |
-| S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); chưa có mã; T-050 bị chặn bởi T-038 (S3) |
+| S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Mã trên nhánh `feat/s3-pipeline` (chưa commit, chưa merge, chưa deploy): T-031…T-034, T-036…T-038, T-045, route `POST /api/analyses`. `npm run verify` xanh, test tích hợp chạy trên Postgres tạm, gọi thử Groq thật ở local. Chưa làm: T-035 (P1), eval tập dev (T-039). Trễ so với lịch 22–23/11 |
+| S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); chưa có mã; trễ so với lịch 24–25/11; schema `AnalysisResult` có trên nhánh `feat/s3-pipeline` (chưa merge) |
+| S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); chưa có mã; T-050 chờ T-038 (S3) được merge |
 | S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); chưa có mã; T-060 không bị S3 chặn |
 | S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); chưa có mã; không cần migration |
 | S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |

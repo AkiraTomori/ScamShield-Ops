@@ -1,6 +1,6 @@
 # Thiết kế slice pipeline phân tích (SO-01…SO-03)
 
-**Trạng thái (24/11/2026):** **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)). **Sửa ngày 26/11/2026** (owner chốt khi duyệt S4, S10): `normalizeInput` đặt ở `packages/shared` (U-02); `analyzeMessage` không tự lưu, route lưu (EV-02). Hành vi không đổi.
+**Trạng thái (24/11/2026):** **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)). **Cài đặt (26/11/2026):** mã trên nhánh `feat/s3-pipeline` (chưa commit, chưa merge, chưa deploy); còn thiếu tra cứu ngoài (§6.6, T-035) và chạy eval tập dev; các chỗ khác bản duyệt ở §13. **Sửa ngày 26/11/2026** (owner chốt khi duyệt S4, S10): `normalizeInput` đặt ở `packages/shared` (U-02); `analyzeMessage` không tự lưu, route lưu (EV-02). Hành vi không đổi.
 
 **Căn cứ và thứ bậc:**
 - [spec](../spec/ScamShield-v1.md): SO-01…SO-03, P1–P5, Q-04, Q-06.
@@ -380,6 +380,7 @@ analyzeMessage(content: string, deps: AnalysisDeps, opts?: { deadlineMs?: number
 | `RATE_LIMIT_SALT` | Có | Chuỗi ngẫu nhiên ≥ 32 ký tự |
 | `SAFE_BROWSING_API_KEY` | Không | Thiếu thì không có check `blocklist` |
 | `LLM_DAILY_CALL_CAP` | Không | Xem P-03 |
+| `GROQ_REASONING_EFFORT` | Không | Mặc định `low` (cấu hình đã đo ở research A.6) |
 
 **Ánh xạ AC → kiểm:**
 
@@ -410,3 +411,43 @@ analyzeMessage(content: string, deps: AnalysisDeps, opts?: { deadlineMs?: number
 | P-05 | Ngưỡng `lookalike` (≤ 1 / ≤ 2 ký tự) và tuổi tên miền mới (< 30 ngày) | Đề xuất ban đầu, chỉnh theo eval tập dev | Dùng đề xuất làm giá trị ban đầu, owner chốt 24/11; chỉnh theo eval tập dev |
 | P-06 | Độ rộng của `insufficient_evidence` (§7.1) | Hẹp (đề xuất) giữ M2 ra `no_signal`; rộng hơn thì an toàn hơn nhưng nhiều tin thật bị "chưa kết luận" | Hẹp, owner chốt 24/11 làm giá trị ban đầu; chỉnh theo eval tập dev |
 | P-07 | Đổi `brand_impersonation` (signal AI) thành `claims_organization` (§6.9) | Tránh dán nhãn "mạo danh" lên tin thật | **Đổi**, owner chốt 20/11 |
+
+## 13. Ghi chú cài đặt (26/11/2026)
+
+Các chỗ mã làm khác hoặc chi tiết hơn bản đã duyệt. **Owner chưa xác nhận**; không đồng ý mục nào thì sửa mã.
+
+| # | Mục | Mã đang làm | Vì sao |
+|---|---|---|---|
+| N-01 | §5 mật khẩu | Nếu sau từ khoá, trong cùng mệnh đề (tối đa 8 từ) có `là`, `:` hoặc `=`, che chuỗi **đứng sau dấu đó** ("Mật khẩu ứng dụng là X"), cộng các từ trước đó có chữ số hay ký hiệu, hoặc một từ ASCII đứng lẻ ("mk banhbao là…"). Không có dấu đó thì che chuỗi liền sau, trừ từ nối (để, và, hay, hoặc, cho, qua, của, khi, nếu, thì, rồi, sau); đồng thời che mọi từ khác trong cùng mệnh đề (tối đa 8 từ) dài từ 4 ký tự có chữ số hoặc ký hiệu ("mã PIN thẻ 9731"), trừ số tiền, ngày giờ, URL, số điện thoại, số sau STK / "số tài khoản" và số tài khoản dài hơn 8 chữ số. Không bao giờ che từ phủ định (không, đừng, chưa), vì bỏ nó đi là đảo nghĩa | Tránh che nhầm từ mà để lộ mật khẩu (review 26/11). **Đổi lại:** vẫn che nhầm một số từ thường ("nhập mật khẩu tại…", "mật khẩu của bạn sắp hết hạn") và mã đơn hàng đứng gần từ khoá. Mật khẩu toàn chữ, không phải từ liền sau, vẫn lọt. Số tài khoản ≤ 8 chữ số sau "tài khoản" / "TK" trần, đứng cạnh từ khoá mật khẩu, bị che; mật khẩu toàn số dài hơn 8 chữ số viết sau "mật khẩu tài khoản" thì lọt |
+| N-02 | §5 OTP | Che thêm mã đứng **trước** từ khoá ("482913 là mã OTP") | Spec SO-01-AC03 (cấp cao hơn) yêu cầu che OTP; quy tắc "sau từ khoá" bỏ sót dạng này |
+| N-03 | §6.1 tên miền không scheme | Bỏ ứng viên có TLD viết hoa chữ đầu, hoặc mọi nhãn ≤ 3 ký tự mà có chữ hoa; **không** áp khi theo sau là đường dẫn (`Bit.ly/3xyz`) | `ThS.BS`, `ơn.Vui` trùng TLD thật. Thiếu dấu cách mà viết thường (`đi.me`) vẫn bị bắt nhầm; link rút gọn viết hoa mà không có đường dẫn (`Bit.ly`) vẫn bị bỏ |
+| N-04 | §6.1 PSL | Tính cả hậu tố riêng (`pages.dev`, `github.io`) | Mỗi khách thuê là một tên miền riêng |
+| N-05 | §6.1 địa chỉ IP | Ngoài `http(s)://`, nhận cả IPv4 viết đủ bốn nhóm **có kèm đường dẫn hoặc cổng** (`203.0.113.7/login`); không sinh chỉ dấu `domain`. IP trần không đường dẫn, không cổng thì bỏ qua | SO-02-AC02 (cấp cao hơn) yêu cầu kiểm URL dùng địa chỉ IP; §6.1 chỉ nói TLD hợp lệ |
+| N-06 | §6.5 `lookalike` | Nhãn trùng hẳn nhưng khác đuôi: báo `contains:<bí danh>`, không có bí danh thì `nearest:…:distance_0` | §6.5 (a) "khác ≤ 1 ký tự" đã gồm khoảng cách 0 (chỉ tên miền chính thức trùng hẳn mới `pass`); N-06 chỉ chọn mã `detail` nào được báo |
+| N-07 | §7 đếm `S`, `M`, `W` | Đếm **loại** signal khác nhau, không đếm số lần | Hai đường dẫn rút gọn không nên tự thành hai bằng chứng |
+| N-08 | §11 giao diện | `analyzeMessage` trả thêm `record` (nội dung đã che, tên model) để route lưu; `promptVersion` là `signals-v1+explain-v3` | Kết quả API không chứa nội dung; DB chỉ có một cột phiên bản |
+| N-09 | §5 "không che số tài khoản" | Số **không đi liền** sau STK / "số tài khoản" mất quyền miễn che khi cùng câu có từ khoá OTP, "số thẻ" hoặc CVV. Nếu số đó dài ≤ 8 chữ số và câu có từ khoá OTP thì che, kể cả khi xa hơn 40 ký tự | "Mã OTP đăng nhập tài khoản của bạn là 482913" từng bị coi là số tài khoản nên lọt (review 26/11). **Đổi lại:** số tài khoản nhận tiền 6–8 chữ số **của kẻ gian** ("chuyển 2.000.000 vào tài khoản 12345678 rồi đọc mã OTP") bị che như OTP, mất chỉ dấu theo Q-04 và không nối được hồ sơ (SO-07) |
+| N-10 | §6.3 số tài khoản | Sau "tài khoản", "TK", "acc" trần, số trùng một số điện thoại hay tổng đài **không** ghi là số tài khoản. Sau STK, "số tài khoản", "chuyển tiền vào" thì vẫn ghi | "Tài khoản bị khoá, gọi 0901…" từng sinh chỉ dấu tài khoản giả, sẽ nối nhầm hồ sơ (SO-07) |
+| N-11 | §5 số thẻ | Dãy qua Luhn chỉ được miễn che khi một chỉ dấu bên gửi **bao trọn** dãy, hoặc một số tài khoản bắt đầu đúng đầu dãy | `9704 1800 1234 5674` từng lọt vì `1800 1234` giống tổng đài (review 26/11) |
+
+**Quan sát khi kiểm (chưa sửa quy tắc hay ngưỡng):**
+- Mô phỏng 20 câu dev với signal AI lấy **đúng theo nhãn** (không gọi Groq): `rules-v1` ra verdict nằm trong `expectedVerdicts` ở **15/20** câu. Lệch: `dev-003`, `dev-005` ra `suspicious` (nhãn `high_risk`); `dev-008` ra `suspicious` (đòi đọc OTP qua điện thoại, nhãn `high_risk`); `dev-016`, `dev-017` ra `no_signal` (nhãn không cho `no_signal`; `dev-017` là tin đổi số tài khoản nhận tiền). Đây không phải số đo eval.
+- Thương hiệu giả "Ví XYZ", "ABC Bank" trong `dev.jsonl` không có trong `brands.json`, nên `dev-001`, `dev-002`, `dev-018` không sinh được `brand_domain_mismatch` / `lookalike_domain` mà nhãn chờ.
+- Nhãn chính thức ngắn (`tpb`, `vib`, `acb`, `shb`) với ngưỡng ≤ 1 ký tự dễ bắt nhầm tên miền 3 chữ cái (P-05).
+- Gọi thật ở local (`qwen/qwen3.8-27b`): tin kiểu M1 hoàn tất 4,0 s; gửi liên tiếp thì Groq trả 429, lượt đó ra `inconclusive` (`llm_unavailable`). Cách nhau 65 s thì phân tích được, nhưng lời gọi giải thích vẫn bị 429 ở 2/3 lượt.
+
+**Hai phát hiện của review: owner trả lời trong phiên làm việc ngày 26/11 "chắc giữ nguyên theo spec", nên không sửa mã.** (Dòng "Owner chưa xác nhận" ở đầu §13 là về bảng N-xx.) Hai hệ quả đã biết:
+- §6.8 mẫu injection `(đánh giá|kết luận|trả lời) .{0,30}(an toàn|không lừa đảo)` vượt qua dấu câu: "không trả lời tin nhắn này. Để bảo vệ an toàn tài khoản…" sinh `ai_directed_instruction` (signal mạnh), nên tin ngân hàng bình thường có câu này ra `suspicious`. **Tin demo M2 phải ra `no_signal` ổn định** (§7.3), nên khi soạn M2 (T-093) tránh cụm này.
+- §6.5 ngưỡng `lookalike` với nhãn ngắn: `abc.com`, `vin.vn` ra `lookalike_domain`. P-05 vẫn cho chỉnh ngưỡng theo eval tập dev.
+
+**Còn lại từ review:**
+- Trần 20 giây: lưu quá hạn trả 500 nhưng không huỷ giao dịch, nên bản ghi vẫn có thể được ghi (vô hại: bản ghi bất biến, người dùng gửi lại). Truy vấn của `LLM_DAILY_CALL_CAP` **đã sửa**: hạn 1 s, quá hạn hoặc lỗi thì bỏ lời gọi LLM (như chạm trần, P-03).
+
+**Từ review lần 2 (26/11):**
+- Đã sửa: số nằm trong đường dẫn không còn là số tài khoản (và không bị che như OTP); `value` của chỉ dấu `domain` cắt từ nội dung gốc nên giữ nguyên ngụy trang (contracts §2); lỗi cấu hình Groq được log `llm_call_failed` / `config_<mã HTTP>`.
+- Chưa sửa, chờ owner: `viettel.vn` ra `lookalike` theo §6.5 (a) vì trùng nhãn với `viettel.com.vn` (nếu là tên miền chính thức thì phải thêm vào `brands.json`, đổi Q-10, owner quyết); mẫu injection tiếng Anh né được bằng hai dấu cách (sửa thì đụng §6.8).
+
+**Dương tính giả nên đưa vào eval (P-05):** "Tặng 500 MB data" kèm đường dẫn: `MB` viết hoa được nhận là ngân hàng MB (đúng §6.4), nên tên miền lạ sinh `brand_domain_mismatch`.
+
+**Giới hạn che OTP đúng theo §5, nên đưa vào eval:** OTP cách từ khoá quá 40 ký tự mà câu không nhắc tài khoản; OTP viết tách (`482 913`).
+

@@ -1,6 +1,6 @@
 # ScamShield Ops — Hợp đồng dữ liệu
 
-**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2). Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2); trên nhánh `feat/s3-pipeline` (26/11, chưa merge) có thêm `CheckType`, `CheckStatus`, `AnalysisResult`, `CreateAnalysisRequest`, `BrandList`, `UrlLists`. Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 **Thứ bậc:** khi `packages/shared` đã có schema, **schema thắng** file này; lệch thì sửa file này trong cùng PR ([conventions/contracts.md](../conventions/contracts.md)). Endpoint dùng các hình dạng này ở [api.md](./api.md). Quy tắc tính verdict **không** nằm ở đây; nó thuộc thiết kế slice pipeline (system-design §10).
 
@@ -89,7 +89,7 @@ Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá th�
 | `explanation` | string \| null | Do LLM viết, ≤ 800 ký tự, chỉ dựa trên signal và check (SO-03-AC05). `null` khi LLM lỗi |
 | `recommendations` | string[] (2–4) | Câu mẫu do **code** chọn theo verdict và signal (A-01) |
 | `rule` | string | Mã quy tắc verdict đã kích hoạt (`R0`…`R9`, design/analysis-pipeline §7) |
-| `promptVersion`, `rulesVersion` | string | Spec §10 |
+| `promptVersion`, `rulesVersion` | string | Spec §10. `promptVersion` ghép hai prompt: `signals-v1+explain-v3` |
 | `createdAt` | ISO 8601 UTC | |
 
 **Không có** trường điểm số hay xác suất (SO-03-AC04). Nội dung tin nhắn đã che **không** trả lại trong response (người dùng đã có nội dung gốc).
@@ -130,7 +130,7 @@ Dạng chung ở [conventions/contracts.md §4](../conventions/contracts.md#4-l�
 
 | `ErrorCode` | HTTP | Câu tiếng Việt |
 |---|---|---|
-| `validation_failed` | 400 | Theo trường; nội dung rỗng/quá 2.000 ký tự có câu riêng (SO-01-AC02) |
+| `validation_failed` | 400 | Theo trường; nội dung rỗng/quá 2.000 ký tự có câu riêng (SO-01-AC02): "Hãy dán nội dung tin nhắn cần kiểm tra." / "Nội dung quá dài. Tối đa 2.000 ký tự." (`packages/shared/src/input.ts`), kèm `fields.content` = `empty` \| `too_long` |
 | `rate_limited` | 429 | "Bạn đang gửi quá nhanh, thử lại sau ít phút" (nguyên văn SO-01-AC04) |
 | `unauthorized` | 401 | "Bạn cần đăng nhập để tiếp tục." |
 | `invalid_credentials` | 401 | "Sai tên đăng nhập hoặc mật khẩu." |
@@ -149,7 +149,9 @@ Một analysis quá thời gian **không** là lỗi: trả 200 với `verdict =
 [{ "id": "vi-xyz", "name": "Ví XYZ", "kind": "wallet", "aliases": ["Ví XYZ", "XYZ Pay"], "domains": ["vixyz.example"] }]
 ```
 
-`kind`: `wallet` | `bank`. `domains` là tên miền đăng ký, chữ thường. Ví dụ trên là dữ liệu giả; nội dung thật lấy từ Phụ lục A của spec sau khi owner duyệt.
+Schema `BrandList` ở `packages/shared/src/brands.ts`; mỗi thương hiệu có `id` duy nhất. `kind`: `wallet` | `bank`. `domains` là tên miền đăng ký, chữ thường. Ví dụ trên là dữ liệu giả; nội dung thật (18 thương hiệu owner duyệt 24/11) chỉ ở file dữ liệu.
+
+`packages/shared/data/url-lists.json` (schema `UrlLists`): `{ sources: { <id>: { title, url, retrieved } }, shorteners: { value, source }[], riskyTlds: { value, source }[] }`; mỗi mục phải trỏ tới một nguồn đã khai (P-04).
 
 ## 10. Quyết định
 

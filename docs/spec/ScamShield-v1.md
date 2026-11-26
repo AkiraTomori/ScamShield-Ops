@@ -246,32 +246,4 @@ Hai nhóm API: công khai (tạo analysis, gửi report, tra trạng thái) và 
 
 ## Phụ lục A. Danh sách thương hiệu (Q-10)
 
-**Trạng thái: OWNER ĐÃ DUYỆT 24/11/2026** (toàn bộ bảng dưới; không thêm `vptravelmiles.com.vn`). Khi slice S3 tạo file `packages/shared/data/brands.json`, danh sách chuyển vào file đó và phụ lục này chỉ còn một dòng trỏ tới file, để không có hai nguồn.
-
-Cột *Kiểm* ghi cách xác nhận tên miền: **Đã tra (ngày, nguồn)** = đối chiếu bằng tìm kiếm web; nguồn **sơ cấp** là trang của chính thương hiệu, trang ứng dụng chính thức trên App Store, hoặc hồ sơ hội viên trên trang Hiệp hội Ngân hàng Việt Nam (VNBA); **thứ cấp** là Wikipedia hoặc trang của bên thứ ba. Agent chỉ tra qua kết quả tìm kiếm, không mở trực tiếp các website này. Tên miền có ghi *thêm khi tra* là tên miền không có trong bản đề xuất 20/11 mà tìm được nguồn sơ cấp lúc tra ngày 24/11. Tên miền sai hoặc thiếu sẽ gây dương tính giả với tin nhắn hợp lệ ([plan §8](../runbook/plan.md#8-rủi-ro)). Mỗi thương hiệu có nhiều bí danh (để phát hiện thương hiệu được nhắc tới) và có thể có nhiều tên miền. Khi so khớp, tên miền con của tên miền chính thức (ví dụ `neo.vpbank.com.vn`) được coi là chính thức.
-
-| Thương hiệu | Loại | Bí danh để nhận diện | Tên miền chính thức | Kiểm |
-|---|---|---|---|---|
-| MoMo | Ví | MoMo, Ví MoMo, M_Service | `momo.vn` | Đã tra 24/11/2026, sơ cấp: trang `momo.vn` ghi đơn vị vận hành là CTCP Dịch vụ Di động Trực tuyến (M_Service) |
-| ZaloPay | Ví | ZaloPay, Zalo Pay | `zalopay.vn` | Đã tra 24/11/2026, sơ cấp: trang hợp tác trên `zalopay.vn`, tài liệu `docs.zalopay.vn`, email hỗ trợ `@zalopay.vn` trên App Store |
-| VNPAY | Ví / cổng thanh toán | VNPAY, VNPay, VNPAY-QR | `vnpay.vn`, `vivnpay.vn` | Đã tra 24/11/2026, sơ cấp: `vnpay.vn` có hồ sơ hội viên VNBA; `vivnpay.vn` (*thêm khi tra*) được điều khoản Ví VNPAY (đăng trên `vidientu-static.vnpay.vn`) gọi là website của ví |
-| ShopeePay | Ví | ShopeePay, Shopee Pay, AirPay | `shopee.vn`; `shopeepay.vn` | Đã tra 24/11/2026, sơ cấp: `shopeepay.vn` có trang liên hệ và chính sách ghi CTCP ShopeePay và giấy phép NHNN; blog `shopee.vn` mô tả ví |
-| Viettel Money | Ví | Viettel Money, ViettelPay | `viettelmoney.vn`, `viettel.com.vn` | Đã tra 24/11/2026, sơ cấp: `viettelmoney.vn` có trang chủ và trang hỗ trợ riêng, App Store cũng ghi; `viettel.com.vn` là tên miền email hỗ trợ chính thức (`viettelmoney@viettel.com.vn`, ghi trên trang hỗ trợ `viettelmoney.vn` và Google Play) |
-| Vietcombank | Ngân hàng | Vietcombank, VCB | `vietcombank.com.vn` | Đã tra 24/11/2026, sơ cấp: App Store VCB Digibank, VNBA |
-| VietinBank | Ngân hàng | VietinBank, CTG | `vietinbank.vn` | Đã tra 24/11/2026, sơ cấp: trang thông tin chung trên `vietinbank.vn` |
-| BIDV | Ngân hàng | BIDV | `bidv.com.vn` | Đã tra 24/11/2026, sơ cấp: thông cáo báo chí trên `bidv.com.vn` |
-| Agribank | Ngân hàng | Agribank | `agribank.com.vn` | Đã tra 24/11/2026, sơ cấp: trang giới thiệu trên `agribank.com.vn`, VNBA |
-| Techcombank | Ngân hàng | Techcombank, TCB | `techcombank.com`, `techcombank.com.vn` | Đã tra 24/11/2026, sơ cấp: `techcombank.com` là site chính hiện nay; `techcombank.com.vn` vẫn dùng, ví dụ cổng doanh nghiệp `business.techcombank.com.vn`, và trang đăng nhập doanh nghiệp trên `techcombank.com` chuyển sang đó |
-| MB | Ngân hàng | MB, MB Bank, MBBank | `mbbank.com.vn` | Đã tra 24/11/2026, sơ cấp: VNBA, email hỗ trợ `@mbbank.com.vn` trên App Store |
-| VPBank | Ngân hàng | VPBank | `vpbank.com.vn` | Đã tra 24/11/2026, sơ cấp: danh sách website do VPBank vận hành (bài đăng 2021, cập nhật tới 03/2023), gồm các tên miền con như `neo.vpbank.com.vn`. Danh sách còn có `vptravelmiles.com.vn`, chưa đưa vào vì là chương trình thưởng, ít gặp trong tin nhắn |
-| ACB | Ngân hàng | ACB | `acb.com.vn` | Đã tra 24/11/2026, sơ cấp: trang giới thiệu và điều khoản trên `acb.com.vn` |
-| TPBank | Ngân hàng | TPBank, TP Bank | `tpb.vn`, `tpb.com.vn` | Đã tra 24/11/2026, sơ cấp: cảnh báo của TPBank trên `tpb.vn` (VNBA đăng lại) ghi website là `tpb.vn` hoặc `*.tpb.vn`, email chính thức luôn có đuôi `@tpb.com.vn` (`tpb.com.vn` *thêm khi tra*) |
-| Sacombank | Ngân hàng | Sacombank, STB | `sacombank.com.vn` | Đã tra 24/11/2026, sơ cấp: tin ra mắt website trên `sacombank.com.vn`, VNBA |
-| HDBank | Ngân hàng | HDBank | `hdbank.com.vn` | Đã tra 24/11/2026, sơ cấp: báo cáo thường niên 2023, 2024 |
-| VIB | Ngân hàng | VIB | `vib.com.vn` | Đã tra 24/11/2026, sơ cấp: trang giới thiệu trên `vib.com.vn` |
-| SHB | Ngân hàng | SHB | `shb.com.vn` | Đã tra 24/11/2026, sơ cấp: hướng dẫn internet banking và báo cáo thường niên trên `shb.com.vn`, VNBA |
-
-**Lưu ý khi dùng:**
-- Bí danh ngắn (`MB`, `ACB`, `VIB`, `SHB`, `TCB`) dễ trùng chữ thường gặp; khi so khớp cần ranh giới từ và phân biệt hoa thường.
-- Tên miền chính thức chỉ dùng để so sánh chuỗi (P5): hệ thống không bao giờ mở các tên miền này hay tên miền người dùng gửi.
-- Dữ liệu mẫu và eval vẫn chỉ dùng tên miền dành riêng (`*.example`, `*.test`) cho phía kẻ lừa đảo.
+Danh sách 18 thương hiệu owner duyệt ngày 24/11/2026 (không thêm `vptravelmiles.com.vn`; tên miền con của tên miền chính thức được tính là chính thức) nằm ở **một nguồn duy nhất**: [`packages/shared/data/brands.json`](../../packages/shared/data/brands.json) (chuyển vào file ngày 26/11/2026, slice S3). Ghi chú cách kiểm từng tên miền (cột *Kiểm*) xem bản trước khi chuyển: `git show 3c050c1:docs/spec/ScamShield-v1.md`.
