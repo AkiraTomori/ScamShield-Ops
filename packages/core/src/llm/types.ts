@@ -57,4 +57,6 @@ export interface LlmDeps {
 /** Absolute end of the time budget, epoch milliseconds. */
 export interface CallOptions {
   deadline: number;
+  /** Limit for the first attempt and for the retry, ms. Unset: only the deadline applies. */
+  attemptTimeoutMs?: readonly number[];
 }

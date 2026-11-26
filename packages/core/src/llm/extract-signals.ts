@@ -1,4 +1,5 @@
-import { AiSignalType, LlmSignalRawOutput } from "@scamshield/shared";
+import { AiSignalType, EVIDENCE_MAX_CHARS, LlmSignalRawOutput } from "@scamshield/shared";
+import { clip } from "../text/clip";
 import { normalizeText, parseModelJson } from "./json";
 import { buildSignalsPrompt } from "./prompts/signals-v1";
 import type { CallOptions, LlmDeps, TokenUsage } from "./types";
@@ -7,7 +8,6 @@ import type { CallOptions, LlmDeps, TokenUsage } from "./types";
 export const RETRY_MIN_REMAINING_MS = 5_000;
 /** Reasoning models spend part of this before answering; 600 cut qwen3.8-27b off on 7/60 calls. */
 export const SIGNALS_MAX_TOKENS = 1200;
-const EVIDENCE_MAX_CHARS = 200;
 const MAX_BRANDS = 10;
 
 export interface ExtractedSignal {
@@ -55,6 +55,7 @@ export async function extractSignals(
     const remaining = opts.deadline - deps.now().getTime();
     if (remaining <= 0) return fail("timeout");
 
+    const budget = Math.min(remaining, opts.attemptTimeoutMs?.[attempts] ?? remaining);
     attempts += 1;
     const prompt = buildSignalsPrompt(content, deps.random(), { retryNote: attempts === 2 });
     const result = await deps.llm.chatJson({
@@ -62,7 +63,7 @@ export async function extractSignals(
       system: prompt.system,
       user: prompt.user,
       maxTokens: SIGNALS_MAX_TOKENS,
-      signal: AbortSignal.timeout(remaining),
+      signal: AbortSignal.timeout(budget),
       jsonMode: deps.jsonMode,
       reasoningFormat: deps.reasoningFormat,
       reasoningEffort: deps.reasoningEffort,
@@ -84,7 +85,8 @@ export async function extractSignals(
         };
       }
     } else if (result.kind === "timeout") {
-      return fail("timeout");
+      // A provider too slow for its own limit is unavailable; running out of the whole budget is not.
+      return fail(budget < remaining ? "llm_unavailable" : "timeout");
     } else if (result.kind === "unavailable") {
       return fail("llm_unavailable");
     }
@@ -112,7 +114,7 @@ function verifySignals(raw: LlmSignalRawOutput, sentContent: string) {
     if (!byType.has(type.data)) {
       byType.set(type.data, {
         type: type.data,
-        evidence: item.evidence.trim().slice(0, EVIDENCE_MAX_CHARS),
+        evidence: clip(item.evidence.trim(), EVIDENCE_MAX_CHARS),
       });
     }
   }
