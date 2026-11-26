@@ -141,6 +141,7 @@ Một dòng JSON trong `eval/cases/dev.jsonl` hoặc `eval/cases/heldout.jsonl`:
 
 - `group`: `clear_scam` | `legit_lookalike` | `ambiguous` | `prompt_injection`.
 - `expectedVerdicts`: một hoặc nhiều verdict chấp nhận được (ví dụ nhóm `ambiguous` chấp nhận `inconclusive` hoặc `suspicious`).
+- `template` *(tuỳ chọn; EV-01, owner chốt 26/11)*: mã mẫu tin; các câu cùng `template` phải ở cùng một tập. Runner dừng nếu một `template` có ở cả hai tập.
 - `forbiddenSignals`: signal không được xuất hiện (ví dụ tin OTP thật không được có `credential_request` nếu tin chỉ thông báo mã, không đòi chia sẻ).
 - Người gán nhãn ghi lý do trong `notes`. Nhãn là quyết định của con người, không lấy từ đầu ra model.
 - Schema của file nằm trong `eval/` và được parse lúc chạy; file sai thì runner dừng.

@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 
@@ -19,7 +19,7 @@
 | `POST` | `/api/analyses` | Công khai | 10 lượt/phút/IP | SO-01…SO-03 |
 | `POST` | `/api/analyses/{analysisId}/report` | Công khai (biết `analysisId`) | 10 lượt/phút/IP | SO-04-AC01…AC03 |
 | `POST` | `/api/case-status` | Công khai (mã hồ sơ + mã bí mật) | 10 lượt/phút/IP | SO-04-AC04 |
-| `POST` | `/api/ops/session` | Công khai | 5 lượt/phút/IP *(đề xuất)* | SO-06-AC01, SO-10-AC02 |
+| `POST` | `/api/ops/session` | Công khai | 5 lượt/phút/IP (OP-01, owner chốt 26/11) | SO-06-AC01, SO-10-AC02 |
 | `DELETE` | `/api/ops/session` | Nhân viên | — | — |
 | `POST` | `/api/ops/cases/{caseCode}/decision` | Nhân viên | — | SO-06-AC03, AC04, SO-08-AC01 |
 | `POST` | `/api/ops/confirmed-indicators/{id}/removal` | Nhân viên | — | SO-08-AC03 |
@@ -87,13 +87,13 @@ Hết trần 20 giây ở bất kỳ bước nào sau bước 3 → vẫn **200*
 
 | Kết quả | Body |
 |---|---|
-| **201** tạo mới | `{ "caseCode": "SC-0007", "secretCode": "K7QX-2M", "alreadyReported": false }` |
+| **201** tạo mới | `{ "caseCode": "SC-0007", "secretCode": "K7QX-2M9P", "alreadyReported": false }` |
 | **200** đã gửi trước đó (SO-04-AC03) | `{ "caseCode": "SC-0007", "secretCode": null, "alreadyReported": true }`. Mã bí mật không hiển thị lại |
 | 400 `validation_failed` | Kênh không hợp lệ, ghi chú quá dài |
 | 404 `not_found` | `analysisId` không tồn tại |
 | 429 `rate_limited` | |
 
-- `secretCode` sinh ngẫu nhiên an toàn, chỉ trả **một lần**, lưu dạng băm.
+- `secretCode` sinh ngẫu nhiên an toàn, 8 ký tự Crockford base32 hiển thị thành hai nhóm 4 (RP-05, owner chốt 26/11), chỉ trả **một lần**, lưu dạng băm.
 - Tạo report + case + tóm tắt AI trong một luồng; tóm tắt lỗi thì vẫn tạo case (contracts A-02).
 - Hai request đồng thời cho cùng analysis: ràng buộc unique bảo đảm chỉ một case; request thua nhận 200 `alreadyReported: true`.
 
@@ -102,7 +102,7 @@ Hết trần 20 giây ở bất kỳ bước nào sau bước 3 → vẫn **200*
 Dùng `POST` để mã bí mật không nằm trên URL, lịch sử trình duyệt hay log.
 
 ```json
-{ "caseCode": "SC-0007", "secretCode": "K7QX-2M" }
+{ "caseCode": "SC-0007", "secretCode": "K7QX-2M9P" }
 ```
 
 | Kết quả | Body |
@@ -142,7 +142,7 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 | **200** | `CaseDetail.decision` (contracts §6), có `disagreesWithEngine` |
 | 400 `validation_failed` | Thiếu lý do, lý do quá ngắn/dài, kết luận không hợp lệ |
 | 404 `not_found` | Không có hồ sơ |
-| 409 `conflict` | Hồ sơ đã đóng (người khác kết luận trước). Body kèm kết luận hiện có để UI hiển thị |
+| 409 `conflict` | Hồ sơ đã đóng (người khác kết luận trước). Body là dạng lỗi chung, **không** kèm kết luận; UI tải lại trang để hiện kết luận hiện có (OP-03, owner chốt 26/11) |
 
 Trong **một transaction**: cập nhật case có điều kiện `status = pending_review`, ghi decision, và nếu `confirmed_scam` thì thêm các chỉ dấu `domain`/`phone`/`bank_account` vào danh sách đã xác minh (SO-08-AC01). `not_scam` và `insufficient_evidence` không thêm gì (SO-08-AC03).
 

@@ -1,6 +1,6 @@
 # Thiết kế slice pipeline phân tích (SO-01…SO-03)
 
-**Trạng thái (24/11/2026):** **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)).
+**Trạng thái (24/11/2026):** **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)). **Sửa ngày 26/11/2026** (owner chốt khi duyệt S4, S10): `normalizeInput` đặt ở `packages/shared` (U-02); `analyzeMessage` không tự lưu, route lưu (EV-02). Hành vi không đổi.
 
 **Căn cứ và thứ bậc:**
 - [spec](../spec/ScamShield-v1.md): SO-01…SO-03, P1–P5, Q-04, Q-06.
@@ -47,8 +47,8 @@ sequenceDiagram
     end
     A->>A: quy tắc verdict → khuyến nghị
     A->>L: viết giải thích (chỉ signal + check)
-    A->>DB: lưu analysis
-    A-->>R: AnalysisResult
+    A-->>R: AnalysisResult + trace
+    R->>DB: lưu analysis (EV-02)
     
 ```
 
@@ -348,13 +348,13 @@ Bản ghi gồm:
 
 Lỗi ghi DB → 500; người dùng thử lại. Bảng cụ thể thiết kế ở `/sdlc:database` (T-010).
 
-Hàm `analyzeMessage` trả thêm `trace` (thời gian từng bước, số lần gọi LLM, `droppedSignals`) cho eval. Route **không** trả `trace`.
+**`analyzeMessage` không tự lưu** (EV-02, owner chốt 26/11/2026): route gọi `saveAnalysis` ngay sau đó, nên eval runner gọi cùng hàm mà không cần DB. Trần 20 giây vẫn tính cho cả route. Hàm `analyzeMessage` trả thêm `trace` (thời gian từng bước, số lần gọi LLM, `droppedSignals`) cho eval. Route **không** trả `trace`.
 
 ## 11. Giao diện module (`packages/core/src`)
 
 ```ts
 // pure
-normalizeInput(raw: string): { ok: true; text: string } | { ok: false; code: "empty" | "too_long" }
+normalizeInput(raw: string): { ok: true; text: string } | { ok: false; code: "empty" | "too_long" }   // ở packages/shared (U-02, owner chốt 26/11): client và server đếm ký tự cùng một hàm
 redact(text: string): { text: string; counts: RedactionCounts }
 extractIndicators(text: string, brands: BrandList): ExtractedIndicators
 checkDomain(domain: string, ctx: DomainCheckContext): { checks: Check[]; signals: Signal[] }

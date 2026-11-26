@@ -12,6 +12,8 @@
 
 **Owner** (người được deploy, merge, chạy migration trên DB thật) nên là C, hoặc C làm cùng owner. Theo [AGENTS.md](../../AGENTS.md), agent không làm thay các việc này.
 
+**Theo dõi trên GitHub Issues (26/11/2026):** mỗi việc S3–S11 trong `tasks.csv` là một issue (#8–#45), tiêu đề bắt đầu bằng mã `T-xxx`. Vai ghi bằng label `role:A`, `role:B`, `role:C`; việc chung hai vai (T-052, T-061…T-063) có hai label và checklist chia phần. Khi đã điền tên thật ở bảng §1, assign issue cho tài khoản GitHub tương ứng. Ba việc mới tách ra khi duyệt thiết kế S4–S11: **T-045** (C, schema `AnalysisResult`, làm trước T-038 để B không phải chờ), **T-053** (A, tóm tắt AI cho hồ sơ, tách khỏi T-050), **T-082** (C, bảng chỉ dấu đã xác minh, tách khỏi T-080).
+
 ## 2. Việc của từng người
 
 Kích cỡ: S ≈ nửa ngày, M ≈ 1 ngày, L ≈ 2 ngày. P1 là việc cắt được (plan §7).

@@ -42,7 +42,7 @@ Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần*
 | *Kiểm tra* | `#0E7090` | `#ECFDFF` | 5,37 |
 | *AI nhận định* | `#6941C6` | `#F4F3FF` | 6,02 |
 
-**Chữ:** font **Be Vietnam Pro** *(đề xuất)*, nạp bằng `next/font` (tự host lúc build, không gọi Google Fonts lúc chạy), dự phòng `system-ui, sans-serif`. Font đơn cách cho nội dung tin nhắn gốc: `ui-monospace, monospace`. Font này phải ghi vào bảng tài sản có sẵn ở README khi dùng.
+**Chữ:** font **Be Vietnam Pro** (U-01, owner chốt 26/11), nạp bằng `next/font` (tự host lúc build, không gọi Google Fonts lúc chạy), dự phòng `system-ui, sans-serif`. Font đơn cách cho nội dung tin nhắn gốc: `ui-monospace, monospace`. Font này phải ghi vào bảng tài sản có sẵn ở README khi dùng.
 
 | Token | Cỡ / dòng | Dùng cho |
 |---|---|---|

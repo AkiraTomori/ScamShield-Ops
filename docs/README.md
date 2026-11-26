@@ -47,6 +47,14 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 | File | Nội dung | Trạng thái | Cấp |
 |---|---|---|---|
 | [`design/analysis-pipeline.md`](./design/analysis-pipeline.md) | Slice S3: 6 bước phân tích, phép kiểm URL, quy tắc verdict, prompt | **Owner duyệt 24/11**, chưa có mã | 5 |
+| [`design/scamshield-ui.md`](./design/scamshield-ui.md) | Slice S4: module và ranh giới client, state machine, phụ thuộc schema, bảng nhãn signal / mã detail, kiểm thử | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/report-flow.md`](./design/report-flow.md) | Slice S5: route báo cáo, tóm tắt AI, mã bí mật, tra trạng thái không lộ hồ sơ, sửa state machine S4 | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/fraudops.md`](./design/fraudops.md) | Slice S6: kiểm phiên sát dữ liệu, đăng nhập/phiên/Origin, danh sách, chi tiết, kết luận và xung đột | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/related-cases.md`](./design/related-cases.md) | Slice S7 (P1): hồ sơ liên quan theo chỉ dấu chung, loại tên miền quá phổ biến, truy vấn, khối giao diện | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/verified-indicators.md`](./design/verified-indicators.md) | Slice S8 (P1): ghi chỉ dấu khi xác nhận lừa đảo, engine dùng lại, gỡ có lý do, bảng `confirmed_indicators` | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/demo-data.md`](./design/demo-data.md) | Slice S9: tin demo một nguồn, seed/reset một đường code, nội dung 24 case mẫu, E2E 6 bước | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/eval-suite.md`](./design/eval-suite.md) | Slice S10: thành phần 80 câu, chia tập chống rò rỉ, runner gọi đúng pipeline, chỉ số B.3, đóng băng và chặn chạy held-out | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/submission.md`](./design/submission.md) | Slice S11: đường găng nộp bài, nội dung README/slide/A4/video, đóng gói zip có kiểm secret, giữ link sống | **Owner duyệt 26/11**, chưa có mã | 5 |
 | [`design/model-spike.md`](./design/model-spike.md) | Slice S2: thử chọn model Groq | Đã cài đặt, đã merge (PR #4) | 5 |
 | [`product/ui-pages.md`](./product/ui-pages.md) + [`design/pages.md`](./design/pages.md) | Trang, khối giao diện, trạng thái theo AC; wireframe, sơ đồ luồng, ma trận trang ↔ API | Bản nháp | 5 |
 | [`product/design-system.md`](./product/design-system.md) | Token, component, pattern cho mọi UI | Bản nháp | 5 |
@@ -63,7 +71,7 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 
 | File | Nội dung | Trạng thái |
 |---|---|---|
-| [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Lộ trình theo ngày, quyền của agent (§5), cắt việc khi trễ (§7), rủi ro, checklist nộp; 48 việc theo slice, cột `assignee` theo team-split | Bản nháp |
+| [`runbook/plan.md`](./runbook/plan.md) + [`tasks.csv`](./runbook/tasks.csv) | Lộ trình theo ngày, quyền của agent (§5), cắt việc khi trễ (§7), rủi ro, checklist nộp; 51 việc (S3–S11 theo dõi ở GitHub Issues #8–#45, label `role:A/B/C`) theo slice, cột `assignee` theo team-split | Bản nháp |
 | [`runbook/team-split.md`](./runbook/team-split.md) | Phân công ba thành viên (vai A/B/C): việc từng người theo ngày, chỗ giao nhau, nhịp làm việc | Đề xuất 24/11, chưa điền tên |
 | [`runbook/setup-and-bringup.md`](./runbook/setup-and-bringup.md) | Chạy local, Postgres Docker, đổi key, migration, deploy (owner), lỗi thường gặp | Bản nháp |
 | [`runbook/demo.md`](./runbook/demo.md) | Kịch bản video 3 phút, dữ liệu demo, checklist, xử lý sự cố | Bản nháp |
@@ -87,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 24/11/2026.
+Cập nhật 26/11/2026 (owner duyệt S4–S11).
 
 | Phần | Trạng thái |
 |---|---|
@@ -96,7 +104,13 @@ Cập nhật 24/11/2026.
 | S2 thử model ([design](./design/model-spike.md)) | Đã merge (PR #4): HTTP client có allowlist, client Groq, `extractSignals`, `writeExplanation`, runner `npm run eval:q08`, 20 câu dev nháp. Chạy Groq thật 21–23/11, số ở [research A.6](./research/result.md) |
 | Proposal cho vòng loại | Đã merge (PR #5), bản đề xuất để review |
 | S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Owner duyệt thiết kế 24/11, **chưa có mã**; trễ so với lịch 22–23/11, owner chưa yêu cầu cắt việc |
-| Giao diện ScamShield, báo cáo, FraudOps, seed | Chưa làm |
-| Bộ eval SO-09 | 20/60–100 câu; held-out chưa tạo |
+| S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); chưa có mã; trễ so với lịch 24–25/11; phụ thuộc schema `AnalysisResult` chưa có ở `packages/shared` |
+| S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); chưa có mã; T-050 bị chặn bởi T-038 (S3) |
+| S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); chưa có mã; T-060 không bị S3 chặn |
+| S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); chưa có mã; không cần migration |
+| S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |
+| S9 dữ liệu demo, seed/reset, E2E ([design](./design/demo-data.md)) | **Owner duyệt thiết kế 26/11** (DM-01…DM-03 theo đề xuất; DM-04: một ngân hàng); chưa có mã; T-093 không bị chặn |
+| Bộ eval SO-09 ([design S10](./design/eval-suite.md)) | 20/60–100 câu; held-out chưa tạo; **owner duyệt thiết kế S10 26/11** (EV-01…EV-05 theo đề xuất) |
+| S11 nộp bài ([design](./design/submission.md)) | **Owner duyệt thiết kế 26/11** (NB-01…NB-03 theo đề xuất; NB-04: vai A); hạn nộp trước 03/12, mục tiêu 02/12 tối |
 
 **Quyết định:** Q-01…Q-11 đã chốt (spec §7). Model chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` (Q-08, 22/11). Danh sách thương hiệu Q-10 và vai trò dataset Q-11 chốt 24/11. D-01…D-03 đã chốt; D-04 (Supabase tạm dừng) còn chờ kiểm, xem system-design §9.

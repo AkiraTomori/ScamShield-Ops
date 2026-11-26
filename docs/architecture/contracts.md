@@ -1,6 +1,6 @@
 # ScamShield Ops — Hợp đồng dữ liệu
 
-**Trạng thái (21/11/2026):** BẢN NHÁP; `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2). Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2). Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 **Thứ bậc:** khi `packages/shared` đã có schema, **schema thắng** file này; lệch thì sửa file này trong cùng PR ([conventions/contracts.md](../conventions/contracts.md)). Endpoint dùng các hình dạng này ở [api.md](./api.md). Quy tắc tính verdict **không** nằm ở đây; nó thuộc thiết kế slice pipeline (system-design §10).
 
@@ -71,7 +71,7 @@ Mỗi URL sinh thêm một chỉ dấu `domain` (tên miền đăng ký). Trích
 |---|---|---|
 | `type` | `CheckType` | `official_domain`, `lookalike`, `punycode`, `subdomain_brand`, `shortener`, `ip_host`, `risky_tld`, `domain_age`, `blocklist`, `verified_indicator` |
 | `status` | `CheckStatus` | |
-| `detail` | string \| null | Mã ngắn để UI dịch ra câu tiếng Việt (ví dụ `distance_1:<tên miền chính thức>`, `age_days:3`). Không chứa văn bản tự do từ bên thứ ba |
+| `detail` | string \| null | Mã ngắn để UI dịch ra câu tiếng Việt (ví dụ `nearest:<tên miền chính thức>:distance_1`, `age_days:3`; U-03, owner chốt 26/11). Không chứa văn bản tự do từ bên thứ ba |
 
 Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá thời gian hoặc phản hồi sai hình dạng → `unavailable`.
 
@@ -106,7 +106,7 @@ Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá th�
 | `analysis` | `AnalysisResult` của case (verdict engine, signal, chỉ dấu, check) |
 | `aiSummary` | `{ summary: string, nextSteps: string[] }` \| null. `null` khi LLM lỗi lúc tạo case (A-02) |
 | `decision` | `{ decision, reason, decidedBy, decidedAt, disagreesWithEngine }` \| null |
-| `relatedCases` | `{ caseCode, status, sharedIndicators: string[] }[]` (SO-07) |
+| `relatedCases` | `{ total: number, items: { caseCode, status, decision, isSeed, createdAt, sharedIndicators: { type, normalized }[] }[] }`; `items` tối đa 20 (SO-07; ST-02, owner chốt 26/11, [design/related-cases §3](../design/related-cases.md#3-truy-vấn)) |
 
 `disagreesWithEngine` tính theo bảng đồng ý ở SO-06-AC04, lưu lúc kết luận để eval đọc lại.
 

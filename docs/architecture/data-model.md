@@ -86,7 +86,7 @@ Index: `(created_at)`.
 | `analysis_id` | uuid | NOT NULL, **UNIQUE** (SO-04-AC03), FK → `analyses.id` ON DELETE RESTRICT |
 | `status` | text | NOT NULL, CHECK ∈ `pending_review`, `closed`, mặc định `pending_review` |
 | `channel` | text | NOT NULL, CHECK ∈ `ReportChannel` |
-| `reporter_note` | text | NULL, CHECK `char_length ≤ 500` (O-04) |
+| `reporter_note` | text | NULL, CHECK `char_length ≤ 1000`: người dùng nhập tối đa 500 ký tự (O-04), nhãn che làm chuỗi dài thêm (RP-01, owner chốt 26/11; **migration `0000_p0_tables` chưa sửa**, sửa khi viết mã S5) |
 | `secret_hash` | text | NOT NULL. Băm scrypt của mã bí mật, có muối và tham số trong chuỗi. Mã gốc không bao giờ được lưu |
 | `engine_verdict` | text | NOT NULL. **Bản chụp** verdict của analysis lúc tạo case, để lọc danh sách không cần join. Analysis bất biến nên không lệch |
 | `risk_types` | text[] | NOT NULL, bản chụp như trên |
@@ -219,7 +219,7 @@ Ghi thất bại thì giao dịch rollback toàn bộ: không có case thiếu a
 
 ## 8. Để sau (P1, migration riêng)
 
-`confirmed_indicators`:
+`confirmed_indicators` (owner duyệt S8 ngày 26/11; cột, ràng buộc và thứ tự reset chi tiết ở [design/verified-indicators §4](../design/verified-indicators.md#4-bảng-confirmed_indicators-migration-0001_confirmed_indicators), chuyển vào §2 khi viết migration):
 - Cột: `id`, `type`, `normalized`, `source_case_id` (FK), `confirmed_by`, `confirmed_at`, `removed_at`, `removed_by`, `removal_reason`.
 - UNIQUE một phần `(type, normalized) WHERE removed_at IS NULL`.
 - Gỡ là xoá mềm (api.md §4).

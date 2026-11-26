@@ -1,6 +1,6 @@
 # Quy ước frontend
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Áp dụng cho `apps/web` (Next.js App Router, Tailwind). Trang và trạng thái ở [ui-pages.md](../product/ui-pages.md); token, component, câu chữ ở [design-system.md](../product/design-system.md).
+**Trạng thái (26/11/2026):** BẢN NHÁP; §8 sửa theo U-06 (owner chốt 26/11). Áp dụng cho `apps/web` (Next.js App Router, Tailwind). Trang và trạng thái ở [ui-pages.md](../product/ui-pages.md); token, component, câu chữ ở [design-system.md](../product/design-system.md).
 
 ## 1. Cấu trúc
 
@@ -62,7 +62,7 @@ Theo design-system §5. Tối thiểu khi review:
 
 - Logic thuần ở client (định dạng mã, ánh xạ verdict → nhãn, bộ đếm ký tự) test bằng Vitest như backend.
 - **End-to-end:** Playwright (C-01), 1–2 kịch bản theo luồng 6 bước ở plan §1, file trong `apps/web/e2e/`, tên test ghi mã AC. Chạy local với Postgres local và chạy tay trên bản deploy; không đưa vào CI nếu cần DB. Kịch bản chỉ dùng tin mẫu có tên miền `*.example`.
-- **Không** có test render component (không dùng Testing Library). AC giao diện ngoài kịch bản E2E được kiểm tay có bằng chứng (ảnh chụp ở 360px và 1280px), ghi trong báo cáo `/sdlc:verify`.
+- **Không** có test render component để kiểm tương tác (không dùng Testing Library). **Ngoại lệ** (U-06, owner chốt 26/11): được dùng `renderToStaticMarkup` cho test **bất biến** trên fixture, như không có chữ "an toàn", không có `%`, không có `<a href>` từ giá trị người dùng. AC giao diện ngoài kịch bản E2E được kiểm tay có bằng chứng (ảnh chụp ở 360px và 1280px), ghi trong báo cáo `/sdlc:verify`.
 
 ## 9. Quyết định
 

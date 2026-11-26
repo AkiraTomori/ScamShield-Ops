@@ -12,29 +12,32 @@ T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice scr
 T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,done,P0,,Script chạy 20 câu × 3 lần cho 1 model,
 T-023,S2 Thử model,"Chạy thử 2–3 model, điền research A.6, chốt Q-08 (/sdlc:sign-off)",,T-020;T-022,22/11,S,đội+owner,done,P0,,Q-08 có model chính + dự phòng,
 T-030,S3 Pipeline,"Thiết kế slice pipeline: quy tắc verdict, SignalType (A-03), prompt, rate limit (/sdlc:design)",SO-03-AC02,T-023,22/11,M,agent,done,P0,,Owner duyệt bảng quy tắc,
-T-031,S3 Pipeline,Kiểm đầu vào + che OTP/mật khẩu/số thẻ (TDD),SO-01-AC02;SO-01-AC03,T-030,22/11,M,agent,todo,P0,,Test AC xanh,A
+T-031,S3 Pipeline,"Kiểm đầu vào (normalizeInput ở packages/shared, U-02) + che OTP/mật khẩu/số thẻ (TDD)",SO-01-AC02;SO-01-AC03,T-030,22/11,M,agent,todo,P0,,Test AC xanh,A
 T-032,S3 Pipeline,"Trích + chuẩn hoá chỉ dấu (URL, tên miền, SĐT VN, số tài khoản) (TDD)",SO-02-AC01;SO-02-AC04;SO-07-AC02,T-030,22/11,M,agent,todo,P0,,Cùng đầu vào cùng danh sách,A
 T-033,S3 Pipeline,brands.json từ Phụ lục A (Q-10; owner đã duyệt danh sách 24/11),SO-02-AC02,,22/11,S,owner+agent,todo,P0,,File parse được bằng BrandList,A
 T-034,S3 Pipeline,"Phép kiểm URL tất định: tên miền chính thức, nhái, punycode, subdomain, rút gọn, IP, TLD (TDD)",SO-02-AC02,T-032;T-033,23/11,L,agent,todo,P0,,Test từng phép kiểm,A
 T-035,S3 Pipeline,"Tra cứu ngoài RDAP + Safe Browsing có timeout, unavailable (kiểm điều khoản Safe Browsing trước)",SO-02-AC03,T-034,23/11,M,agent,todo,P1,3,Lỗi/timeout ra unavailable,A
 T-036,S3 Pipeline,Quy tắc verdict + khuyến nghị câu mẫu (A-01) (TDD),SO-03-AC02;SO-03-AC03;SO-01-AC05,T-030,23/11,M,agent,todo,P0,,Cùng signal cùng verdict; không có 'an toàn',A
 T-037,S3 Pipeline,LLM trích signal + kiểm evidence là chuỗi con; LLM viết giải thích chỉ từ signal/check,SO-03-AC01;SO-03-AC05,T-022;T-036,23/11,M,agent,todo,P0,,,A
-T-038,S3 Pipeline,Điều phối analysis + trần 20 giây + lưu DB + rate limit 10/phút/IP băm,SO-01-AC01;SO-01-AC04;SO-03-AC06,T-031;T-034;T-037;T-011,23/11,M,agent,todo,P0,,curl tin mẫu ra JSON đúng schema,C
+T-045,S3 Pipeline,Hợp đồng AnalysisRequest/AnalysisResult (zod) trong packages/shared; báo cả nhóm trước khi merge,SO-03-AC04,,26/11,S,agent,todo,P0,,"Schema theo contracts §5, không có trường điểm số",C
+T-038,S3 Pipeline,"Điều phối analysis (không tự lưu, route lưu; EV-02) + trần 20 giây + lưu DB + rate limit 10/phút/IP băm",SO-01-AC01;SO-01-AC04;SO-03-AC06,T-031;T-034;T-037;T-011;T-045,23/11,M,agent,todo,P0,,curl tin mẫu ra JSON đúng schema,C
 T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4",SO-03-AC04,T-038,23/11,S,agent,todo,P0,,,C
 T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,todo,P0,,,B
-T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-039,24/11,M,agent,todo,P0,,Dán tin trên điện thoại ra kết quả,B
+T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-045;T-039,24/11,M,agent,todo,P0,,Dán tin trên điện thoại ra kết quả,B
 T-042,S4 ScamShield,"Khối kết quả: verdict, giải thích, signal + nguồn, chỉ dấu + phép kiểm, khuyến nghị, disclaimer",SO-03-AC03;SO-03-AC04;SO-05-AC03,T-041,25/11,M,agent,todo,P0,,Ảnh chụp 360px; URL không bấm được,B
-T-050,S5 Báo cáo,"POST report: tạo report + case + mã bí mật băm + tóm tắt AI (A-02), chống trùng",SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01;SO-05-AC02,T-038,26/11,M,agent,todo,P0,,Gửi 2 lần ra 1 case,C
+T-050,S5 Báo cáo,POST report: tạo case + mã bí mật băm 8 ký tự + chống trùng; nới CHECK ghi chú (RP-01); tóm tắt AI gọi từ T-053,SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01,T-038;T-053,26/11,M,agent,todo,P0,,Gửi 2 lần ra 1 case,C
 T-051,S5 Báo cáo,Form gửi báo cáo + màn thành công có mã (UI),SO-04-AC01;SO-04-AC02,T-050;T-042,26/11,S,agent,todo,P0,,,B
 T-052,S5 Báo cáo,POST /api/case-status + trang /tra-cuu,SO-04-AC04,T-050,27/11,S,agent,todo,P1,4,Sai mã ra một thông báo chung,B
+T-053,S5 Báo cáo,"summarizeCase (LLM tóm tắt hồ sơ) + bộ lọc dùng chung với giải thích (RP-03, RP-04)",SO-05-AC02,T-037,26/11,M,agent,todo,P0,,"Test LLM giả: sai schema, quá hạn 8 giây, từng luật lọc",A
 T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,todo,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401",C
 T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,todo,P0,5 (lọc/tìm),,B (UI) + C (API)
 T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,todo,P0,,,B (UI) + C (API)
 T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,todo,P0,,Tải lại vẫn còn kết luận,B (UI) + C (API)
 T-070,S7 Liên kết hồ sơ,Hồ sơ liên quan theo chỉ dấu chuẩn hoá + cột Liên quan,SO-07-AC01;SO-07-AC02,T-062,29/11,M,agent,todo,P1,2,,C
-T-080,S8 Chỉ dấu xác minh,Ghi chỉ dấu khi confirmed_scam; signal verified_indicator ở engine,SO-08-AC01;SO-08-AC02,T-063;T-038,29/11,M,agent,todo,P1,1,,A
-T-081,S8 Chỉ dấu xác minh,Trang /ops/chi-dau + gỡ có lý do,SO-08-AC03,T-080,29/11,S,agent,todo,P1,1,,B
-T-090,S9 Demo,"Seed 20–40 case is_seed (gồm 3 case chung vi-xac-minh.example), judge1…judge5, demo:reset",SO-10-AC02;SO-10-AC03;SO-10-AC04,T-063,28/11,M,agent,todo,P0,,,C
+T-082,S8 Chỉ dấu xác minh,Bảng confirmed_indicators (migration 0001) + ghi khi confirmed_scam trong giao dịch kết luận + API gỡ,SO-08-AC01;SO-08-AC03,T-063,28/11,M,agent,todo,P1,1,Không ghi tên miền chính thức (XM-01); gỡ hai lần ra 409,C
+T-080,S8 Chỉ dấu xác minh,Engine tra danh sách chỉ dấu đã xác minh: signal verified_indicator (phần bảng và ghi ở T-082),SO-08-AC02,T-038;T-082,29/11,M,agent,todo,P1,1,,A
+T-081,S8 Chỉ dấu xác minh,Trang /ops/chi-dau + gỡ có lý do,SO-08-AC03,T-082,29/11,S,agent,todo,P1,1,,B
+T-090,S9 Demo,"Seed 20–40 case is_seed (gồm 3 case chung vi-xac-minh.example), judge1…judge5, demo:reset",SO-10-AC02;SO-10-AC03;SO-10-AC04,T-063;T-082,28/11,M,agent,todo,P0,,,C
 T-091,S9 Demo,Chạy seed + tạo tài khoản thử trên production,,T-090;T-012,29/11,S,owner,todo,P0,,,C
 T-092,S9 Demo,Playwright: luồng 6 bước plan §1,SO-10-AC01,T-063;T-051,29/11,M,agent,todo,P0,,,C
 T-093,S9 Demo,Soạn tin M1/M2/M3 (R-01) và 3–4 tin mẫu trên trang,SO-10-AC05,T-033,25/11,S,đội,todo,P0,,,B

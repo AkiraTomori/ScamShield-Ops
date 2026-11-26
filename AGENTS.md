@@ -1,9 +1,9 @@
 # ScamShield Ops — Agent Context
 
-**Trạng thái (24/11/2026)** — chi tiết ở [docs/README.md § Trạng thái](docs/README.md#trạng-thái):
+**Trạng thái (26/11/2026)** — chi tiết ở [docs/README.md § Trạng thái](docs/README.md#trạng-thái):
 - **Đã merge vào `main`:** nền móng + walking skeleton (PR #2), schema 8 bảng P0 (PR #3), S2 thử model (PR #4), proposal cho vòng loại (PR #5). `npm run verify` xanh ở local. **Chưa deploy**, migration chưa chạy trên DB deploy.
 - **Được viết mã:** slice S3 pipeline phân tích (owner duyệt [thiết kế](docs/design/analysis-pipeline.md) 24/11; T-031…T-039). S3 trễ so với lịch 22–23/11, owner chưa yêu cầu cắt việc.
-- **Chưa được viết mã** cho tới khi owner duyệt slice: seed/reset, giao diện ScamShield, báo cáo, FraudOps.
+- **Được viết mã (owner duyệt 26/11, nhận mọi phương án đề xuất):** S4 [giao diện ScamShield](docs/design/scamshield-ui.md), S5 [báo cáo](docs/design/report-flow.md), S6 [FraudOps](docs/design/fraudops.md), S7 [hồ sơ liên quan](docs/design/related-cases.md), S8 [chỉ dấu đã xác minh](docs/design/verified-indicators.md) (chưa cắt; xem lại P1 ngày 27/11), S9 [dữ liệu demo](docs/design/demo-data.md), S10 [eval](docs/design/eval-suite.md), S11 [nộp bài](docs/design/submission.md). Chưa có mã cho các slice này. Thứ tự phụ thuộc: S5, S10 runner chờ `analyzeMessage`/T-038 của S3; T-060, T-093, T-100 làm được ngay.
 - **Quyết định:** Q-01…Q-11 đã chốt ([spec §7](docs/spec/ScamShield-v1.md#7-quyết-định-mở-owner-chốt)); model Groq chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` (Q-08, số đo ở [research A.6](docs/research/result.md)). D-04 (Supabase tạm dừng) còn mở.
 - **Hạn:** đóng băng tính năng 30/11; nộp vòng loại trước **03/12/2026**; chung kết 11/12 (slide không sửa được sau khi nộp).
 
