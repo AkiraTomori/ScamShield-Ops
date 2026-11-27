@@ -1,6 +1,6 @@
 # Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-053)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, commit `7a03690`, chưa merge, chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), chờ owner xác nhận.
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, commit `7a03690`, chưa merge, chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), **owner xác nhận 27/11**. Ghi chú có thêm luật che RP-06 (owner chốt 27/11, §3.1).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-04-AC01…AC04, SO-05-AC01, AC02, SO-01-AC03, SO-03-AC05, P1, Q-05.
@@ -62,6 +62,7 @@ Server đã ghi case nhưng response không tới được trình duyệt (mạn
 
 - SO-01-AC03 yêu cầu che "trước khi lưu và trước khi gửi cho LLM". Ghi chú cũng được lưu và gửi cho LLM, nên **phải che bằng cùng hàm `redact`**. Spec đã quy định, không cần quyết định thêm.
 - **Hệ quả về độ dài:** nhãn che (`[OTP ĐÃ CHE]`) dài hơn chuỗi nó thay. Một ghi chú 500 ký tự hợp lệ có thể vượt CHECK `reporter_note ≤ 500` (data-model §2.3) sau khi che, và gây lỗi 500. Bảng `analyses` đã nới lên 4000 vì đúng lý do này. Cách xử lý ở RP-01.
+- **Luật che thêm cho ghi chú (RP-06, owner chốt 27/11).** Người báo cáo thường kể "mình đưa mã 482913" mà không viết "OTP", nên luật của tin nhắn không bắt được. `redactNote` chạy `redact` rồi che thêm mọi **dãy 4–8 chữ số đứng riêng** (kể cả viết `482 913`, `482-913`) bằng nhãn `[OTP ĐÃ CHE]`. Giữ nguyên: số điện thoại, đường dẫn, số tài khoản viết **ngay sau** STK / "số tài khoản" (Q-04), số tiền, ngày giờ. Chấp nhận che nhầm, ví dụ năm viết riêng, mã đơn, số tài khoản 6–8 chữ số không đứng ngay sau STK. Nội dung tin nhắn không đi qua luật này. Mã viết kiểu `482.913` bị coi là số tiền và không che.
 - Ghi chú đặt trong **khối phân tách riêng**, khác khối nội dung tin, cùng cơ chế `delimiters.ts` đã có. Không bao giờ ghép ghi chú vào system prompt.
 
 ### 3.2 Đầu vào, đầu ra, bộ lọc
@@ -213,6 +214,7 @@ Tiền tố `RP-` (báo cáo, slice S5), chưa dùng ở tài liệu nào khác.
 | RP-03 | Hạn của tóm tắt AI | 8 giây: tổng thời gian route khoảng ≤ 10 giây. Ngắn hơn thì dễ ra `aiSummary = null`; dài hơn thì người dùng chờ lâu | 8 giây, chỉnh theo số đo · **Owner chốt 26/11** |
 | RP-04 | Bộ lọc P1 cho tóm tắt (§3.2) | Cấm "kẻ lừa đảo"; cấm `nextSteps` đề xuất khoá tài khoản, chặn giao dịch, phong toả. Có thể làm mất một số tóm tắt hợp lý | Bật · **Owner chốt 26/11** |
 | RP-05 | Độ dài mã bí mật | 8 ký tự (40 bit) so với 6 ký tự như wireframe (30 bit) | 8; wireframe pages.md §2.3 và ví dụ api.md đã sửa · **Owner chốt 26/11** |
+| RP-06 | Ghi chú kể ở ngôi thứ nhất lọt mã OTP (review 27/11) | (a) Thêm luật che riêng cho ghi chú (§3.1), chấp nhận che nhầm vài con số. (b) Thêm câu nhắc dưới ô ghi chú. (c) Chấp nhận | (a), vì SO-01-AC03 yêu cầu che trước khi lưu · **Owner chốt 27/11**; chi tiết luật do agent chọn khi cài |
 
 ## 11. Rủi ro
 
@@ -222,7 +224,7 @@ Tiền tố `RP-` (báo cáo, slice S5), chưa dùng ở tài liệu nào khác.
 
 ## 12. Ghi chú cài đặt (27/11/2026)
 
-Khác hoặc thêm so với bản duyệt. **Chờ owner xác nhận.**
+Khác hoặc thêm so với bản duyệt. **Owner xác nhận cả 10 mục ngày 27/11/2026**, gồm các câu mới ở mục 10.
 
 | # | Việc | Lý do |
 |---|---|---|
@@ -263,10 +265,11 @@ Chạy ở local trên commit `7a03690`. Postgres 17 tạm (Docker, đã xoá), 
 
 **Chưa kiểm:** SO-05-AC01 phần "nguồn (`user_report`)": chưa có trong mã S5, theo [contracts §6](../architecture/contracts.md#6-hồ-sơ-casedetail-dùng-ở-fraudops) là trường của `CaseDetail` (T-062), nên §8 ghi quá phạm vi test hiện có. Chống lộ qua thời gian (§4.2): mới đọc mã (`lookupPublicStatus` luôn chạy scrypt, kể cả trên `DUMMY_SECRET_HASH`), chưa đo. Bản deploy, `maxDuration` và header IP trên Vercel; điện thoại thật; trình đọc màn hình; DB dev local đã có CHECK 1.000 ký tự hay chưa; nút sao chép khi trình duyệt cho phép clipboard (mới kiểm nhánh bị chặn).
 
-**Sửa sau review (27/11, chưa commit):** cảnh báo rời trang nay bật cả khi đang gửi báo cáo (`leavingLosesCodes` ở `features/analysis/state.ts`, có test). `npm run verify` (661 đạt, 68 test tích hợp bỏ qua vì không có DB) và `next build` xanh. Chromium headless 360px, hai API giả trong trình duyệt: đang gửi thì link header và tải lại đều hỏi lại; chọn ở lại thì mã vẫn tới; gửi lỗi thì rời trang không bị hỏi. Safari trên iOS vẫn không hỏi.
+**Sửa sau review (27/11, commit `8f59b75`):** cảnh báo rời trang nay bật cả khi đang gửi báo cáo (`leavingLosesCodes` ở `features/analysis/state.ts`, có test). `npm run verify` (661 đạt, 68 test tích hợp bỏ qua vì không có DB) và `next build` xanh. Chromium headless 360px, hai API giả trong trình duyệt: đang gửi thì link header và tải lại đều hỏi lại; chọn ở lại thì mã vẫn tới; gửi lỗi thì rời trang không bị hỏi. Safari trên iOS vẫn không hỏi.
+
+**Đã xử lý (27/11):** ghi chú lọt mã OTP, owner chốt thêm luật che (RP-06, §3.1). Đã chạy: `npm run verify` có DB tạm 745/745, không DB 676 đạt và 69 bỏ qua; `next build` xanh. Số điện thoại của chính nạn nhân trong ghi chú vẫn được giữ (Q-04).
 
 **Còn mở từ review, chờ owner:**
-- **Ghi chú có thể lọt mã OTP** (riêng tư, SO-01-AC03). Đã chạy `redact`: "mình lỡ đưa mã 482913 cho họ" **không** bị che, "đã đọc mã OTP 482913" thì bị che. Số điện thoại trong ghi chú được giữ (Q-04). Chọn: thêm luật che cho ghi chú, thêm câu nhắc dưới ô ghi chú, hoặc chấp nhận.
 - Tóm tắt chép mã nội bộ (`ip_host`, …): đổi sang nhãn tiếng Việt trước khi đưa vào prompt, nên làm trước hoặc cùng T-062.
 - Bộ lọc hành động cấm có thể bỏ oan cả bản tóm tắt: theo dõi log `case_summary_failed` mã `forbidden_action`.
 - Chưa có cách tạo bù tóm tắt khi Groq trả 429: quyết trước đóng băng 30/11.

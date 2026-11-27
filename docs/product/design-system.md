@@ -1,6 +1,6 @@
 # ScamShield Ops — Design system
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); §3 nhận bảng nhãn tín hiệu và câu mã `detail` (T-042); §4 `IndicatorCard` đổi sang `overflow-wrap: anywhere` cho khớp scamshield-ui §5.2 và mã (sửa 27/11 theo owner); đã merge (PR #48), chưa deploy; §3 nhận câu của form báo cáo và trang tra cứu (S5, 27/11, chưa merge, chờ owner duyệt câu mới). Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); §3 nhận bảng nhãn tín hiệu và câu mã `detail` (T-042); §4 `IndicatorCard` đổi sang `overflow-wrap: anywhere` cho khớp scamshield-ui §5.2 và mã (sửa 27/11 theo owner); đã merge (PR #48), chưa deploy; §3 nhận câu của form báo cáo và trang tra cứu (S5, 27/11, chưa merge; câu mới owner duyệt 27/11). Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 ## 1. Nguyên tắc thị giác
 
@@ -84,7 +84,7 @@ Câu ghi "nguyên văn spec" phải dùng đúng từng chữ. Toàn hệ thốn
 
 Ghi chú về trạng thái phép kiểm: nhãn "Không phát hiện vấn đề" chỉ dùng cho **một phép kiểm**, không bao giờ dùng làm verdict. Giao diện không có chữ "an toàn" ở bất kỳ đâu.
 
-**Báo cáo và tra cứu** (S5). Câu của form và màn thành công theo [ui-pages §2.4](./ui-pages.md#24-gửi-báo-cáo) và [report-flow §5](../design/report-flow.md#5-giao-diện-t-051-t-052). Các câu dưới đây thêm khi viết mã, **chờ owner duyệt**:
+**Báo cáo và tra cứu** (S5). Câu của form và màn thành công theo [ui-pages §2.4](./ui-pages.md#24-gửi-báo-cáo) và [report-flow §5](../design/report-flow.md#5-giao-diện-t-051-t-052). Các câu dưới đây thêm khi viết mã, **owner duyệt 27/11**:
 
 | Chỗ dùng | Câu |
 |---|---|

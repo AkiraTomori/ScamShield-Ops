@@ -99,6 +99,7 @@ Hàm thuần `redact(text) → { text, counts: { otp, password, card } }`, chạ
 | CVV | 3–4 chữ số sau `CVV`/`CVC` | `[SỐ THẺ ĐÃ CHE]` |
 
 - **Không che:** URL, số điện thoại, số tài khoản nhận tiền (Q-04).
+- Ghi chú của người báo cáo đi qua thêm một lượt che riêng (`redactNote`, [report-flow §3.1](./report-flow.md#31-ghi-chú-của-người-báo-cáo-là-nội-dung-người-dùng), RP-06). Luật ở mục này, áp cho tin nhắn, không đổi.
 - Dãy 6 chữ số **không** có từ khoá đứng trước thì không che, vì có thể là số tiền hay mã đơn. Chấp nhận rủi ro sót và đo bằng eval.
 - **TDD bắt buộc:**
   - tin OTP thật (che mã, giữ phần còn lại)
