@@ -36,7 +36,12 @@ describe("result block", () => {
       vi.result.recommendationsHeading,
       vi.disclaimer,
     ];
-    const found = headings.map((text) => html.indexOf(`>${text}<`)).filter((at) => at >= 0);
+    // Only the explanation may be missing.
+    const expected = headings.filter(
+      (text) => result.explanation !== null || text !== vi.result.explanationHeading,
+    );
+    const found = expected.map((text) => html.indexOf(`>${text}<`));
+    expect(found).not.toContain(-1);
     expect(found).toEqual([...found].sort((a, b) => a - b));
     expect(html).toContain(`>${vi.verdict[result.verdict].label}</h2>`);
     expect(html).toContain(vi.disclaimer);
@@ -57,12 +62,41 @@ describe("result block", () => {
     for (const line of result.recommendations) expect(advice).toContain(line);
   });
 
-  it.each(cases)("%s leaves out sections that would be empty", (_, result) => {
+  // ui-pages §2.3: sections 4 and 5 stay, and say so when there is nothing to list.
+  const NO_SIGNALS = "Chưa phát hiện tín hiệu nào";
+  const NO_INDICATORS = "Không tìm thấy đường dẫn, số điện thoại hay số tài khoản";
+
+  const expectListOrSentence = (part: string, empty: boolean, sentence: string) => {
+    expect(part).not.toBe("");
+    expect(part.includes(`>${sentence}</p>`)).toBe(empty);
+    if (empty) expect(part).not.toContain("<ul");
+  };
+
+  it.each(cases)("SO-02-AC04: %s lists signals and indicators, or says none", (_, result) => {
     const html = render(result);
-    expect(section(html, vi.result.signalsHeading) === "").toBe(result.signals.length === 0);
+    expectListOrSentence(
+      section(html, vi.result.signalsHeading),
+      result.signals.length === 0,
+      NO_SIGNALS,
+    );
     const cards = result.indicators.filter((i) => i.type !== "brand");
-    expect(section(html, vi.result.indicatorsHeading) === "").toBe(cards.length === 0);
+    expectListOrSentence(
+      section(html, vi.result.indicatorsHeading),
+      cards.length === 0,
+      NO_INDICATORS,
+    );
     for (const { value } of cards) expect(html).toContain(`>${value}<`);
+  });
+
+  it("SO-02-AC04: says no indicator was found when the message only names a brand", () => {
+    const brandOnly = {
+      type: "brand" as const,
+      value: "Ví XYZ",
+      normalized: "vi-xyz",
+      checks: [],
+    };
+    const html = render({ ...FIXTURES[0]!.result, indicators: [brandOnly] });
+    expectListOrSentence(section(html, vi.result.indicatorsHeading), true, NO_INDICATORS);
   });
 
   it.each(cases)("SO-03-AC06: %s offers a retry only when it can help", (_, result) => {

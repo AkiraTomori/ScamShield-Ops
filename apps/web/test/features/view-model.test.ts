@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SignalType, type AnalysisResult, type Check } from "@scamshield/shared";
+import { BRANDS as BRAND_FILE } from "@scamshield/shared/brands";
 import { FIXTURES } from "../../src/features/analysis/fixtures";
 import { toViewModel } from "../../src/features/analysis/view-model";
 
@@ -155,6 +156,26 @@ describe("indicators", () => {
     ["no code", "shortener", "warn", null],
   ] as const)("shows no detail for %s, never the raw code", (_, type, status, code) => {
     expect(detailOf(type, status, code)).toBeNull();
+  });
+});
+
+// The view above passes a made-up brand list. The page passes none, so `brands.json` is used.
+describe("official-domain sentence with the default brand list", () => {
+  const sentence = (status: Check["status"], id: string) => {
+    const checks: Check[] = [{ type: "official_domain", status, detail: `brand:${id}` }];
+    const indicators = [
+      { type: "domain" as const, value: "a.example", normalized: "a.example", checks },
+    ];
+    return toViewModel({ ...base, indicators }).indicators[0]!.checks[0]!.detail;
+  };
+
+  it.each(BRAND_FILE.map((b) => [b.id, b.name] as const))("names %s", (id, name) => {
+    expect(sentence("warn", id)).toBe(`Không thuộc tên miền chính thức của ${name}`);
+    expect(sentence("pass", id)).toBe(`Thuộc tên miền chính thức của ${name}`);
+  });
+
+  it("shows nothing for an id that is not in the file", () => {
+    expect(sentence("warn", "vi-xyz")).toBeNull();
   });
 });
 

@@ -67,6 +67,9 @@ export const vi = {
     signalsHeading: "Dấu hiệu phát hiện",
     indicatorsHeading: "Đường dẫn, số điện thoại, tài khoản",
     recommendationsHeading: "Nên làm gì",
+    // ui-pages §2.3, word for word (SO-02-AC04).
+    noSignals: "Chưa phát hiện tín hiệu nào",
+    noIndicators: "Không tìm thấy đường dẫn, số điện thoại hay số tài khoản",
     /** P-01: hard evidence decided while the model step failed. */
     llmSkippedNote:
       "Bước phân tích bằng AI chưa chạy được; kết quả dựa trên kiểm tra của hệ thống.",

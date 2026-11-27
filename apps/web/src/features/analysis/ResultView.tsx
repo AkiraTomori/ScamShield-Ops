@@ -73,19 +73,22 @@ export function ResultView({
         </Section>
       ) : null}
 
-      {view.signals.length > 0 ? (
-        <Section heading={vi.result.signalsHeading}>
+      {/* Both sections always show: an empty one says so (ui-pages §2.3). */}
+      <Section heading={vi.result.signalsHeading}>
+        {view.signals.length > 0 ? (
           <SignalList signals={view.signals} />
-        </Section>
-      ) : null}
+        ) : (
+          <p className="text-text-muted">{vi.result.noSignals}</p>
+        )}
+      </Section>
 
-      {view.indicators.length > 0 ? (
-        <Section heading={vi.result.indicatorsHeading}>
-          {view.indicators.map((indicator, index) => (
-            <IndicatorCard key={index} {...indicator} />
-          ))}
-        </Section>
-      ) : null}
+      <Section heading={vi.result.indicatorsHeading}>
+        {view.indicators.length > 0 ? (
+          view.indicators.map((indicator, index) => <IndicatorCard key={index} {...indicator} />)
+        ) : (
+          <p className="text-text-muted">{vi.result.noIndicators}</p>
+        )}
+      </Section>
 
       {/* Fixed advice chosen by code, so no AI badge (SO-05-AC03). */}
       <Section heading={vi.result.recommendationsHeading}>

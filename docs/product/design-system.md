@@ -1,6 +1,6 @@
 # ScamShield Ops — Design system
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); §3 nhận bảng nhãn tín hiệu và câu mã `detail` (T-042); ở local, chưa merge. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); §3 nhận bảng nhãn tín hiệu và câu mã `detail` (T-042); §4 `IndicatorCard` đổi sang `overflow-wrap: anywhere` cho khớp scamshield-ui §5.2 và mã (sửa 27/11 theo owner); ở local, chưa merge. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 ## 1. Nguyên tắc thị giác
 
@@ -136,7 +136,7 @@ Trường `detail` của phép kiểm là mã ngắn; UI dịch sang câu tiến
 - `nearest:…:distance_0` (tên trùng, khác đuôi; pipeline N-06): **chưa có câu**, hiện không hiện detail vì "khác 0 ký tự" gây hiểu sai. Đề xuất chờ owner: "Trùng tên với {tên miền} nhưng khác phần đuôi".
 - `contains:` trên `subdomain_brand` không có trong bảng nên không hiện detail.
 
-**Khối kết quả** (wireframe [pages §2.2](../design/pages.md)): tiêu đề "Vì sao", "Dấu hiệu phát hiện", "Đường dẫn, số điện thoại, tài khoản", "Nên làm gì". Thông báo che chỉ liệt kê loại đã che, nối bằng " / ": "Đã che mã OTP / mật khẩu / số thẻ trong nội dung trước khi phân tích." Chữ `--color-text` trên nền khối AI `#F4F3FF`: 16,15.
+**Khối kết quả** (wireframe [pages §2.2](../design/pages.md)): tiêu đề "Vì sao", "Dấu hiệu phát hiện", "Đường dẫn, số điện thoại, tài khoản", "Nên làm gì". Mục tín hiệu và mục chỉ dấu luôn hiện; rỗng thì ghi nguyên văn [ui-pages §2.3](./ui-pages.md#23-khối-kết-quả): "Chưa phát hiện tín hiệu nào", "Không tìm thấy đường dẫn, số điện thoại hay số tài khoản" (chỉ dấu `brand` không tính). Thông báo che chỉ liệt kê loại đã che, nối bằng " / ": "Đã che mã OTP / mật khẩu / số thẻ trong nội dung trước khi phân tích." Chữ `--color-text` trên nền khối AI `#F4F3FF`: 16,15.
 
 ## 4. Component
 
@@ -150,7 +150,7 @@ Tự viết bằng React + Tailwind, không dùng bộ component ngoài (thêm b
 | `VerdictBanner` | Nhãn + biểu tượng + câu giải nghĩa theo §3 | Nằm trong vùng `aria-live="polite"`; tiêu đề `h2` |
 | `SourceBadge` | *Kiểm tra* / *AI nhận định* | Chữ đầy đủ, không chỉ màu |
 | `SignalList` | Danh sách tín hiệu, mỗi dòng có `SourceBadge` | `ul` |
-| `IndicatorCard` | Chỉ dấu + danh sách phép kiểm + `CheckStatus` | URL là văn bản thuần, `word-break: break-all`, không có `href` (P5) |
+| `IndicatorCard` | Chỉ dấu + danh sách phép kiểm + `CheckStatus` | URL là văn bản thuần, `overflow-wrap: anywhere` (class `wrap-anywhere`; chỉ ngắt giữa từ khi chuỗi không vừa dòng, không như `break-all`), không có `href` (P5) |
 | `CheckStatus` | Cảnh báo / Không phát hiện vấn đề / Không tra được | Biểu tượng + chữ |
 | `RedactionNotice` | Thông báo đã che dữ liệu | — |
 | `Disclaimer` | Câu §3, dùng ở footer và dưới kết quả | — |

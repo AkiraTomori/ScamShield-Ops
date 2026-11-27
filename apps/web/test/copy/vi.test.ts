@@ -66,6 +66,12 @@ describe("standard wording", () => {
     );
   });
 
+  // docs/product/ui-pages.md §2.3, word for word.
+  it("SO-02-AC04: words the empty signal and indicator sections", () => {
+    expect(vi.result.noSignals).toBe("Chưa phát hiện tín hiệu nào");
+    expect(vi.result.noIndicators).toBe("Không tìm thấy đường dẫn, số điện thoại hay số tài khoản");
+  });
+
   it("SO-03-AC03, AC04: has no 'an toàn' and no percentage anywhere", () => {
     const text = JSON.stringify(vi).toLowerCase();
     expect(text).not.toContain("an toàn");
