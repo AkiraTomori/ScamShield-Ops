@@ -31,6 +31,14 @@ export type Action =
 
 export const initialState: State = { status: "editing", content: "" };
 
+/**
+ * Closing or reloading the page now would lose the secret code: it is on screen, or the answer that
+ * carries it has not arrived yet (report-flow §2.2).
+ */
+export function leavingLosesCodes(state: State): boolean {
+  return state.status === "reported" || (state.status === "result" && state.reporting === true);
+}
+
 export function analysisReducer(state: State, action: Action): State {
   if (state.status === "submitting") {
     // One request at a time: only the wait itself and its answer move the state.

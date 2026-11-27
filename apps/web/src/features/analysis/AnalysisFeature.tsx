@@ -9,7 +9,7 @@ import { vi } from "../../copy/vi";
 import { ReportPanel } from "../report/ReportPanel";
 import { InputPanel } from "./InputPanel";
 import { ResultView } from "./ResultView";
-import { analysisReducer, initialState } from "./state";
+import { analysisReducer, initialState, leavingLosesCodes } from "./state";
 import { submitAnalysis } from "./submit-analysis";
 
 /** After this long the page says the analysis is still running (ui-pages §2.2). */
@@ -48,12 +48,13 @@ export function AnalysisFeature() {
   }, [status]);
 
   // Closing or leaving the page would lose the secret code as surely as editing the text.
+  const guardLeaving = leavingLosesCodes(state);
   useEffect(() => {
-    if (status !== "reported") return;
+    if (!guardLeaving) return;
     const warn = (event: BeforeUnloadEvent) => event.preventDefault();
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [status]);
+  }, [guardLeaving]);
 
   const shown = state.status === "result" || state.status === "reported" ? state.result : null;
   const sending = state.status === "result" && state.reporting === true;

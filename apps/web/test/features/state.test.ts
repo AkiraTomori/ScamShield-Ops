@@ -3,6 +3,7 @@ import { ERROR_MESSAGE_VI, INPUT_ERROR_MESSAGE_VI, type AnalysisResult } from "@
 import {
   analysisReducer,
   initialState,
+  leavingLosesCodes,
   type Action,
   type State,
 } from "../../src/features/analysis/state";
@@ -131,6 +132,21 @@ describe("analysis page state while reporting", () => {
 
   it("goes back to the plain result when there is no secret code to keep", () => {
     expect(analysisReducer(sendingReport, reportSettled(false))).toEqual(answered);
+  });
+
+  // The answer, with the secret code in it, may still be on its way.
+  it("SO-04-AC01: warns before leaving while a report is on its way or its codes are shown", () => {
+    expect(leavingLosesCodes(sendingReport)).toBe(true);
+    expect(leavingLosesCodes(reported)).toBe(true);
+    const harmless = [
+      initialState,
+      sending,
+      answered,
+      limited,
+      failed,
+      analysisReducer(sendingReport, reportSettled(false)),
+    ];
+    for (const state of harmless) expect(leavingLosesCodes(state)).toBe(false);
   });
 
   it("ignores report actions when there is no result", () => {

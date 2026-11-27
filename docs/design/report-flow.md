@@ -1,6 +1,6 @@
-# Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-052)
+# Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-053)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, chưa commit, chưa merge, chưa deploy). Chưa chạy tóm tắt AI với Groq thật. Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), chờ owner xác nhận.
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, commit `7a03690`, chưa merge, chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), chờ owner xác nhận.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-04-AC01…AC04, SO-05-AC01, AC02, SO-01-AC03, SO-03-AC05, P1, Q-05.
@@ -229,7 +229,7 @@ Khác hoặc thêm so với bản duyệt. **Chờ owner xác nhận.**
 | 1 | `lookupPublicStatus`, `normalizeCaseCode` nằm ở `core/src/reports/`, không phải `core/src/cases/` như §6 bản đầu; giao diện ở `features/lookup/` | `codebase.md` (cấp 4) thắng thiết kế slice (cấp 5); tránh thêm phụ thuộc `cases → reports` |
 | 2 | Trong lúc **đang gửi** báo cáo cũng khoá ô nhập, tin mẫu, nút "Kiểm tra", "Kiểm tra tin khác" và ẩn "Thử lại" (§5.2 chỉ nói sau khi thành công) | Đổi nội dung giữa chừng thì mất câu trả lời, cùng mã bí mật trong đó |
 | 3 | `reported` chỉ áp cho lần gửi **thành công** (có mã bí mật trên màn hình). "Đã gửi trước đó" không khoá, không hỏi lại | Không có mã bí mật nào để mất |
-| 4 | Ở `reported`, đóng hoặc rời trang thì trình duyệt hỏi lại (`beforeunload`); link "Tra cứu trạng thái" mở **tab mới** và ghi "(mở tab mới)" | Mở cùng tab sẽ mất mã bí mật. Safari trên iOS không hỗ trợ `beforeunload` |
+| 4 | **Trong lúc đang gửi** và ở `reported`, đóng, tải lại hoặc rời trang thì trình duyệt hỏi lại (`beforeunload`; phần đang gửi thêm sau review 27/11); link "Tra cứu trạng thái" mở **tab mới** và ghi "(mở tab mới)" | Mở cùng tab sẽ mất mã bí mật. Safari trên iOS không hỗ trợ `beforeunload` |
 | 5 | Header trang `/` có link "Tra cứu báo cáo" theo wireframe pages §2.1; test P5 của trang `/` đổi thành "link duy nhất là `/tra-cuu`" | Wireframe đã có link này |
 | 6 | Bộ lọc P1 (RP-04) so trên chữ **bỏ dấu**, cho phép tối đa 3 từ chen giữa ("khoá ngay các tài khoản"). Cụm cấm hành động chỉ áp cho `nextSteps` | "khoá"/"khóa", "toả"/"tỏa" là hai chuỗi khác nhau |
 | 7 | Số câu 3–5 chỉ yêu cầu trong prompt, code không đếm. Quá dài thì bỏ tóm tắt, không thử lại | Đếm câu trên chữ có tên miền dễ sai |
@@ -237,4 +237,37 @@ Khác hoặc thêm so với bản duyệt. **Chờ owner xác nhận.**
 | 9 | Phần chặn trần LLM và log lỗi gọi model được tách thành `guardLlm`, dùng chung cho phân tích và tóm tắt | Một chỗ cho P-03 |
 | 10 | Câu mới chưa có trong tài liệu duyệt: ba câu giải nghĩa trạng thái (trừ câu `confirmed_scam` lấy từ wireframe), "Hãy chọn nơi bạn nhận tin.", "Ghi chú tối đa 500 ký tự.", "Hãy nhập cả mã hồ sơ và mã bí mật.", "Chưa tra cứu được do lỗi kết nối. Hãy thử lại." Ghi ở [design-system §3](../product/design-system.md#3-câu-chữ-chuẩn) | Cần câu để hiển thị |
 
-**Chưa kiểm:** tóm tắt AI với Groq thật (chất lượng, tỉ lệ bị bộ lọc loại, có kịp 8 giây không); bản deploy, `maxDuration` và header IP trên Vercel; điện thoại thật. Chống lộ qua thời gian (§4.2) mới kiểm bằng đọc mã.
+**Chưa kiểm** (tại lúc cài đặt) được cập nhật ở §13.
+
+## 13. Kết quả kiểm (27/11/2026)
+
+Chạy ở local trên commit `7a03690`. Postgres 17 tạm (Docker, đã xoá), server `next dev`, Groq thật theo cấu hình `.env` local, tin tự tạo với tên miền dành riêng.
+
+**Đạt:**
+- `npm run verify` (660 đạt, 68 test tích hợp bỏ qua vì không có DB); chạy lại có DB: 728/728. `next build` và migrate DB trống xanh.
+- Route thật: 201 rồi 200 `alreadyReported`; hai request song song ra một hồ sơ; ba kiểu sai mã cho 404 giống hệt status và body; lượt thứ 11 từ một IP bị 429, và khoá đó chặn cả `/report`; OTP trong ghi chú được che.
+- UI headless Chromium 360px: form, đang gửi, thành công, khoá `reported`, `beforeunload`, hộp hỏi lại, đã gửi trước đó, analysis không còn, mất mạng, `/tra-cuu` khớp, không khớp, 429. Không cuộn ngang, không lỗi console, mã không lên URL.
+
+**Tóm tắt AI với Groq thật (SO-05-AC02):**
+
+| Cách gửi | Có tóm tắt | Lý do thiếu |
+|---|---|---|
+| Báo cáo khoảng 20 giây sau khi phân tích | 0/3 | 429 |
+| Nghỉ khoảng 90 giây rồi báo cáo | 3/4 | một lượt `json_validate_failed`, thử lại bị 429 |
+
+- Ba tóm tắt nhận được qua bộ lọc, route mất khoảng 2–2,5 giây. Một lượt có câu lệnh chèn trong ghi chú: model thuật lại yêu cầu đó như lời người báo cáo, không làm theo.
+- Nhận xét chất lượng: tóm tắt chép mã nội bộ (`ip_host`, `lookalike`, `pass`, `inconclusive`) vào câu cho nhân viên đọc. Chưa sửa.
+- Mẫu quá nhỏ để kết luận tỉ lệ. Cả đợt kiểm tốn khoảng 30 lượt gọi Groq; nhịp gửi dày có thể là một phần nguyên nhân 429.
+
+**Rủi ro:** ở local, đổi header `x-forwarded-for` là sang khoá rate limit khác. SO-01-AC04 và ước tính dò mã ở §4.1 chỉ đúng khi header IP của nền tảng đáng tin (mục kiểm lúc deploy).
+
+**Chưa kiểm:** SO-05-AC01 phần "nguồn (`user_report`)": chưa có trong mã S5, theo [contracts §6](../architecture/contracts.md#6-hồ-sơ-casedetail-dùng-ở-fraudops) là trường của `CaseDetail` (T-062), nên §8 ghi quá phạm vi test hiện có. Chống lộ qua thời gian (§4.2): mới đọc mã (`lookupPublicStatus` luôn chạy scrypt, kể cả trên `DUMMY_SECRET_HASH`), chưa đo. Bản deploy, `maxDuration` và header IP trên Vercel; điện thoại thật; trình đọc màn hình; DB dev local đã có CHECK 1.000 ký tự hay chưa; nút sao chép khi trình duyệt cho phép clipboard (mới kiểm nhánh bị chặn).
+
+**Sửa sau review (27/11, chưa commit):** cảnh báo rời trang nay bật cả khi đang gửi báo cáo (`leavingLosesCodes` ở `features/analysis/state.ts`, có test). `npm run verify` (661 đạt, 68 test tích hợp bỏ qua vì không có DB) và `next build` xanh. Chromium headless 360px, hai API giả trong trình duyệt: đang gửi thì link header và tải lại đều hỏi lại; chọn ở lại thì mã vẫn tới; gửi lỗi thì rời trang không bị hỏi. Safari trên iOS vẫn không hỏi.
+
+**Còn mở từ review, chờ owner:**
+- **Ghi chú có thể lọt mã OTP** (riêng tư, SO-01-AC03). Đã chạy `redact`: "mình lỡ đưa mã 482913 cho họ" **không** bị che, "đã đọc mã OTP 482913" thì bị che. Số điện thoại trong ghi chú được giữ (Q-04). Chọn: thêm luật che cho ghi chú, thêm câu nhắc dưới ô ghi chú, hoặc chấp nhận.
+- Tóm tắt chép mã nội bộ (`ip_host`, …): đổi sang nhãn tiếng Việt trước khi đưa vào prompt, nên làm trước hoặc cùng T-062.
+- Bộ lọc hành động cấm có thể bỏ oan cả bản tóm tắt: theo dõi log `case_summary_failed` mã `forbidden_action`.
+- Chưa có cách tạo bù tóm tắt khi Groq trả 429: quyết trước đóng băng 30/11.
+
