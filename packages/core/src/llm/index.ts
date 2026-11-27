@@ -22,6 +22,22 @@ export {
   type ExplanationRejection,
   type WriteExplanationResult,
 } from "./write-explanation";
+export {
+  CASE_SUMMARY_MAX_TOKENS,
+  CASE_SUMMARY_RETRY_MIN_REMAINING_MS,
+  filterCaseSummary,
+  summarizeCase,
+  type SummarizeCaseFailure,
+  type SummarizeCaseResult,
+} from "./summarize-case";
+export type { CaseSummaryRejection, TextRejection } from "./output-filters";
+export {
+  PROMPT_VERSION as CASE_SUMMARY_PROMPT_VERSION,
+  buildCaseSummaryPrompt,
+  type CaseSummaryInput,
+} from "./prompts/case-summary-v1";
+export { CASE_SUMMARY_MAX_CHARS, CASE_SUMMARY_STEP_MAX_CHARS } from "@scamshield/shared";
+export { guardLlm, type GuardOptions } from "./guard";
 export { withRateLimitRetry, type RateLimitRetryOptions } from "./rate-limit-retry";
 export { PROMPT_VERSION as SIGNALS_PROMPT_VERSION, buildSignalsPrompt } from "./prompts/signals-v1";
 export {

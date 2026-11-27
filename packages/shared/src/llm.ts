@@ -37,3 +37,17 @@ export type LlmSignalOutput = z.infer<typeof LlmSignalOutput>;
 /** Explanation step output (contracts §7). Length and content are enforced by code afterwards. */
 export const LlmExplanationOutput = z.object({ explanation: z.string().min(1) });
 export type LlmExplanationOutput = z.infer<typeof LlmExplanationOutput>;
+
+export const CASE_SUMMARY_MAX_CHARS = 1000;
+export const CASE_SUMMARY_STEP_MAX_CHARS = 200;
+export const CASE_SUMMARY_MAX_STEPS = 3;
+
+/**
+ * Case summary output (contracts §7), also the shape stored in `cases.ai_summary`. As for the
+ * explanation, length and content are enforced by code afterwards.
+ */
+export const LlmCaseSummaryOutput = z.object({
+  summary: z.string().min(1),
+  nextSteps: z.array(z.string().min(1)).min(1).max(CASE_SUMMARY_MAX_STEPS),
+});
+export type LlmCaseSummaryOutput = z.infer<typeof LlmCaseSummaryOutput>;

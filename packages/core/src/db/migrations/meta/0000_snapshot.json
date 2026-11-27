@@ -433,7 +433,7 @@
         },
         "cases_reporter_note_len": {
           "name": "cases_reporter_note_len",
-          "value": "\"cases\".\"reporter_note\" IS NULL OR char_length(\"cases\".\"reporter_note\") <= 500"
+          "value": "\"cases\".\"reporter_note\" IS NULL OR char_length(\"cases\".\"reporter_note\") <= 1000"
         },
         "cases_engine_verdict_valid": {
           "name": "cases_engine_verdict_valid",

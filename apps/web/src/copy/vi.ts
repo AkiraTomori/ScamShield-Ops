@@ -2,7 +2,9 @@ import type {
   CheckStatus,
   CheckType,
   InconclusiveReason,
+  PublicCaseStatus,
   RedactionCounts,
+  ReportChannel,
   SignalSource,
   SignalType,
   Verdict,
@@ -81,6 +83,76 @@ export const vi = {
       card: "số thẻ",
     } satisfies Record<keyof RedactionCounts, string>,
   },
+  // ui-pages §2.4, report-flow §2.2 and §5, wireframe design/pages §2.3.
+  report: {
+    open: "Gửi báo cáo cho đội vận hành",
+    channelLegend: "Bạn nhận tin qua đâu?",
+    channel: {
+      sms: "SMS",
+      zalo: "Zalo",
+      messenger: "Messenger",
+      email: "Email",
+      other: "Khác",
+    } satisfies Record<ReportChannel, string>,
+    noteLabel: "Ghi chú (không bắt buộc)",
+    submit: "Gửi báo cáo",
+    submitting: "Đang gửi…",
+    failed: "Chưa gửi được báo cáo. Hãy thử lại.",
+    analysisGone:
+      "Không tìm thấy kết quả phân tích này. Hãy kiểm tra lại tin nhắn rồi gửi báo cáo.",
+    sent: "Đã gửi báo cáo.",
+    caseCode: "Mã hồ sơ",
+    secretCode: "Mã bí mật",
+    keepCodes: "Lưu lại cả hai mã để tra cứu. Mã bí mật sẽ không hiển thị lại.",
+    lookupLink: "Tra cứu trạng thái",
+    newTab: "(mở tab mới)",
+    alreadySent: "Báo cáo này đã được gửi trước đó",
+    useSavedSecret: "Dùng mã bí mật bạn đã lưu để tra cứu.",
+    secretLost: "Nếu bạn chưa kịp lưu mã bí mật, đội vận hành vẫn nhận được báo cáo này.",
+    locked: "Đã gửi báo cáo cho tin này. Bấm Kiểm tra tin khác để kiểm tin mới.",
+    confirmLeave: "Bạn đã lưu mã hồ sơ và mã bí mật chưa? Mã bí mật sẽ không hiển thị lại.",
+    confirmAnother: "Đã lưu, kiểm tin khác",
+    confirmBack: "Quay lại",
+  },
+  copyCode: {
+    action: "Sao chép",
+    done: "Đã sao chép",
+    manual: "Hãy tự sao chép mã",
+  },
+  // ui-pages §3 and the wireframe in design/pages §3.
+  caseStatus: {
+    nav: "Tra cứu báo cáo",
+    heading: "Tra cứu báo cáo của bạn",
+    codeLabel: "Mã hồ sơ",
+    codePlaceholder: "SC-0007",
+    secretLabel: "Mã bí mật",
+    submit: "Tra cứu",
+    submitting: "Đang tra cứu…",
+    missing: "Hãy nhập cả mã hồ sơ và mã bí mật.",
+    failed: "Chưa tra cứu được do lỗi kết nối. Hãy thử lại.",
+    caseTitle: (code: string) => `Hồ sơ ${code}`,
+    updatedAt: (time: string) => `Cập nhật: ${time}`,
+  },
+  // Labels verbatim from SO-04-AC04; design-system §3.
+  publicStatus: {
+    pending_review: {
+      label: "Đang chờ xem xét",
+      explanation: "Đội vận hành đã nhận báo cáo và chưa có kết luận.",
+    },
+    confirmed_scam: {
+      label: "Đã xác nhận lừa đảo",
+      explanation: "Đội vận hành đã xem xét và xác nhận tin nhắn này là lừa đảo.",
+    },
+    not_scam: {
+      label: "Không phát hiện lừa đảo",
+      explanation:
+        "Đội vận hành đã xem xét và không phát hiện lừa đảo. Hãy vẫn xác minh qua kênh chính thức.",
+    },
+    insufficient_evidence: {
+      label: "Chưa đủ bằng chứng",
+      explanation: "Đội vận hành đã xem xét nhưng chưa đủ bằng chứng để kết luận. Hãy thận trọng.",
+    },
+  } satisfies Record<PublicCaseStatus, { label: string; explanation: string }>,
   inconclusiveReason: {
     insufficient_evidence:
       "Nội dung chưa đủ để đánh giá. Hãy thận trọng và xác minh qua kênh chính thức.",

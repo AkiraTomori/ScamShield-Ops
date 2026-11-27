@@ -77,6 +77,14 @@ export const AnalysisEnv = z.object({
 });
 export type AnalysisEnv = z.infer<typeof AnalysisEnv>;
 
+/** What a public route without a model needs: the database and the rate-limit salt. */
+export const PublicApiEnv = AnalysisEnv.pick({ DATABASE_URL: true, RATE_LIMIT_SALT: true });
+export type PublicApiEnv = z.infer<typeof PublicApiEnv>;
+
+export function parsePublicApiEnv(source: Record<string, string | undefined>) {
+  return PublicApiEnv.safeParse(source);
+}
+
 export function parseAnalysisEnv(source: Record<string, string | undefined>) {
   return AnalysisEnv.safeParse(source);
 }

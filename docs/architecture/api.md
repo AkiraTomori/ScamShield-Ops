@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy. Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (27/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã có trên nhánh `feat/s5-report` (27/11), chưa merge. Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 
@@ -90,9 +90,10 @@ Hết trần 20 giây ở bất kỳ bước nào sau bước 3 → vẫn **200*
 |---|---|
 | **201** tạo mới | `{ "caseCode": "SC-0007", "secretCode": "K7QX-2M9P", "alreadyReported": false }` |
 | **200** đã gửi trước đó (SO-04-AC03) | `{ "caseCode": "SC-0007", "secretCode": null, "alreadyReported": true }`. Mã bí mật không hiển thị lại |
-| 400 `validation_failed` | Kênh không hợp lệ, ghi chú quá dài |
+| 400 `validation_failed` | `analysisId` không phải UUID, body sai dạng, thiếu hoặc sai kênh, ghi chú quá 500 ký tự (`fields.channel`, `fields.note`) |
 | 404 `not_found` | `analysisId` không tồn tại |
 | 429 `rate_limited` | |
+| 500 `internal` | Lỗi không dự đoán được, thiếu biến môi trường |
 
 - `secretCode` sinh ngẫu nhiên an toàn, 8 ký tự Crockford base32 hiển thị thành hai nhóm 4 (RP-05, owner chốt 26/11), chỉ trả **một lần**, lưu dạng băm.
 - Tạo report + case + tóm tắt AI trong một luồng; tóm tắt lỗi thì vẫn tạo case (contracts A-02).
@@ -109,8 +110,12 @@ Dùng `POST` để mã bí mật không nằm trên URL, lịch sử trình duy�
 | Kết quả | Body |
 |---|---|
 | **200** | `{ "caseCode": "SC-0007", "status": "confirmed_scam", "updatedAt": "…" }` (`PublicCaseStatus`) |
+| 400 `validation_failed` | Thiếu trường, rỗng, dài hơn 32 ký tự, trường lạ |
 | 404 `not_found` | Sai mã, sai mã bí mật hoặc không tồn tại: **cùng** một phản hồi |
 | 429 `rate_limited` | |
+| 500 `internal` | Lỗi không dự đoán được, thiếu `DATABASE_URL` hoặc `RATE_LIMIT_SALT` |
+
+Mã hồ sơ nhận cả chữ thường và chỉ phần số (`101` là `SC-0101`); mã bí mật bỏ qua khoảng trắng, gạch ngang, chữ hoa thường.
 
 Không trả lý do kết luận, tên nhân viên, nội dung tin.
 

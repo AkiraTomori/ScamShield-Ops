@@ -1,13 +1,13 @@
 import { EXPLANATION_MAX_CHARS, LlmExplanationOutput } from "@scamshield/shared";
-import { normalizeText, parseModelJson } from "./json";
+import { parseModelJson } from "./json";
+import { rejectModelText, type TextRejection } from "./output-filters";
 import { buildExplanationPrompt, type ExplanationInput } from "./prompts/explain-v3";
 import type { CallOptions, LlmDeps, TokenUsage } from "./types";
 
 export { EXPLANATION_MAX_CHARS };
 export const EXPLANATION_MAX_TOKENS = 600;
 
-export type ExplanationRejection =
-  "too_long" | "contains_safe_word" | "contains_percent" | "contains_certainty" | "unknown_number";
+export type ExplanationRejection = TextRejection;
 
 export type WriteExplanationResult =
   | { ok: true; explanation: string; latencyMs: number; usage: TokenUsage }
@@ -66,22 +66,10 @@ export async function writeExplanation(
   return { ok: true, explanation, latencyMs: result.latencyMs, usage };
 }
 
-/** Guarantee language the prompt forbids; the filter enforces the same list (normalized text). */
-const CERTAINTY_WORDS = ["chắc chắn", "đảm bảo", "bảo đảm", "tuyệt đối"];
-
 /** Output filter of analysis-pipeline §9. Returns why the text must be dropped, or undefined. */
 export function filterExplanation(
   text: string,
   sentData: string,
 ): ExplanationRejection | undefined {
-  if (text.length > EXPLANATION_MAX_CHARS) return "too_long";
-  const normalized = normalizeText(text);
-  if (normalized.includes("an toàn")) return "contains_safe_word";
-  if (text.includes("%")) return "contains_percent";
-  if (CERTAINTY_WORDS.some((word) => normalized.includes(word))) return "contains_certainty";
-  const known = new Set(sentData.match(/\d+/g) ?? []);
-  for (const run of text.match(/\d+/g) ?? []) {
-    if (!known.has(run)) return "unknown_number";
-  }
-  return undefined;
+  return rejectModelText(text, sentData, EXPLANATION_MAX_CHARS);
 }

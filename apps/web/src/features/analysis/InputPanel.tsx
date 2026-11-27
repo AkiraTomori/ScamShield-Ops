@@ -15,6 +15,7 @@ export function InputPanel({
   content,
   fieldError,
   busy,
+  locked,
   textareaRef,
   submitRef,
   onChange,
@@ -24,6 +25,8 @@ export function InputPanel({
   fieldError?: string;
   /** A request is on its way: the text is read-only and samples are locked. */
   busy: boolean;
+  /** A report of this text is being sent, or its codes are on screen (report-flow §5.2). */
+  locked?: "sending" | "reported";
   textareaRef?: Ref<HTMLTextAreaElement>;
   submitRef?: Ref<HTMLButtonElement>;
   onChange: (content: string) => void;
@@ -44,7 +47,7 @@ export function InputPanel({
         label={vi.analysis.inputLabel}
         counterId="message-count"
         error={fieldError}
-        readOnly={busy}
+        readOnly={busy || locked !== undefined}
         value={content}
         onChange={(event) => onChange(event.target.value)}
       />
@@ -55,11 +58,18 @@ export function InputPanel({
       <SampleChips
         heading={vi.analysis.samplesLabel}
         samples={SAMPLES}
-        disabled={busy}
+        disabled={busy || locked !== undefined}
         onPick={onChange}
       />
+      {locked === "reported" ? <p className="font-semibold">{vi.report.locked}</p> : null}
       <div className="flex flex-col">
-        <Button ref={submitRef} type="submit" loading={busy} loadingLabel={vi.analysis.submitting}>
+        <Button
+          ref={submitRef}
+          type="submit"
+          loading={busy}
+          loadingLabel={vi.analysis.submitting}
+          disabled={locked !== undefined}
+        >
           {vi.analysis.submit}
         </Button>
       </div>

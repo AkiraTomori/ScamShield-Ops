@@ -10,7 +10,7 @@ import { extractIndicators, type ExtractedIndicators } from "../indicators";
 import {
   EXPLAIN_PROMPT_VERSION,
   extractSignals,
-  GroqConfigError,
+  guardLlm,
   SIGNALS_PROMPT_VERSION,
   writeExplanation,
   type ExplanationInput,
@@ -101,29 +101,13 @@ export async function analyzeMessage(
   const prepared = clock();
 
   let llmCalls = 0;
-  const llm: LlmClient = {
-    async chatJson(request) {
-      if (deps.reserveLlmCall && !(await deps.reserveLlmCall())) {
-        return { ok: false, kind: "unavailable", latencyMs: 0 };
-      }
+  const llm = guardLlm(deps.llm, {
+    reserve: deps.reserveLlmCall,
+    log,
+    onCall: () => {
       llmCalls += 1;
-      let reply;
-      try {
-        reply = await deps.llm.chatJson(request);
-      } catch (error) {
-        // 401 is a bad key, 404 a wrong model name. The status only: never the message.
-        if (error instanceof GroqConfigError) {
-          log({ event: "llm_call_failed", code: `config_${error.status}` });
-        }
-        throw error;
-      }
-      // The HTTP status tells a rate limit apart from an outage; never any content.
-      if (!reply.ok) {
-        log({ event: "llm_call_failed", code: `${reply.kind}_${reply.status ?? "no_status"}` });
-      }
-      return reply;
     },
-  };
+  });
   const llmDeps = (model: string): LlmDeps => ({
     llm,
     model,

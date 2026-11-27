@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { redact } from "../../src/redaction";
+import { redact, redactNote } from "../../src/redaction";
 
 const OTP = "[OTP ĐÃ CHE]";
 const PASSWORD = "[MẬT KHẨU ĐÃ CHE]";
@@ -203,5 +203,50 @@ describe("redact (SO-01-AC03)", () => {
     ]) {
       expect(redact(text).text).toBe(text);
     }
+  });
+});
+
+// RP-06: a note is written by the victim, who tells what they handed over without saying "OTP".
+describe("redactNote", () => {
+  const MASK = "[OTP ĐÃ CHE]";
+
+  it.each([
+    ["mình lỡ đưa mã 482913 cho họ", `mình lỡ đưa mã ${MASK} cho họ`],
+    ["482913", MASK],
+    ["đã đọc 4829 và 48291357.", `đã đọc ${MASK} và ${MASK}.`],
+    ["họ bảo đọc 482 913 nhé", `họ bảo đọc ${MASK} nhé`],
+    ["mã482913, rồi 482-913", `mã${MASK}, rồi ${MASK}`],
+    ["đưa tài khoản và mã 482913", `đưa tài khoản và mã ${MASK}`],
+    ["STK của mình, mã 482913", `STK của mình, mã ${MASK}`],
+  ])("SO-01-AC03: masks a bare code in %j", (note, expected) => {
+    expect(redactNote(note).text).toBe(expected);
+  });
+
+  it("SO-01-AC03: masks a code the message rules already know only once", () => {
+    expect(redactNote("mã OTP 482913")).toEqual({
+      text: `mã OTP ${MASK}`,
+      counts: { otp: 1, password: 0, card: 0 },
+    });
+    expect(redactNote("mã OTP 482913, mã kia 111222").counts.otp).toBe(2);
+  });
+
+  it.each([
+    "gọi từ 0901234567 và 0901 234 567, tổng đài 1900 1234",
+    "STK 00012345 và số tài khoản: 000123456789",
+    "bấm vào vi-xac-minh.example/otp/482913",
+    "mất 500.000đ, 500000 đồng, 5000k, 2tr, 1000 usd",
+    "lúc 9h, 14:05 ngày 21/11/2026 (2026-11-21, 21-11-2026), gọi 2 lần",
+  ])("Q-04: keeps what is not a code in %j", (note) => {
+    expect(redactNote(note).text).toBe(note);
+  });
+
+  it("keeps the passwords and cards the message rules mask", () => {
+    expect(redactNote("thẻ 4111 1111 1111 1111, mật khẩu là Abc@123").text).toBe(
+      "thẻ [SỐ THẺ ĐÃ CHE], mật khẩu là [MẬT KHẨU ĐÃ CHE]",
+    );
+  });
+
+  it("leaves the message rules as they were (analysis is unchanged)", () => {
+    expect(redact("mình lỡ đưa mã 482913 cho họ").text).toBe("mình lỡ đưa mã 482913 cho họ");
   });
 });

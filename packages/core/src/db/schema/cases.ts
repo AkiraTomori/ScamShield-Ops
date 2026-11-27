@@ -38,6 +38,7 @@ export const cases = pgTable(
       .references(() => analyses.id, { onDelete: "restrict" }),
     status: text("status").notNull().default("pending_review"),
     channel: text("channel").notNull(),
+    /** Redacted. The user types at most 500 characters; redaction labels can lengthen it (RP-01). */
     reporterNote: text("reporter_note"),
     /** scrypt hash of the secret code. The code itself is never stored. */
     secretHash: text("secret_hash").notNull(),
@@ -61,7 +62,7 @@ export const cases = pgTable(
     check("cases_channel_valid", oneOf(t.channel, ReportChannel.options)),
     check(
       "cases_reporter_note_len",
-      sql`${t.reporterNote} IS NULL OR char_length(${t.reporterNote}) <= 500`,
+      sql`${t.reporterNote} IS NULL OR char_length(${t.reporterNote}) <= 1000`,
     ),
     check("cases_engine_verdict_valid", oneOf(t.engineVerdict, Verdict.options)),
     check("cases_risk_types_valid", allWithin(t.riskTypes, RiskType.options)),

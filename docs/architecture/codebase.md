@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (27/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 đã merge (PR #46, 26/11); runner eval dev (một phần S10) đã merge (PR #47, 27/11); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (27/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 đã merge (PR #46, 26/11); runner eval dev (một phần S10) đã merge (PR #47, 27/11); slice S5 trên nhánh `feat/s5-report` (27/11, chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -15,7 +15,7 @@
 │       │   │   ├── ops/             FraudOps: dang-nhap/, page.tsx (danh sách), ho-so/[code]/, chi-dau/
 │       │   │   └── api/             route handlers (api.md)
 │       │   │       ├── health/
-│       │   │       ├── analyses/  analyses/[id]/report/
+│       │   │       ├── analyses/  analyses/[analysisId]/report/
 │       │   │       ├── case-status/
 │       │   │       └── ops/ session/  cases/[code]/decision/  confirmed-indicators/[id]/removal/
 │       │   ├── components/          component dùng chung (design-system §4)
@@ -51,7 +51,7 @@
 │           ├── verdict/             quy tắc verdict + khuyến nghị (hàm thuần)
 │           ├── analysis/            điều phối pipeline, lưu analysis
 │           ├── rate-limit/
-│           ├── reports/             gửi báo cáo, tạo case, tra trạng thái
+│           ├── reports/             gửi báo cáo, tạo case, mã bí mật, tra trạng thái
 │           ├── cases/               danh sách, chi tiết, kết luận, case liên quan
 │           ├── confirmed-indicators/
 │           ├── auth/                tài khoản nhân viên, mật khẩu, phiên
@@ -70,7 +70,7 @@
 └── package.json                     npm workspaces + script gốc
 ```
 
-Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: T-040 (PR #48, đã merge): `apps/web/postcss.config.mjs`, `apps/web/src/components/`, `apps/web/test/{components,copy,styles}/`; T-041 (PR #48): `apps/web/src/features/analysis/` (`AnalysisFeature`, `InputPanel`, `ResultView`, `state.ts`, `submit-analysis.ts`), `apps/web/test/features/`, `packages/shared/src/demo-messages.ts` + `data/demo-messages.json`, entry con trong `exports` của `@scamshield/shared`; T-042 (PR #48): `features/analysis/{view-model.ts,fixtures.ts}`, `components/{SignalList,IndicatorCard,RedactionNotice}.tsx`, entry `@scamshield/shared/brands`, trang dev tạm `apps/web/src/app/xem-truoc/` (xoá trước 30/11); slice S3: `packages/shared/src/{analysis,input,brands,url-lists}.ts` + `data/`, `packages/core/src/{text,redaction,indicators,url-checks,verdict,analysis,rate-limit}/`, `apps/web/src/server/analyses.ts`, `apps/web/src/app/api/analyses/` (`lookup/` chưa tạo, chờ T-035); slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
+Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: T-040 (PR #48, đã merge): `apps/web/postcss.config.mjs`, `apps/web/src/components/`, `apps/web/test/{components,copy,styles}/`; T-041 (PR #48): `apps/web/src/features/analysis/` (`AnalysisFeature`, `InputPanel`, `ResultView`, `state.ts`, `submit-analysis.ts`), `apps/web/test/features/`, `packages/shared/src/demo-messages.ts` + `data/demo-messages.json`, entry con trong `exports` của `@scamshield/shared`; T-042 (PR #48): `features/analysis/{view-model.ts,fixtures.ts}`, `components/{SignalList,IndicatorCard,RedactionNotice}.tsx`, entry `@scamshield/shared/brands`, trang dev tạm `apps/web/src/app/xem-truoc/` (xoá trước 30/11); slice S3: `packages/shared/src/{analysis,input,brands,url-lists}.ts` + `data/`, `packages/core/src/{text,redaction,indicators,url-checks,verdict,analysis,rate-limit}/`, `apps/web/src/server/analyses.ts`, `apps/web/src/app/api/analyses/` (`lookup/` chưa tạo, chờ T-035); slice S5: `packages/shared/src/report.ts`, entry `@scamshield/shared/{enums,report}`, `packages/core/src/reports/`, `core/src/db/errors.ts`, `core/src/llm/{summarize-case,output-filters,guard}.ts` + prompt `case-summary-v1`, `apps/web/src/app/{tra-cuu,api/case-status,api/analyses/[analysisId]/report}/`, `apps/web/src/server/{http,reports,case-status}.ts`, `apps/web/src/features/{report,lookup}/` + `features/post-json.ts`, `components/{CodeWithCopy,ConfirmDialog,StatusBadge,TextInput}.tsx`; trang `/` và `/tra-cuu` nằm ở `app/`, chưa dùng nhóm `(public)/`; slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
 
 ## 2. Phụ thuộc giữa module trong `packages/core`
 
@@ -78,7 +78,7 @@ Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. �
 analysis ─→ redaction, indicators, url-checks, lookup, llm, verdict, confirmed-indicators, rate-limit, db
 redaction ─→ indicators (để không che nhầm URL, SĐT, số tài khoản)
 url-checks ─→ indicators (kiểu);  verdict ─→ url-checks (so tên miền chính thức)
-reports  ─→ analysis (đọc), llm (tóm tắt), rate-limit, db
+reports  ─→ llm (tóm tắt), redaction, db (đọc analyses, ghi cases; kiểu `Db` từ rate-limit)
 cases    ─→ confirmed-indicators, db
 lookup, llm ─→ http
 ```
