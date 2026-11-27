@@ -115,3 +115,37 @@ export function pricesFor(
     outPerMillion: args.priceOut[args.priceOut.length === 1 ? 0 : i] ?? 0,
   }));
 }
+
+export interface PipelineArgs {
+  runs: number;
+  gapMs: number;
+  /** Without it the runner only prints the estimate and calls nothing. */
+  confirm: boolean;
+}
+
+/** `npm run eval` (eval-suite §3). Only the dev set for now. */
+export function parsePipelineArgs(argv: readonly string[]): PipelineArgs {
+  const { values } = parseArgs({
+    args: [...argv],
+    options: {
+      set: { type: "string" },
+      runs: { type: "string", default: "3" },
+      "gap-ms": { type: "string", default: "2000" },
+      yes: { type: "boolean", default: false },
+    },
+    strict: true,
+  });
+  if (values.set === "heldout") {
+    throw new ArgError(
+      "--set heldout is not available: the freeze guards (T-103) are not built yet",
+    );
+  }
+  if (values.set !== "dev") throw new ArgError("--set dev is required");
+  const runs = Number(values.runs);
+  if (!Number.isInteger(runs) || runs < 1 || runs > 10) throw new ArgError("--runs must be 1..10");
+  const gapMs = Number(values["gap-ms"]);
+  if (!Number.isInteger(gapMs) || gapMs < 0) {
+    throw new ArgError("--gap-ms must be a non-negative integer");
+  }
+  return { runs, gapMs, confirm: values.yes };
+}
