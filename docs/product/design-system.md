@@ -1,6 +1,6 @@
 # ScamShield Ops — Design system
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040, ở local, chưa merge). Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); ở local, chưa merge. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 ## 1. Nguyên tắc thị giác
 
@@ -107,7 +107,7 @@ Tự viết bằng React + Tailwind, không dùng bộ component ngoài (thêm b
 
 | Component | Mô tả | Ghi chú a11y |
 |---|---|---|
-| `Button` | primary / secondary / ghost; trạng thái loading khoá nút và đổi chữ | `aria-busy` khi loading; vùng bấm ≥ 44×44px trên điện thoại |
+| `Button` | primary / secondary / ghost; trạng thái loading khoá nút và đổi chữ | `aria-busy` khi loading; khoá bằng `aria-disabled` và chặn click (không dùng `disabled`, để giữ focus); vùng bấm ≥ 44×44px trên điện thoại |
 | `TextArea` + `CharCounter` | Ô nhập tin, bộ đếm `n/2.000` | Bộ đếm gắn `aria-describedby`; lỗi gắn `aria-invalid` |
 | `SampleChips` | Các nút tin mẫu | Là `button`, không phải link |
 | `VerdictBanner` | Nhãn + biểu tượng + câu giải nghĩa theo §3 | Nằm trong vùng `aria-live="polite"`; tiêu đề `h2` |

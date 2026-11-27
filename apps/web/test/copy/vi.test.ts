@@ -47,6 +47,25 @@ describe("standard wording", () => {
     );
   });
 
+  // docs/product/ui-pages.md §2.1 and §2.2, word for word.
+  it("SO-01-AC02, SO-10-AC05: words the input panel", () => {
+    expect(vi.analysis.inputLabel).toBe("Dán tin nhắn bạn nhận được");
+    expect(vi.analysis.privacyHint).toBe(
+      "Đừng dán mật khẩu hay mã OTP. Nếu có, hệ thống sẽ tự che trước khi phân tích.",
+    );
+    expect(vi.analysis.samplesLabel).toBe("Thử tin mẫu:");
+    expect(vi.analysis.submit).toBe("Kiểm tra");
+    expect(vi.analysis.another).toBe("Kiểm tra tin khác");
+  });
+
+  it("SO-03-AC06: words the waiting and connection-error states", () => {
+    expect(vi.analysis.submitting).toBe("Đang kiểm tra…");
+    expect(vi.analysis.slow).toBe("Vẫn đang phân tích, thường mất dưới 10 giây");
+    expect(vi.analysis.failed).toBe(
+      "Chưa kiểm tra được do lỗi kết nối. Nội dung của bạn vẫn còn, hãy thử lại.",
+    );
+  });
+
   it("SO-03-AC03, AC04: has no 'an toàn' and no percentage anywhere", () => {
     const text = JSON.stringify(vi).toLowerCase();
     expect(text).not.toContain("an toàn");

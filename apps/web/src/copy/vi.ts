@@ -4,7 +4,6 @@ import type { CheckStatus, SignalSource, Verdict } from "@scamshield/shared";
 export const vi = {
   productName: "ScamShield",
   tagline: "Kiểm tra tin nhắn đáng ngờ trước khi bạn chuyển tiền hoặc đưa thông tin.",
-  comingSoon: "Công cụ kiểm tra đang được xây dựng.",
   // Verbatim from spec §9; covered by a string-comparison test.
   disclaimer:
     "Kết quả mang tính tham khảo. Hãy xác minh qua kênh chính thức của tổ chức trước khi chuyển tiền hoặc cung cấp thông tin.",
@@ -41,4 +40,17 @@ export const vi = {
   } satisfies Record<CheckStatus, string>,
   checkUnavailableNote: "Không tra được kết quả. Điều này không có nghĩa là không có vấn đề.",
   retry: "Thử lại",
+  // ui-pages §2.1–§2.2 and the wireframe in design/pages §2.1.
+  analysis: {
+    heading: "Tin nhắn này có đáng ngờ không?",
+    intro: "Dán tin bạn nhận được, hệ thống chỉ ra dấu hiệu và nên làm gì.",
+    inputLabel: "Dán tin nhắn bạn nhận được",
+    privacyHint: "Đừng dán mật khẩu hay mã OTP. Nếu có, hệ thống sẽ tự che trước khi phân tích.",
+    samplesLabel: "Thử tin mẫu:",
+    submit: "Kiểm tra",
+    submitting: "Đang kiểm tra…",
+    slow: "Vẫn đang phân tích, thường mất dưới 10 giây",
+    failed: "Chưa kiểm tra được do lỗi kết nối. Nội dung của bạn vẫn còn, hãy thử lại.",
+    another: "Kiểm tra tin khác",
+  },
 } as const;

@@ -20,10 +20,19 @@ const STRIPPED = /[\u0000-\u0008\u000B-\u001F\u007F-\u009F\u200B-\u200D\u2060\uF
 
 export type NormalizedInput = { ok: true; text: string } | { ok: false; code: InputErrorCode };
 
+function standardize(raw: string): string {
+  // NFC again after stripping: removing a zero-width character can let two code points compose.
+  return raw.normalize("NFC").replace(STRIPPED, "").normalize("NFC").trim();
+}
+
+/** Length as the limit sees it: code points of the standard content. */
+export function countInputChars(raw: string): number {
+  return [...standardize(raw)].length;
+}
+
 /** The returned text is the "standard content" every later step works on. */
 export function normalizeInput(raw: string): NormalizedInput {
-  // NFC again after stripping: removing a zero-width character can let two code points compose.
-  const text = raw.normalize("NFC").replace(STRIPPED, "").normalize("NFC").trim();
+  const text = standardize(raw);
   if (text === "") return { ok: false, code: "empty" };
   if ([...text].length > MAX_INPUT_CHARS) return { ok: false, code: "too_long" };
   return { ok: true, text };

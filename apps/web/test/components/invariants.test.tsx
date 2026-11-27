@@ -61,14 +61,16 @@ describe("base components", () => {
     expect(html.includes(vi.checkUnavailableNote)).toBe(status === "unavailable");
   });
 
-  it("SO-03-AC06: a loading button says so and cannot be pressed again", () => {
+  // `disabled` would drop keyboard focus to the page, so loading locks with aria-disabled instead.
+  it("SO-03-AC06: a loading button says it is busy and locked, and stays focusable", () => {
     const html = renderToStaticMarkup(
       <Button loading loadingLabel="Đang kiểm tra…">
         Kiểm tra
       </Button>,
     );
     expect(html).toContain('aria-busy="true"');
-    expect(html).toContain('disabled=""');
+    expect(html).toContain('aria-disabled="true"');
+    expect(html).not.toContain('disabled=""');
     expect(html).toContain(">Đang kiểm tra…</button>");
   });
 

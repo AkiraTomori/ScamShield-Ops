@@ -1,6 +1,6 @@
 # Thiết kế slice S9: dữ liệu demo, seed/reset, E2E (T-090…T-093)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`), nên **soạn được ngay**. T-091 là việc của owner trên DB deploy.
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã, trừ `demo-messages.json` bản tạm và schema của nó (§2; T-041, nhánh `feat/t-041-input-states`, chưa merge). Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`), nên **soạn được ngay**. T-091 là việc của owner trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-10](../spec/ScamShield-v1.md): AC01…AC05, Q-07, spec §8 (kịch bản demo).
@@ -18,6 +18,8 @@
 - Một kịch bản Playwright đi hết 6 bước của plan §1.
 
 ## 2. Tin demo: một nguồn duy nhất (T-093)
+
+*(27/11, T-041: file đã có trên nhánh `feat/t-041-input-states` với 4 tin **tạm** cho 4 chip, trường `id`, `chip`, `content`, `expectedVerdict`; schema ở `packages/shared/src/demo-messages.ts`. T-093 thay nội dung: tin tạm M1 dùng thương hiệu giả nên chưa đạt ràng buộc R-01, M3 chưa có, verdict chưa kiểm bằng pipeline thật.)*
 
 **File:** `packages/shared/data/demo-messages.json`. Trang `/` (thay cho `samples.ts` ở scamshield-ui §7), seed, E2E và eval cùng đọc file này. Không chép nội dung tin ra chỗ khác.
 

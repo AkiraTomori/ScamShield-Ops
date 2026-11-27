@@ -1,4 +1,4 @@
-import type { TextareaHTMLAttributes } from "react";
+import type { Ref, TextareaHTMLAttributes } from "react";
 import { fieldAria } from "./field";
 
 type TextAreaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className" | "id"> & {
@@ -7,6 +7,7 @@ type TextAreaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "classNam
   error?: string;
   /** Id of the `CharCounter` shown with this field. */
   counterId?: string;
+  ref?: Ref<HTMLTextAreaElement>;
 };
 
 export function TextArea({ id, label, error, counterId, rows = 6, ...rest }: TextAreaProps) {

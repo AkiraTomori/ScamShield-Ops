@@ -1,0 +1,26 @@
+[
+  {
+    "id": "M1",
+    "chip": "Khoá tài khoản",
+    "expectedVerdict": "high_risk",
+    "content": "[Ví XYZ] Tài khoản của bạn sẽ bị khoá trong hôm nay. Đăng nhập tại vi-xac-minh.example và nhập mã OTP để giữ tài khoản."
+  },
+  {
+    "id": "M2",
+    "chip": "Tin OTP thật",
+    "expectedVerdict": "no_signal",
+    "content": "[Ví XYZ] Mã OTP của bạn là 731946, có hiệu lực trong 3 phút. Không chia sẻ mã này với bất kỳ ai."
+  },
+  {
+    "id": "prize",
+    "chip": "Trúng thưởng",
+    "expectedVerdict": "high_risk",
+    "content": "Chúc mừng! Số điện thoại của bạn trúng thưởng 50 triệu đồng. Đóng phí nhận quà 200.000đ tại nhan-qua-xyz.example trước 24h."
+  },
+  {
+    "id": "urgent",
+    "chip": "Chuyển tiền gấp",
+    "expectedVerdict": "suspicious",
+    "content": "Em ơi, anh đang cấp cứu ở bệnh viện, chuyển gấp cho anh 15 triệu vào số tài khoản 0000123456789 nhé, anh không nghe máy được."
+  }
+]
