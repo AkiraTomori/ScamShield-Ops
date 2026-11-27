@@ -51,14 +51,14 @@ flowchart LR
 
 | Thư mục | Nội dung |
 |---|---|
-| `apps/web` | Next.js: giao diện ScamShield, FraudOps và API (route handlers), deploy một lần lên Vercel. Hiện có trang skeleton và `/api/health` |
-| `packages/core` | Nghiệp vụ không phụ thuộc Next.js, eval gọi trực tiếp. Hiện có: DB (schema 8 bảng, migration), HTTP client có allowlist, client Groq, trích signal, viết giải thích. Sắp có (S3): phân tích đầy đủ; sau đó: báo cáo, hồ sơ, đăng nhập |
+| `apps/web` | Next.js: giao diện ScamShield, FraudOps và API (route handlers), deploy một lần lên Vercel. Hiện có trang skeleton, `/api/health` và `POST /api/analyses` |
+| `packages/core` | Nghiệp vụ không phụ thuộc Next.js, eval gọi trực tiếp. Hiện có: DB (schema 8 bảng, migration), HTTP client có allowlist, client Groq, pipeline phân tích (che dữ liệu, chỉ dấu, kiểm URL, quy tắc verdict, giải thích, lưu, rate limit). Chưa có: tra cứu ngoài (T-035), báo cáo, hồ sơ, đăng nhập |
 | `packages/shared` | Zod schema (request/response, đầu ra LLM), mã lỗi kèm câu tiếng Việt |
-| `eval` | Bộ tình huống có nhãn (`eval/cases/`, hiện 20 câu dev nháp) và script đánh giá (`npm run eval:q08`) |
+| `eval` | Bộ tình huống có nhãn (`eval/cases/`, hiện 20 câu dev nháp) và script đánh giá (`npm run eval -- --set dev` cho cả pipeline, `npm run eval:q08` cho thử model) |
 | `docs` | Tài liệu sản phẩm và kỹ thuật, viết bằng tiếng Việt |
 | `tools/sdlc-kit` | Submodule quy trình SDLC cho coding agent ([my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit)) |
 
-**Trạng thái (26/11/2026):** đã có nền móng, schema dữ liệu và phần gọi LLM (PR #2–#4). Pipeline phân tích (S3) và `POST /api/analyses` có trên nhánh `feat/s3-pipeline` (PR #46), chưa merge. Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
+**Trạng thái (27/11/2026):** đã có nền móng, schema dữ liệu, phần gọi LLM (PR #2–#4), pipeline phân tích (S3) và `POST /api/analyses` (PR #46). Chưa deploy, chưa có giao diện ScamShield, báo cáo hay FraudOps. Chi tiết: [`docs/README.md`](docs/README.md#trạng-thái); lộ trình: [`docs/runbook/plan.md`](docs/runbook/plan.md).
 
 ## Quy trình làm việc (sdlc-kit)
 

@@ -1,6 +1,6 @@
 # Thiết kế slice S10: bộ eval SO-09, đóng băng, chạy held-out (T-100…T-103)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S10 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. Mọi việc của S10 đều là **P0**, và "bộ eval có số liệu" nằm trong danh sách **không bao giờ cắt** (plan §7).
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S10 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **27/11/2026:** có runner tối thiểu cho tập dev (`npm run eval -- --set dev`, nhánh `feat/t-039-dev-eval`) để làm T-039, gồm `scorePipeline` theo B.3 và dòng phụ EV-03. T-101 còn thiếu: `loadCaseSet` với kiểm chéo tập, chặn held-out (§4.2), `--ids`, bảng chấm 15 giải thích. **Khác §3.2, chờ owner xác nhận:** dòng phụ EV-03 không dùng lại `isInfraFailure` mà loại theo từng chỉ số (chỉ số verdict bỏ lượt không có verdict; giải thích và đúng schema bỏ lời gọi không được trả lời), vì hàm cũ bỏ cả lượt đã có verdict. **Thêm vào §3.3, chờ owner xác nhận:** file kết quả tập dev trùng tên thì đánh số `-2`, `-3` thay vì ghi đè; hậu tố này không phải cách chạy lại held-out (EV-04 giữ nguyên). Mọi việc của S10 đều là **P0**, và "bộ eval có số liệu" nằm trong danh sách **không bao giờ cắt** (plan §7).
 - T-100 (soạn câu) **làm được ngay**.
 - T-101 (runner) phụ thuộc T-039. Thực chất runner chỉ cần `analyzeMessage` của S3, không cần route.
 - T-102 và T-103 nằm cuối chuỗi (30/11, 01/12).
@@ -75,7 +75,7 @@ Runner gọi `analyzeMessage(content, deps)` của `packages/core`. Đây là c�
   1. **Tự động:** tỉ lệ `explanation ≠ null`. Bộ lọc ở pipeline §9 đã loại giải thích có số lạ, chữ cấm hoặc quá dài.
   2. **Chấm tay:** lấy ngẫu nhiên 15 giải thích (seed cố định), xuất bảng chấm Markdown giống `q08-grading-*.md`. Người chấm ghi rõ là người hay AI (protocol §5: không gọi AI chấm là "người chấm mù").
 - **Độ trễ** là độ trễ của `analyzeMessage` chạy trên máy chạy eval. Nó **không** gồm mạng tới Vercel hay bước lưu DB. Kết quả ghi rõ điều này. Độ trễ trên bản deploy đo riêng ở T-102 (§4).
-- **File kết quả:** `eval/results/<yyyy-mm-dd>-<set>-<commit7>.json`, theo mẫu protocol §7 (`run_id`, `git_commit`, `casesSha256`, model, `promptVersion`, `rulesVersion`, `lookups`, số lượt hỏng theo nguyên nhân, các chỉ số), cộng toàn bộ bản ghi từng lượt. Kèm `…-summary.md` có sẵn **một dòng B.4** để dán vào result.md, và danh sách câu sai (id, verdict mong đợi, verdict thực tế ở 3 lượt).
+- **File kết quả:** `eval/results/<yyyy-mm-dd>-<set>-<commit7>.json` (tập dev: đã có file cùng tên thì thêm `-2`, `-3`, không ghi đè; chạy lại held-out vẫn theo §4.2), theo mẫu protocol §7 (`run_id`, `git_commit`, `casesSha256`, model, `promptVersion`, `rulesVersion`, `lookups`, số lượt hỏng theo nguyên nhân, các chỉ số), cộng toàn bộ bản ghi từng lượt. Kèm `…-summary.md` có sẵn **một dòng B.4** để dán vào result.md, và danh sách câu sai (id, verdict mong đợi, verdict thực tế ở 3 lượt).
 - **Trước khi gọi Groq,** runner in ước lượng số lời gọi và token bằng `estimate.ts` (80 câu × 3 lượt × 2 lời gọi ≈ 480 lời gọi), rồi dừng chờ `--yes`. AGENTS.md yêu cầu hỏi trước khi chạy toàn bộ eval nhiều lần. Cờ `--ids dev-001,dev-005` chạy một phần, phục vụ chỉnh prompt.
 
 ### 3.4 Module
@@ -143,6 +143,6 @@ Tiền tố `EV-` (eval, slice S10), chưa dùng ở tài liệu nào khác.
 
 ## 7. Rủi ro
 
-- **Lịch:** runner (T-101) cần `analyzeMessage`, mà S3 chưa có mã. Nếu S3 xong ngày 28–29/11, chỉ còn khoảng một ngày để chỉnh theo dev trước khi đóng băng 30/11. Soạn câu (T-100) phải xong trước đó, độc lập với S3.
+- **Lịch:** `analyzeMessage` đã có trên `main` (PR #46, 26/11) và runner tập dev có từ 27/11. Việc chỉnh theo dev phải xong trước khi đóng băng 30/11. Soạn câu (T-100) phải xong trước đó, độc lập với S3.
 - **Chi phí và hạn mức Groq:** một lần chạy đầy đủ khoảng 480 lời gọi, cộng các lần chạy dev khi chỉnh. Groq gói miễn phí có thể làm lần chạy kéo dài hàng giờ vì 429. Đặt khoảng nghỉ, chạy từ sớm, và theo dõi chi phí (Q-06).
 - **Mẫu nhỏ:** 32 câu held-out × 3 lượt. Một câu sai làm số thay đổi vài điểm phần trăm. B.5 phải ghi mẫu số và câu giới hạn.

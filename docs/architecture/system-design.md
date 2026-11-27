@@ -1,6 +1,6 @@
 # ScamShield Ops — Thiết kế hệ thống
 
-**Trạng thái (21/11/2026):** BẢN NHÁP. Thiết kế **slice nền móng + walking skeleton** (§1–§9; đã merge vào `main`); slice dữ liệu P0 ở [data-model.md](./data-model.md). Các phần khác ghi ở §10. **§11 có sơ đồ toàn hệ thống** cho người mới (đích MVP). Owner đã chốt D-01…D-03 ngày 20/11/2026 (§9); D-04 còn chờ kiểm.
+**Trạng thái (27/11/2026):** BẢN NHÁP. Thiết kế **slice nền móng + walking skeleton** (§1–§9; đã merge vào `main`); slice dữ liệu P0 ở [data-model.md](./data-model.md). Các phần khác ghi ở §10. **§11 có sơ đồ toàn hệ thống** cho người mới (đích MVP). Owner đã chốt D-01…D-03 ngày 20/11/2026 (§9); D-04 còn chờ kiểm.
 
 Căn cứ: [spec v1](../spec/ScamShield-v1.md) (hành vi, P1–P5, Q-01…Q-10 đã chốt), [plan](../runbook/plan.md) (lịch, quyền của agent). File này thắng các file khác về **kiến trúc** ([docs/README.md](../README.md#khi-các-file-lệch-nhau)).
 
@@ -182,7 +182,7 @@ Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `con
 
 ## 11. Sơ đồ toàn hệ thống (đích MVP)
 
-Ba sơ đồ dưới cho người mới hình dung cả hệ thống. Đây là **đích** của MVP: phần ngoài nền móng, dữ liệu P0 và S2 chưa có mã. Chi tiết từng bước ở [design/analysis-pipeline.md](../design/analysis-pipeline.md) và [data-model.md](./data-model.md).
+Ba sơ đồ dưới cho người mới hình dung cả hệ thống. Đây là **đích** của MVP: ngoài nền móng, dữ liệu P0, S2 và S3 (đã merge, PR #46; chưa có tra cứu RDAP và Safe Browsing, T-035), các phần khác chưa có mã. Chi tiết từng bước ở [design/analysis-pipeline.md](../design/analysis-pipeline.md) và [data-model.md](./data-model.md).
 
 **Bối cảnh và ranh giới tin cậy**
 

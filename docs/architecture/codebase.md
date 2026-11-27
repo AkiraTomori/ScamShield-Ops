@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (26/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 có mã trên nhánh `feat/s3-pipeline` (26/11, PR #46, chưa merge); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (27/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 đã merge (PR #46, 26/11); runner eval dev (một phần S10) ở nhánh `feat/t-039-dev-eval`; cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 
@@ -57,10 +57,10 @@
 ├── eval/
 │   ├── cases/dev.jsonl              tình huống có nhãn, tập dev (20 câu đầu, owner duyệt 21/11)
 │   ├── cases/heldout.jsonl          tập held-out, chỉ chạy khi đóng băng
-│   ├── src/                         case.ts (EvalCase), score.ts, estimate.ts, runner.ts, cache.ts, report.ts, args.ts, run-q08.ts (CLI thử model Q-08)
+│   ├── src/                         case.ts (EvalCase), score.ts, estimate.ts, runner.ts, cache.ts, report.ts, args.ts, env.ts, run-q08.ts (CLI thử model Q-08); pipeline-record.ts, pipeline-runner.ts, pipeline-score.ts, pipeline-report.ts, result-path.ts (không ghi đè kết quả), run-eval.ts (CLI `npm run eval`)
 │   ├── test/                        Vitest cho eval (không gọi mạng)
 │   ├── .cache/                      đầu ra thô, gitignore
-│   └── results/                     kết quả đã commit (SO-09-AC04); q08-<ngày>-<commit>.json
+│   └── results/                     kết quả đã commit (SO-09-AC04); q08-<ngày>-<commit>.json, <ngày>-dev-<commit>.json + -summary.md
 ├── docs/
 ├── tools/sdlc-kit/                  submodule
 ├── docker-compose.yml               Postgres local
@@ -85,7 +85,7 @@ lookup, llm ─→ http
 
 ## 3. Lệnh
 
-Cột *Có chưa* cho biết lệnh đã có trong `package.json` hay mới là dự kiến (kiểm 24/11/2026).
+Cột *Có chưa* cho biết lệnh đã có trong `package.json` hay mới là dự kiến (kiểm 27/11/2026).
 
 | Lệnh | Làm gì | Ai chạy | Có chưa |
 |---|---|---|---|
@@ -97,7 +97,7 @@ Cột *Có chưa* cho biết lệnh đã có trong `package.json` hay mới là 
 | `npm run demo:seed` | Nạp case mẫu `is_seed`, tài khoản `judge1…judge5` | **Owner** với DB deploy | Chưa (slice sau) |
 | `npm run demo:reset` | Xoá và nạp lại dữ liệu `is_seed`, giữ case giám khảo tạo (SO-10-AC04) | **Owner** | Chưa (slice sau) |
 | `npm run eval:q08 -- --models <a>,<b> --runs 3` | Thử model Groq (Q-08): chỉ in ước tính; thêm `--confirm` mới gọi Groq (tốn tiền, cần `GROQ_API_KEY` trong `.env`). `--list-models` liệt kê model đang có. Tuỳ chọn: `--price-in/--price-out` (mỗi 1M token), `--resume`/`--fresh`, `--limit N`, `--retry-failed`, `--concurrency N`, `--reuse-signals-from <tag>`, `--no-json-mode <models>`, `--reasoning-format hidden\|parsed`, `--reasoning-effort <v>` | Đội; **hỏi owner trước khi `--confirm`** | Có |
-| `npm run eval -- --set dev` | Chạy eval tập dev (tốn tiền LLM) | Hỏi owner nếu chạy toàn bộ nhiều lần | Chưa (slice sau) |
+| `npm run eval -- --set dev` | Chạy cả pipeline trên tập dev, chỉ số research B.3. Không có `--yes` thì chỉ in ước tính; `--yes` mới gọi Groq (cần `GROQ_API_KEY`, `GROQ_MODEL_SIGNALS`, `GROQ_MODEL_EXPLAIN`). Tuỳ chọn `--runs N` (mặc định 3), `--gap-ms N` (mặc định 2000). `--set heldout` bị từ chối tới khi có T-103 | **Hỏi owner trước khi `--yes`** | Có (tập dev) |
 
 ## 4. Test theo tầng
 

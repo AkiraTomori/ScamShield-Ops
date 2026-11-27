@@ -19,9 +19,9 @@ T-034,S3 Pipeline,"Phép kiểm URL tất định: tên miền chính thức, nh
 T-035,S3 Pipeline,"Tra cứu ngoài RDAP + Safe Browsing có timeout, unavailable (kiểm điều khoản Safe Browsing trước)",SO-02-AC03,T-034,23/11,M,agent,todo,P1,3,Lỗi/timeout ra unavailable,A
 T-036,S3 Pipeline,Quy tắc verdict + khuyến nghị câu mẫu (A-01) (TDD),SO-03-AC02;SO-03-AC03;SO-01-AC05,T-030,23/11,M,agent,done,P0,,Cùng signal cùng verdict; không có 'an toàn',A
 T-037,S3 Pipeline,LLM trích signal + kiểm evidence là chuỗi con; LLM viết giải thích chỉ từ signal/check,SO-03-AC01;SO-03-AC05,T-022;T-036,23/11,M,agent,done,P0,,,A
-T-045,S3 Pipeline,Hợp đồng AnalysisRequest/AnalysisResult (zod) trong packages/shared; báo cả nhóm trước khi merge,SO-03-AC04,,26/11,S,agent,in_progress,P0,,"Schema theo contracts §5, không có trường điểm số",C
+T-045,S3 Pipeline,Hợp đồng AnalysisRequest/AnalysisResult (zod) trong packages/shared; báo cả nhóm trước khi merge,SO-03-AC04,,26/11,S,agent,done,P0,,"Schema theo contracts §5, không có trường điểm số",C
 T-038,S3 Pipeline,"Điều phối analysis (không tự lưu, route lưu; EV-02) + trần 20 giây + lưu DB + rate limit 10/phút/IP băm",SO-01-AC01;SO-01-AC04;SO-03-AC06,T-031;T-034;T-037;T-011;T-045,23/11,M,agent,done,P0,,curl tin mẫu ra JSON đúng schema,C
-T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4",SO-03-AC04,T-038,23/11,S,agent,in_progress,P0,,,C
+T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4",SO-03-AC04,T-038,23/11,S,agent,done,P0,,,C
 T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,todo,P0,,,B
 T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-045;T-039,24/11,M,agent,todo,P0,,Dán tin trên điện thoại ra kết quả,B
 T-042,S4 ScamShield,"Khối kết quả: verdict, giải thích, signal + nguồn, chỉ dấu + phép kiểm, khuyến nghị, disclaimer",SO-03-AC03;SO-03-AC04;SO-05-AC03,T-041,25/11,M,agent,todo,P0,,Ảnh chụp 360px; URL không bấm được,B
@@ -42,7 +42,7 @@ T-091,S9 Demo,Chạy seed + tạo tài khoản thử trên production,,T-090;T-0
 T-092,S9 Demo,Playwright: luồng 6 bước plan §1,SO-10-AC01,T-063;T-051,29/11,M,agent,todo,P0,,,C
 T-093,S9 Demo,Soạn tin M1/M2/M3 (R-01) và 3–4 tin mẫu trên trang,SO-10-AC05,T-033,25/11,S,đội,todo,P0,,,B
 T-100,S10 Eval,"Hoàn thành 60–100 tình huống, chia dev/held-out, 5–10 injection",SO-09-AC01;SO-09-AC02,T-020,29/11,L,đội,todo,P0,,,A (chính) + B + C
-T-101,S10 Eval,"Runner eval đủ chỉ số research B.3, 3 lần/tình huống, xuất eval/results",SO-09-AC03,T-039,28/11,M,agent,todo,P0,,,A
+T-101,S10 Eval,"Runner eval đủ chỉ số research B.3, 3 lần/tình huống, xuất eval/results",SO-09-AC03,T-039,28/11,M,agent,in_progress,P0,,,A
 T-102,S10 Eval,"Đóng băng tính năng, chạy end-to-end trên production",,T-092;T-091,30/11,S,đội,todo,P0,,Không còn lỗi chặn luồng demo,C
 T-103,S10 Eval,"Chạy held-out một lần, điền research B.4/B.5",SO-09-AC04,T-100;T-101;T-102,01/12,S,đội+owner,todo,P0,,,A
 T-110,S11 Nộp bài,"README: cách chạy, công nghệ, tài sản (font), thư viện, công cụ AI, số eval",SO-09-AC04,T-103,01/12,S,agent,todo,P0,,,C

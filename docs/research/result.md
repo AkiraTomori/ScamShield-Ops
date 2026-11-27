@@ -1,6 +1,6 @@
 # ScamShield Ops — Thử nghiệm và kết quả đánh giá
 
-**Trạng thái (22/11/2026):** BẢN NHÁP; **Phần A có số liệu thật (21/11, 20 câu dev, 3 model, gói miễn phí) và Q-08 đã chốt 22/11 (A.7)**; Phần B chưa chạy. File này định nghĩa cách thử chọn model (Q-08) và cách chạy bộ eval (SO-09), kèm bảng kết quả để trống. **Chỉ ghi số đã thật sự chạy**; mỗi lần chạy ghi ngày, commit, model và người chạy. Không điền số ước lượng.
+**Trạng thái (27/11/2026):** BẢN NHÁP; **Phần A có số liệu thật (21/11, 20 câu dev, 3 model, gói miễn phí) và Q-08 đã chốt 22/11 (A.7)**; Phần B: tập dev đã chạy một lượt 27/11 (B.4), held-out chưa tạo. File này định nghĩa cách thử chọn model (Q-08) và cách chạy bộ eval (SO-09), kèm bảng kết quả. **Chỉ ghi số đã thật sự chạy**; mỗi lần chạy ghi ngày, commit, model và người chạy. Không điền số ước lượng.
 
 Căn cứ: [spec](../spec/ScamShield-v1.md) Q-08, SO-03, SO-09; [contracts](../architecture/contracts.md) §7 (đầu ra LLM); [plan](../runbook/plan.md) §4 (hạn Q-08 là 22/11), §5 (chạy eval toàn bộ nhiều lần phải hỏi owner).
 
@@ -166,11 +166,29 @@ Kết quả ghi thành file trong `eval/results/<ngày>-<tập>-<commit>.json` v
 
 ### B.4 Nhật ký chạy
 
-*Chưa chạy.*
-
 | Ngày | Tập | Commit | Model | `promptVersion` / `rulesVersion` | Precision | Recall | FPR | Đúng schema | `inconclusive` (không rõ) | Injection | p50 / p95 | Ổn định | Ghi chú |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | | | | |
+| 2026-11-27 | dev | 5bd4728 (cây làm việc có thay đổi) | qwen/qwen3.8-27b | signals-v1+explain-v3 / rules-v1 | 100% (24/24) | 100% (24/24) | 0% (0/15) | 72% (86/120) | 25% (3/12) | 100% (9/9) | 2,3 s / 3,3 s | 100% (20/20) | Xem ghi chú bên dưới |
+
+**Ghi chú lượt 27/11 (tập dev, 20 câu × 3 lần; agent chạy theo yêu cầu owner).** File: `eval/results/2026-11-27-dev-5bd4728.json` và `…-summary.md`, `casesSha256` bắt đầu `5218bec850ef`.
+
+- **Cấu hình:** runner tạm `npm run eval` chưa commit lúc chạy; mã pipeline đúng bằng `5bd4728`. Tra cứu ngoài tắt, không lưu DB, không tự thử lại khi 429, nghỉ 65 s giữa các lượt, `reasoning_effort` `low`.
+- **Đúng schema 72% (86/120 lời gọi LLM), dưới ngưỡng 59/60 của A.5.** Bước trích signal đạt 60/60 ngay lần đầu. Lời gọi viết giải thích hỏng 34/60: 28 lượt bị 429 và 6 lượt Groq từ chối JSON (`invalid_output_400`). Không tính lỗi hạ tầng: 93% (86/92). Nguyên nhân của 6 lỗi 400 chưa kiểm.
+- **Giải thích chỉ có ở 26/60 lượt (43%).** Không lượt nào mất verdict.
+- File kết quả được tính lại offline ngày 27/11 từ bản ghi đã lưu (không gọi Groq): bản đầu chỉ đếm bước trích signal cho "đúng schema", và dòng phụ EV-03 bỏ nhầm các lượt đã có verdict.
+- **Độ trễ** gồm cả lượt mà lời gọi giải thích hỏng sớm. Riêng 26 lượt có giải thích: trung vị 2,5 s, lớn nhất 3,6 s. Chưa gồm mạng tới bản deploy và bước lưu DB.
+- **Verdict nằm trong `expectedVerdicts`: 15/20 câu.** Precision và recall 100% tính `suspicious` là cảnh báo, nên không thấy ba câu dưới mức nhãn.
+
+| Câu | Nhãn chấp nhận | Verdict (cả 3 lần) | Quy tắc | Signal |
+|---|---|---|---|---|
+| `dev-003` | `high_risk` | `suspicious` | R7 | `payment_request`, `reward_promise` |
+| `dev-005` | `high_risk` | `suspicious` | R7 | `claims_organization`, `payment_request`, `threat`, `urgency` |
+| `dev-008` | `high_risk` | `suspicious` | R6 | `claims_organization`, `credential_request`, `reward_promise` |
+| `dev-016` | `inconclusive`, `suspicious` | `no_signal` | R9 | không có |
+| `dev-017` | `suspicious`, `inconclusive` | `no_signal` | R9 | `payment_request` |
+
+- Năm câu này trùng với mô phỏng ở [analysis-pipeline §13](../design/analysis-pipeline.md#13-ghi-chú-cài-đặt-26112026) (signal lấy đúng theo nhãn). Chưa sửa quy tắc, ngưỡng hay nhãn.
+- **Giới hạn:** 20 câu tự soạn, đã dùng để chọn model (Q-08). Số này để chỉnh trên tập dev, **không** dùng cho README hay slide (B.5 lấy từ held-out).
 
 ### B.5 Số liệu dùng cho README và slide
 
