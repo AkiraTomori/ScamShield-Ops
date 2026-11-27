@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev trên nhánh `feat/t-039-dev-eval`, PR #47 nháp).
+Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47).
 
 | Phần | Trạng thái |
 |---|---|
@@ -103,14 +103,14 @@ Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev trê
 | Dữ liệu P0 (schema 8 bảng, migration `0000_p0_tables`) | Đã merge (PR #3); migration chưa chạy trên DB deploy; chưa có seed/reset |
 | S2 thử model ([design](./design/model-spike.md)) | Đã merge (PR #4): HTTP client có allowlist, client Groq, `extractSignals`, `writeExplanation`, runner `npm run eval:q08`, 20 câu dev nháp. Chạy Groq thật 21–23/11, số ở [research A.6](./research/result.md) |
 | Proposal cho vòng loại | Đã merge (PR #5), bản đề xuất để review |
-| S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Đã merge (PR #46, 26/11), chưa deploy: T-031…T-034, T-036…T-038, T-045, route `POST /api/analyses`. `npm run verify` xanh, test tích hợp chạy trên Postgres tạm, gọi thử Groq thật ở local. Chưa làm: T-035 (P1). Eval tập dev đã chạy 27/11 (T-039, [research B.4](./research/result.md#b4-nhật-ký-chạy)): 15/20 câu trong nhãn, chỉ 26/60 lượt có giải thích; runner ở nhánh `feat/t-039-dev-eval`. Trễ so với lịch 22–23/11 |
+| S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Đã merge (PR #46, 26/11), chưa deploy: T-031…T-034, T-036…T-038, T-045, route `POST /api/analyses`. `npm run verify` xanh, test tích hợp chạy trên Postgres tạm, gọi thử Groq thật ở local. Chưa làm: T-035 (P1). Eval tập dev đã chạy 27/11 (T-039, [research B.4](./research/result.md#b4-nhật-ký-chạy)): 15/20 câu trong nhãn, chỉ 26/60 lượt có giải thích; runner đã merge (PR #47). Trễ so với lịch 22–23/11 |
 | S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); chưa có mã; trễ so với lịch 24–25/11; schema `AnalysisResult` đã có trên `main` (PR #46) |
 | S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); chưa có mã; T-038 (S3) đã merge nên T-050 không còn bị S3 chặn |
 | S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); chưa có mã; T-060 không bị S3 chặn |
 | S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); chưa có mã; không cần migration |
 | S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |
 | S9 dữ liệu demo, seed/reset, E2E ([design](./design/demo-data.md)) | **Owner duyệt thiết kế 26/11** (DM-01…DM-03 theo đề xuất; DM-04: một ngân hàng); chưa có mã; T-093 không bị chặn |
-| Bộ eval SO-09 ([design S10](./design/eval-suite.md)) | 20/60–100 câu; held-out chưa tạo; dev chạy một lượt 27/11; **owner duyệt thiết kế S10 26/11** (EV-01…EV-05 theo đề xuất); có runner tối thiểu cho tập dev (một phần T-101, nhánh `feat/t-039-dev-eval`) |
+| Bộ eval SO-09 ([design S10](./design/eval-suite.md)) | 20/60–100 câu; held-out chưa tạo; dev chạy một lượt 27/11; **owner duyệt thiết kế S10 26/11** (EV-01…EV-05 theo đề xuất); có runner tối thiểu cho tập dev (một phần T-101, PR #47) |
 | S11 nộp bài ([design](./design/submission.md)) | **Owner duyệt thiết kế 26/11** (NB-01…NB-03 theo đề xuất; NB-04: vai A); hạn nộp trước 03/12, mục tiêu 02/12 tối |
 
 **Quyết định:** Q-01…Q-11 đã chốt (spec §7). Model chính `qwen/qwen3.8-27b`, dự phòng `openai/gpt-oss-120b` (Q-08, 22/11). Danh sách thương hiệu Q-10 và vai trò dataset Q-11 chốt 24/11. D-01…D-03 đã chốt; D-04 (Supabase tạm dừng) còn chờ kiểm, xem system-design §9.

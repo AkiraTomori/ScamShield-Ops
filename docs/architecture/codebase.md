@@ -1,6 +1,6 @@
 # ScamShield Ops — Cấu trúc mã nguồn
 
-**Trạng thái (27/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 đã merge (PR #46, 26/11); runner eval dev (một phần S10) ở nhánh `feat/t-039-dev-eval`; cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
+**Trạng thái (27/11/2026):** BẢN NHÁP, **dự kiến**. Slice nền móng (PR #2), slice dữ liệu P0 (PR #3) và slice S2 thử model (PR #4) đã merge vào `main`; slice S3 đã merge (PR #46, 26/11); runner eval dev (một phần S10) đã merge (PR #47, 27/11); cây dưới đây là đích đến. Test nằm ở `test/` riêng của từng package, không lẫn trong `src/`. Slice nào tạo thư mục nào thì cập nhật file này trong cùng PR. Ranh giới và lý do ở [system-design §3](./system-design.md#3-cấu-trúc-repo-và-ranh-giới-module); cách viết code ở [conventions/](../conventions/README.md).
 
 ## 1. Cây thư mục
 

@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (27/11/2026):** bản nháp; có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) ở nhánh `feat/t-039-dev-eval`; có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (27/11/2026):** bản nháp; có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) đã merge (PR #47); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
