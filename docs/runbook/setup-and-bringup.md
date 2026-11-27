@@ -73,7 +73,7 @@ npm run eval -- --set dev --gap-ms 65000 --yes  # chạy thật (tốn tiền, h
 ## 4. Migration
 
 - `npm run db:generate`: sinh SQL từ schema (đọc lại file trước khi commit).
-- `npm run db:migrate`: dùng `DATABASE_URL_MIGRATE`, nếu trống thì `DATABASE_URL`. Với DB local thì tự chạy được; với DB đã deploy chỉ owner chạy.
+- `npm run db:migrate`: dùng `DATABASE_URL_MIGRATE`, nếu trống thì `DATABASE_URL`. Với DB local thì tự chạy được; với DB đã deploy chỉ owner chạy. Khi `DATABASE_URL_MIGRATE` đang trỏ DB deploy mà cần migrate DB local, chạy `DATABASE_URL_MIGRATE= npm run db:migrate` (biến rỗng thắng giá trị trong `.env`, rồi rơi về `DATABASE_URL`).
 - Migration `0000_p0_tables` (8 bảng P0) đã có; test tích hợp `*.int.test.ts` chỉ chạy khi đặt `DATABASE_URL` trỏ tới Postgres local.
 
 ## 5. Lỗi thường gặp

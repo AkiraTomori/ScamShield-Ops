@@ -1,6 +1,6 @@
 # Thiết kế slice S4: giao diện ScamShield (T-040…T-042)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S4 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. S4 đã trễ so với lịch 24–25/11 (plan §6). Schema `AnalysisResult` (§4) và `POST /api/analyses` đã có trên `main` từ 26/11 (PR #46).
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S4 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **PR nháp #48 (mở 27/11 từ nhánh `feat/t-042-result-view`, gồm cả T-040 và T-041): chưa merge, chưa deploy, chưa thử trên điện thoại thật.** **T-040 xong ở local 27/11** (nhánh `feat/t-040-ui-foundation`, chưa merge, chưa deploy): Tailwind v4, token, font, `Button`, `TextArea`, `CharCounter`, `Disclaimer`, `SourceBadge`, `CheckStatus`, `VerdictBanner`, `Skeleton`, `ErrorState`; chữ nhãn của chúng ở `copy/vi.ts`. `SignalList`, `IndicatorCard`, `RedactionNotice` thuộc T-042. **T-041 xong ở local 27/11** (nhánh `feat/t-041-input-states`, chưa merge, chưa deploy): trang `/`, state machine §3.1 (`features/analysis/state.ts`), `submitAnalysis` §3.2, `SampleChips`, đếm ký tự bằng `countInputChars` (shared). Vùng `aria-live` là một dòng `sr-only` luôn có trong `AnalysisFeature`, chỉ chứa nhãn verdict. Nút đang chờ khoá bằng `aria-disabled` (không dùng `disabled`) để không mất focus bàn phím. Client import `@scamshield/shared/{analysis,demo-messages,errors,input}`, không import gốc package (đã kiểm bundle: bản import gốc kéo theo tên biến môi trường server; ESLint chặn). Ngày 27/11 đã chạy route thật ở local (Postgres Docker, Groq thật) với tin M1 (`high_risk`, thiếu giải thích do Groq trả 429) và M2 (`no_signal`). Cùng ngày chạy thêm trên điện thoại giả lập (Playwright, Galaxy S8; số đo ở plan §3); owner chấp nhận là đủ tạm thời, chưa thử trên máy thật. **T-042 xong ở local 27/11** (nhánh `feat/t-042-result-view`, chưa merge, chưa deploy): khối kết quả đủ theo ui-pages §2.3 (gồm hai câu khi không có tín hiệu hoặc chỉ dấu, sửa 27/11 sau khi bản đầu ẩn hai mục này), `view-model.ts` (§3.3, §5), `SignalList`, `IndicatorCard`, `RedactionNotice`. Khác bản thiết kế: fixture ở `src/features/analysis/fixtures.ts` (theo U-04 (a)), không ở `test/fixtures/`; `distance_0` chưa có câu (design-system §3). **Phải xoá `apps/web/src/app/xem-truoc/` và `test/app/preview.test.tsx` trước đóng băng 30/11** (U-04). S4 đã trễ so với lịch 24–25/11 (plan §6). Schema `AnalysisResult` (§4) và `POST /api/analyses` đã có trên `main` từ 26/11 (PR #46).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần các file đó còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-01-AC02, AC04; SO-03-AC03, AC04, AC06; SO-10-AC05; P2, P5.
@@ -141,26 +141,9 @@ Trong mọi biến thể, chỉ dấu và phép kiểm vẫn hiện đầy đủ
 
 ### 5.1 `SignalType` → nhãn
 
-Bổ sung cho design-system §3, nơi hiện mới có `claims_organization` và câu nguyên văn của `verified_indicator`.
+Bổ sung cho design-system §3.
 
-| `SignalType` | Nhãn |
-|---|---|
-| `claims_organization` | Tin xưng danh một tổ chức *(đã có, P-07)* |
-| `urgency` | Tạo áp lực thời gian |
-| `threat` | Đe doạ khoá tài khoản, phạt hoặc kiện |
-| `credential_request` | Đòi mã OTP, mật khẩu hoặc thông tin thẻ |
-| `payment_request` | Yêu cầu chuyển tiền hoặc đóng phí |
-| `reward_promise` | Hứa trúng thưởng, hoàn tiền hoặc lợi nhuận |
-| `ai_directed_instruction` | Có câu tìm cách điều khiển hệ thống kiểm tra |
-| `brand_domain_mismatch` | Tên miền không thuộc thương hiệu được nhắc tới |
-| `lookalike_domain` | Tên miền giống tên miền chính thức |
-| `brand_in_subdomain` | Tên thương hiệu nằm trong tên miền phụ |
-| `shortened_url` | Dùng đường dẫn rút gọn |
-| `ip_url` | Đường dẫn dùng địa chỉ IP |
-| `risky_tld` | Đuôi tên miền hay bị lạm dụng |
-| `new_domain` | Tên miền mới đăng ký gần đây |
-| `blocklisted_url` | Đường dẫn có trong danh sách đen đã biết |
-| `verified_indicator` | Chỉ dấu này đã được đội vận hành xác minh là lừa đảo *(nguyên văn SO-08-AC02)* |
+*(27/11, T-042: bảng nhãn đã chuyển sang [design-system §3](../product/design-system.md#3-câu-chữ-chuẩn); sửa ở đó.)*
 
 - Không nhãn nào gọi một người là kẻ lừa đảo (P1). Nhãn mô tả tin nhắn.
 - Mỗi dòng có `SourceBadge` theo `source` (*Kiểm tra* / *AI nhận định*).
@@ -176,16 +159,9 @@ Bổ sung cho design-system §3, nơi hiện mới có `claims_organization` và
 
 ### 5.3 Mã `detail` → câu
 
-Câu phụ thuộc **cả loại phép kiểm, trạng thái và mã**, không chỉ mã. Ví dụ: check `official_domain` có mặt mỗi khi tìm thấy thương hiệu (pipeline §6.5) và ra `pass` khi tên miền đúng là chính thức. Nếu chỉ dịch theo mã `brand:<id>` thì tin OTP thật M2 sẽ bị ghi "không thuộc tên miền chính thức". Pipeline chưa nói check `pass` có mang `detail` hay không, nên bảng phải đúng trong cả hai trường hợp.
+Câu phụ thuộc **cả loại phép kiểm, trạng thái và mã**, không chỉ mã. Ví dụ: check `official_domain` có mặt mỗi khi tìm thấy thương hiệu (pipeline §6.5) và ra `pass` khi tên miền đúng là chính thức. Nếu chỉ dịch theo mã `brand:<id>` thì tin OTP thật M2 sẽ bị ghi "không thuộc tên miền chính thức". Trong mã (`checkDomain`, kiểm 27/11): `official_domain` + `pass` có mang `brand:<id>`; `lookalike`, `punycode`, `subdomain_brand` khi `pass` không có `detail`.
 
-| Phép kiểm | Trạng thái | Mã | Câu | Nguồn mã |
-|---|---|---|---|---|
-| `official_domain` | `warn` | `brand:<id>` | "Không thuộc tên miền chính thức của {tên thương hiệu}" | pipeline §6.5 |
-| `official_domain` | `pass` | `brand:<id>` | "Thuộc tên miền chính thức của {tên thương hiệu}" | pipeline §6.5 |
-| `lookalike` | `warn` | `nearest:<tên miền>:distance_<n>` | "Gần giống {tên miền}, khác {n} ký tự" | pipeline §6.5 |
-| `lookalike` | `warn` | `contains:<bí danh>` | "Chứa tên thương hiệu “{bí danh}”" | pipeline §6.5 |
-| `punycode` | `warn` | `decoded:<dạng Unicode>` | "Hiển thị thành: {dạng Unicode}" | pipeline §6.5 |
-| `domain_age` | `warn` hoặc `pass` | `age_days:<n>` | "Đăng ký {n} ngày trước" | contracts §4, design-system §3 |
+*(27/11, T-042: bảng câu đã chuyển sang [design-system §3](../product/design-system.md#3-câu-chữ-chuẩn); sửa ở đó. Luật áp bảng ở dưới.)*
 
 - **Tổ hợp không có trong bảng** (ví dụ `lookalike` + `pass` mà vẫn có mã) thì không hiện detail; trạng thái (*Không phát hiện vấn đề*) đã đủ nghĩa.
 - **Fallback:** mã lạ, sai định dạng, hoặc `brand:<id>` không có trong `brands.json` thì **chỉ hiện tên phép kiểm và trạng thái, không hiện detail**. Không bao giờ in mã thô ra màn hình.

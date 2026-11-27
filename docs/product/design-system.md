@@ -1,6 +1,6 @@
 # ScamShield Ops — Design system
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); §3 nhận bảng nhãn tín hiệu và câu mã `detail` (T-042); §4 `IndicatorCard` đổi sang `overflow-wrap: anywhere` cho khớp scamshield-ui §5.2 và mã (sửa 27/11 theo owner); ở local, chưa merge. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 ## 1. Nguyên tắc thị giác
 
@@ -12,6 +12,8 @@
 ## 2. Token
 
 Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần** dưới dạng CSS custom properties trong file CSS global và nối vào theme Tailwind, để class Tailwind và CSS thường dùng cùng giá trị; không khai báo bảng màu thứ hai trong file cấu hình. Cách nối cụ thể theo phiên bản Tailwind ghim lúc scaffold. Chỉ có giao diện sáng trong v1.
+
+**Cách nối (T-040, Tailwind v4):** token khai báo trong `@theme` ở `apps/web/src/styles/globals.css`; không có file cấu hình Tailwind. Bảng màu và thang cỡ chữ mặc định của Tailwind bị xoá (`--color-*: initial`, `--text-*: initial`), nên không có class xanh lá hay cỡ chữ ngoài bảng. Tên màu verdict: `--color-verdict-<high-risk|suspicious|no-signal|inconclusive>` và `…-bg`; badge nguồn: `--color-source-<check|ai>` và `…-bg`.
 
 **Màu.** Tỉ lệ tương phản tính theo công thức WCAG 2.x ngày 20/11/2026; chữ thường cần ≥ 4,5:1, viền thành phần UI cần ≥ 3:1.
 
@@ -42,6 +44,8 @@ Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần*
 | *Kiểm tra* | `#0E7090` | `#ECFDFF` | 5,37 |
 | *AI nhận định* | `#6941C6` | `#F4F3FF` | 6,02 |
 
+**Chữ trạng thái phép kiểm** trên nền trắng (tính 27/11): *Cảnh báo* `#B54708` 5,43; *Không tra được* `#344054` 10,46; *Không phát hiện vấn đề* dùng `--color-text-muted` (7,69).
+
 **Chữ:** font **Be Vietnam Pro** (U-01, owner chốt 26/11), nạp bằng `next/font` (tự host lúc build, không gọi Google Fonts lúc chạy), dự phòng `system-ui, sans-serif`. Font đơn cách cho nội dung tin nhắn gốc: `ui-monospace, monospace`. Font này phải ghi vào bảng tài sản có sẵn ở README khi dùng.
 
 | Token | Cỡ / dòng | Dùng cho |
@@ -52,7 +56,7 @@ Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần*
 | `--text-lg` | 20 / 28 | Tiêu đề khối |
 | `--text-xl` | 24 / 32 | Nhãn verdict, tiêu đề trang |
 
-**Khoảng cách:** thang 4px (`--space-1` = 4px … `--space-8` = 32px). **Bo góc:** 6px cho ô nhập/nút, 10px cho thẻ. **Điểm ngắt:** < 640px một cột (ScamShield); ≥ 1024px hai cột cho chi tiết hồ sơ FraudOps. ScamShield phải dùng được ở 360px không cuộn ngang.
+**Khoảng cách:** thang 4px (`--spacing` = 4px; class `p-1` = 4px … `p-8` = 32px). **Bo góc:** 6px cho ô nhập/nút (`rounded-control`), 10px cho thẻ (`rounded-card`). **Điểm ngắt:** < 640px một cột (ScamShield); ≥ 1024px hai cột cho chi tiết hồ sơ FraudOps. ScamShield phải dùng được ở 360px không cuộn ngang.
 
 ## 3. Câu chữ chuẩn
 
@@ -97,19 +101,56 @@ Ghi chú về trạng thái phép kiểm: nhãn "Không phát hiện vấn đề
 
 Trường `detail` của phép kiểm là mã ngắn; UI dịch sang câu tiếng Việt trong `copy/vi.ts` (ví dụ `age_days:3` → "Đăng ký 3 ngày trước").
 
+**Nhãn tín hiệu** (`SignalType`; chuyển từ scamshield-ui §5.1 khi viết T-042). Nhãn mô tả tin nhắn, không gọi ai là kẻ lừa đảo (P1).
+
+| `SignalType` | Nhãn |
+|---|---|
+| `claims_organization` | Tin xưng danh một tổ chức *(đã có, P-07)* |
+| `urgency` | Tạo áp lực thời gian |
+| `threat` | Đe doạ khoá tài khoản, phạt hoặc kiện |
+| `credential_request` | Đòi mã OTP, mật khẩu hoặc thông tin thẻ |
+| `payment_request` | Yêu cầu chuyển tiền hoặc đóng phí |
+| `reward_promise` | Hứa trúng thưởng, hoàn tiền hoặc lợi nhuận |
+| `ai_directed_instruction` | Có câu tìm cách điều khiển hệ thống kiểm tra |
+| `brand_domain_mismatch` | Tên miền không thuộc thương hiệu được nhắc tới |
+| `lookalike_domain` | Tên miền giống tên miền chính thức |
+| `brand_in_subdomain` | Tên thương hiệu nằm trong tên miền phụ |
+| `shortened_url` | Dùng đường dẫn rút gọn |
+| `ip_url` | Đường dẫn dùng địa chỉ IP |
+| `risky_tld` | Đuôi tên miền hay bị lạm dụng |
+| `new_domain` | Tên miền mới đăng ký gần đây |
+| `blocklisted_url` | Đường dẫn có trong danh sách đen đã biết |
+| `verified_indicator` | Chỉ dấu này đã được đội vận hành xác minh là lừa đảo *(nguyên văn SO-08-AC02)* |
+
+**Câu cho mã `detail`** (chuyển từ scamshield-ui §5.3; câu phụ thuộc cả phép kiểm, trạng thái và mã; tổ hợp ngoài bảng thì không hiện detail, không bao giờ in mã thô). Tên thương hiệu lấy từ `brands.json`.
+
+| Phép kiểm | Trạng thái | Mã | Câu | Nguồn mã |
+|---|---|---|---|---|
+| `official_domain` | `warn` | `brand:<id>` | "Không thuộc tên miền chính thức của {tên thương hiệu}" | pipeline §6.5 |
+| `official_domain` | `pass` | `brand:<id>` | "Thuộc tên miền chính thức của {tên thương hiệu}" | pipeline §6.5 |
+| `lookalike` | `warn` | `nearest:<tên miền>:distance_<n>` | "Gần giống {tên miền}, khác {n} ký tự" | pipeline §6.5 |
+| `lookalike` | `warn` | `contains:<bí danh>` | "Chứa tên thương hiệu “{bí danh}”" | pipeline §6.5 |
+| `punycode` | `warn` | `decoded:<dạng Unicode>` | "Hiển thị thành: {dạng Unicode}" | pipeline §6.5 |
+| `domain_age` | `warn` hoặc `pass` | `age_days:<n>` | "Đăng ký {n} ngày trước" | contracts §4, design-system §3 |
+
+- `nearest:…:distance_0` (tên trùng, khác đuôi; pipeline N-06): **chưa có câu**, hiện không hiện detail vì "khác 0 ký tự" gây hiểu sai. Đề xuất chờ owner: "Trùng tên với {tên miền} nhưng khác phần đuôi".
+- `contains:` trên `subdomain_brand` không có trong bảng nên không hiện detail.
+
+**Khối kết quả** (wireframe [pages §2.2](../design/pages.md)): tiêu đề "Vì sao", "Dấu hiệu phát hiện", "Đường dẫn, số điện thoại, tài khoản", "Nên làm gì". Mục tín hiệu và mục chỉ dấu luôn hiện; rỗng thì ghi nguyên văn [ui-pages §2.3](./ui-pages.md#23-khối-kết-quả): "Chưa phát hiện tín hiệu nào", "Không tìm thấy đường dẫn, số điện thoại hay số tài khoản" (chỉ dấu `brand` không tính). Thông báo che chỉ liệt kê loại đã che, nối bằng " / ": "Đã che mã OTP / mật khẩu / số thẻ trong nội dung trước khi phân tích." Chữ `--color-text` trên nền khối AI `#F4F3FF`: 16,15.
+
 ## 4. Component
 
 Tự viết bằng React + Tailwind, không dùng bộ component ngoài (thêm bộ nào cũng phải hỏi owner). Biểu tượng là SVG inline tự vẽ (vài hình đơn giản), không thêm thư viện icon.
 
 | Component | Mô tả | Ghi chú a11y |
 |---|---|---|
-| `Button` | primary / secondary / ghost; trạng thái loading khoá nút và đổi chữ | `aria-busy` khi loading; vùng bấm ≥ 44×44px trên điện thoại |
+| `Button` | primary / secondary / ghost; trạng thái loading khoá nút và đổi chữ | `aria-busy` khi loading; khoá bằng `aria-disabled` và chặn click (không dùng `disabled`, để giữ focus); vùng bấm ≥ 44×44px trên điện thoại |
 | `TextArea` + `CharCounter` | Ô nhập tin, bộ đếm `n/2.000` | Bộ đếm gắn `aria-describedby`; lỗi gắn `aria-invalid` |
 | `SampleChips` | Các nút tin mẫu | Là `button`, không phải link |
 | `VerdictBanner` | Nhãn + biểu tượng + câu giải nghĩa theo §3 | Nằm trong vùng `aria-live="polite"`; tiêu đề `h2` |
 | `SourceBadge` | *Kiểm tra* / *AI nhận định* | Chữ đầy đủ, không chỉ màu |
 | `SignalList` | Danh sách tín hiệu, mỗi dòng có `SourceBadge` | `ul` |
-| `IndicatorCard` | Chỉ dấu + danh sách phép kiểm + `CheckStatus` | URL là văn bản thuần, `word-break: break-all`, không có `href` (P5) |
+| `IndicatorCard` | Chỉ dấu + danh sách phép kiểm + `CheckStatus` | URL là văn bản thuần, `overflow-wrap: anywhere` (class `wrap-anywhere`; chỉ ngắt giữa từ khi chuỗi không vừa dòng, không như `break-all`), không có `href` (P5) |
 | `CheckStatus` | Cảnh báo / Không phát hiện vấn đề / Không tra được | Biểu tượng + chữ |
 | `RedactionNotice` | Thông báo đã che dữ liệu | — |
 | `Disclaimer` | Câu §3, dùng ở footer và dưới kết quả | — |

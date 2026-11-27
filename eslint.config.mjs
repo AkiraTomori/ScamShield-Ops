@@ -52,6 +52,26 @@ export default defineConfig([
     },
   },
   {
+    // Code that reaches the browser. The package root re-exports the server env and LLM schemas,
+    // which would end up in the client bundle.
+    files: ["apps/web/src/{components,features,copy}/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@scamshield/shared",
+              allowTypeImports: true,
+              message: "Import a browser entry such as @scamshield/shared/analysis.",
+            },
+            { name: "@scamshield/core", message: "core is server only." },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.test.{ts,tsx}"],
     rules: { "@typescript-eslint/no-non-null-assertion": "off" },
   },

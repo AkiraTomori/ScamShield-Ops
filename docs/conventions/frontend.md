@@ -1,6 +1,6 @@
 # Quy ước frontend
 
-**Trạng thái (26/11/2026):** BẢN NHÁP; §8 sửa theo U-06 (owner chốt 26/11). Áp dụng cho `apps/web` (Next.js App Router, Tailwind). Trang và trạng thái ở [ui-pages.md](../product/ui-pages.md); token, component, câu chữ ở [design-system.md](../product/design-system.md).
+**Trạng thái (27/11/2026):** BẢN NHÁP; §8 sửa theo U-06 (owner chốt 26/11); §2 thêm luật import entry con của `@scamshield/shared` (T-041, nhánh `feat/t-041-input-states`, chưa merge). Áp dụng cho `apps/web` (Next.js App Router, Tailwind). Trang và trạng thái ở [ui-pages.md](../product/ui-pages.md); token, component, câu chữ ở [design-system.md](../product/design-system.md).
 
 ## 1. Cấu trúc
 
@@ -22,6 +22,7 @@ apps/web/src/
 - **Ghi dữ liệu** (tạo analysis, gửi báo cáo, kết luận, gỡ chỉ dấu) **luôn** đi qua route handler `/api/*` bằng `fetch`, không dùng Server Actions. Lý do: một bề mặt API duy nhất, được parse bằng zod, dùng chung cho UI, `curl` và kiểm thử.
 - **Đọc dữ liệu** ở trang FraudOps: server component được gọi thẳng hàm đọc của `packages/core`, **sau khi** gọi cùng hàm kiểm phiên mà route handler dùng. Trang ScamShield không đọc DB trực tiếp.
 - Không truy cập biến môi trường bí mật trong client component; không có biến `NEXT_PUBLIC_` nào chứa bí mật.
+- Mã chạy ở trình duyệt (`components/`, `features/`, `copy/`) import giá trị từ entry con của `@scamshield/shared` (`/analysis`, `/errors`, `/input`, …), không từ gốc package, vì gốc kéo theo schema server. `import type` thì được. ESLint chặn; cần entry mới thì thêm vào `exports` của package.
 
 ## 3. Styling (Tailwind)
 
