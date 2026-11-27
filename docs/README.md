@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev trên nhánh `feat/t-039-dev-eval`).
+Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev trên nhánh `feat/t-039-dev-eval`, PR #47 nháp).
 
 | Phần | Trạng thái |
 |---|---|
