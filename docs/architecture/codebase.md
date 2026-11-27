@@ -8,6 +8,7 @@
 .
 ├── apps/
 │   └── web/                         Next.js (App Router) + Tailwind; deploy lên Vercel
+│       ├── postcss.config.mjs       Tailwind v4
 │       ├── src/
 │       │   ├── app/
 │       │   │   ├── (public)/        ScamShield: page.tsx (/), tra-cuu/
@@ -68,7 +69,7 @@
 └── package.json                     npm workspaces + script gốc
 ```
 
-Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: slice S3: `packages/shared/src/{analysis,input,brands,url-lists}.ts` + `data/`, `packages/core/src/{text,redaction,indicators,url-checks,verdict,analysis,rate-limit}/`, `apps/web/src/server/analyses.ts`, `apps/web/src/app/api/analyses/` (`lookup/` chưa tạo, chờ T-035); slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
+Module có trong cây nhưng chưa tới slice của nó thì **chưa tạo**. Đã tạo: T-040 (nhánh `feat/t-040-ui-foundation`, chưa merge): `apps/web/postcss.config.mjs`, `apps/web/src/components/`, `apps/web/test/{components,copy,styles}/`; slice S3: `packages/shared/src/{analysis,input,brands,url-lists}.ts` + `data/`, `packages/core/src/{text,redaction,indicators,url-checks,verdict,analysis,rate-limit}/`, `apps/web/src/server/analyses.ts`, `apps/web/src/app/api/analyses/` (`lookup/` chưa tạo, chờ T-035); slice S2: `packages/shared/src/llm.ts` (+ `SignalType`, `SignalSource` trong `enums.ts`), `packages/core/src/http/` (client có allowlist), `packages/core/src/llm/` (client Groq, prompt `signals-v1` / `explain-v3`, `extractSignals`, `writeExplanation`, `withRateLimitRetry` chỉ cho runner), `eval/` (workspace `@scamshield/eval`); slice nền móng: `apps/web` (trang `/`, `api/health`), `packages/shared` (`health.ts`, `env.ts`, `errors.ts`), `packages/core` (`db/`, `deps.ts`); slice dữ liệu P0: `packages/shared/src/enums.ts`, `packages/core/src/db/schema/` (8 bảng), `packages/core/src/db/migrations/` (`0000_p0_tables`), `packages/core/test/db/` (test tích hợp, cần `DATABASE_URL`).
 
 ## 2. Phụ thuộc giữa module trong `packages/core`
 

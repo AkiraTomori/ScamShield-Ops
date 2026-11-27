@@ -22,7 +22,7 @@ T-037,S3 Pipeline,LLM trích signal + kiểm evidence là chuỗi con; LLM viế
 T-045,S3 Pipeline,Hợp đồng AnalysisRequest/AnalysisResult (zod) trong packages/shared; báo cả nhóm trước khi merge,SO-03-AC04,,26/11,S,agent,done,P0,,"Schema theo contracts §5, không có trường điểm số",C
 T-038,S3 Pipeline,"Điều phối analysis (không tự lưu, route lưu; EV-02) + trần 20 giây + lưu DB + rate limit 10/phút/IP băm",SO-01-AC01;SO-01-AC04;SO-03-AC06,T-031;T-034;T-037;T-011;T-045,23/11,M,agent,done,P0,,curl tin mẫu ra JSON đúng schema,C
 T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4",SO-03-AC04,T-038,23/11,S,agent,done,P0,,,C
-T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,todo,P0,,,B
+T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,done,P0,,,B
 T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-045;T-039,24/11,M,agent,todo,P0,,Dán tin trên điện thoại ra kết quả,B
 T-042,S4 ScamShield,"Khối kết quả: verdict, giải thích, signal + nguồn, chỉ dấu + phép kiểm, khuyến nghị, disclaimer",SO-03-AC03;SO-03-AC04;SO-05-AC03,T-041,25/11,M,agent,todo,P0,,Ảnh chụp 360px; URL không bấm được,B
 T-050,S5 Báo cáo,POST report: tạo case + mã bí mật băm 8 ký tự + chống trùng; nới CHECK ghi chú (RP-01); tóm tắt AI gọi từ T-053,SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01,T-038;T-053,26/11,M,agent,todo,P0,,Gửi 2 lần ra 1 case,C

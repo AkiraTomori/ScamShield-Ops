@@ -1,6 +1,6 @@
 # Thiết kế slice S4: giao diện ScamShield (T-040…T-042)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S4 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. S4 đã trễ so với lịch 24–25/11 (plan §6). Schema `AnalysisResult` (§4) và `POST /api/analyses` đã có trên `main` từ 26/11 (PR #46).
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S4 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-040 xong ở local 27/11** (nhánh `feat/t-040-ui-foundation`, chưa merge, chưa deploy): Tailwind v4, token, font, `Button`, `TextArea`, `CharCounter`, `Disclaimer`, `SourceBadge`, `CheckStatus`, `VerdictBanner`, `Skeleton`, `ErrorState`; chữ nhãn của chúng ở `copy/vi.ts`. `SampleChips` thuộc T-041; `SignalList`, `IndicatorCard`, `RedactionNotice` thuộc T-042. Vùng `aria-live` quanh `VerdictBanner` do `ResultView` đặt (T-042), vì vùng này phải có sẵn trước khi kết quả tới. Chưa có hàm đếm ký tự ở client (T-041). S4 đã trễ so với lịch 24–25/11 (plan §6). Schema `AnalysisResult` (§4) và `POST /api/analyses` đã có trên `main` từ 26/11 (PR #46).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần các file đó còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-01-AC02, AC04; SO-03-AC03, AC04, AC06; SO-10-AC05; P2, P5.

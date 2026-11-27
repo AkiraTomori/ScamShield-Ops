@@ -1,0 +1,55 @@
+import { describe, expect, it } from "vitest";
+import { CheckStatus, SignalSource, Verdict } from "@scamshield/shared";
+import { vi } from "../../src/copy/vi";
+
+// docs/product/design-system.md §3, word for word.
+describe("standard wording", () => {
+  it("SO-03-AC03: labels and explains the four verdicts", () => {
+    expect(vi.verdict).toEqual({
+      high_risk: {
+        label: "Nguy cơ cao",
+        explanation:
+          "Tin nhắn có nhiều dấu hiệu lừa đảo. Đừng bấm đường dẫn, đừng chuyển tiền hay cung cấp mã OTP.",
+      },
+      suspicious: {
+        label: "Đáng ngờ",
+        explanation:
+          "Tin nhắn có dấu hiệu bất thường. Hãy xác minh qua kênh chính thức trước khi làm theo.",
+      },
+      no_signal: {
+        label: "Chưa phát hiện dấu hiệu lừa đảo",
+        explanation:
+          "Hệ thống chưa thấy dấu hiệu lừa đảo, nhưng điều này không đảm bảo tin nhắn là thật. Hãy tự kiểm tra qua kênh chính thức.",
+      },
+      inconclusive: {
+        label: "Chưa đủ thông tin để kết luận",
+        explanation:
+          "Hệ thống chưa đủ bằng chứng để đánh giá. Hãy thận trọng và xác minh qua kênh chính thức.",
+      },
+    });
+    expect(Object.keys(vi.verdict)).toEqual(Verdict.options);
+  });
+
+  it("SO-03-AC04: names both signal sources", () => {
+    expect(vi.signalSource).toEqual({ deterministic: "Kiểm tra", ai: "AI nhận định" });
+    expect(Object.keys(vi.signalSource)).toEqual(SignalSource.options);
+  });
+
+  it("SO-02-AC03: names check states and never reads 'unavailable' as no problem", () => {
+    expect(vi.checkStatus).toEqual({
+      warn: "Cảnh báo",
+      pass: "Không phát hiện vấn đề",
+      unavailable: "Không tra được",
+    });
+    expect(Object.keys(vi.checkStatus)).toEqual(CheckStatus.options);
+    expect(vi.checkUnavailableNote).toBe(
+      "Không tra được kết quả. Điều này không có nghĩa là không có vấn đề.",
+    );
+  });
+
+  it("SO-03-AC03, AC04: has no 'an toàn' and no percentage anywhere", () => {
+    const text = JSON.stringify(vi).toLowerCase();
+    expect(text).not.toContain("an toàn");
+    expect(text).not.toContain("%");
+  });
+});

@@ -104,9 +104,10 @@ npm run verify           # format + lint + typecheck + test
 | Loại | Tên | Dùng để |
 |---|---|---|
 | Framework | Next.js, Node.js, TypeScript | Web và API |
+| Font | [Be Vietnam Pro](https://fonts.google.com/specimen/Be+Vietnam+Pro) (SIL Open Font License), tải lúc build và tự phục vụ qua `next/font` | Chữ giao diện |
 | Cơ sở dữ liệu | PostgreSQL (Supabase managed) | Analyses, cases, decisions |
 | Mô hình AI | Groq: `qwen/qwen3.8-27b` (chính), `openai/gpt-oss-120b` (dự phòng), chốt sau thử nghiệm Q-08 | Trích tín hiệu, giải thích, tóm tắt hồ sơ |
-| Thư viện mã nguồn mở | React, zod, Drizzle ORM, postgres.js, Vitest, ESLint, Prettier, tsx, tldts (phiên bản ghim trong `package.json`) | Giao diện, schema, truy cập DB, test, chất lượng mã |
+| Thư viện mã nguồn mở | React, Tailwind CSS, zod, Drizzle ORM, postgres.js, Vitest, ESLint, Prettier, tsx, tldts (phiên bản ghim trong `package.json`) | Giao diện, schema, truy cập DB, test, chất lượng mã |
 | Dữ liệu công bố | [PeterDaveHello/url-shorteners](https://github.com/PeterDaveHello/url-shorteners) (CC BY-SA 4.0, trích một phần); [bảng xếp hạng TLD của Interisle, 5/2025–4/2026](https://www.cybercrimeinfocenter.org/phishing-activity-in-tlds-may-april-2026) | Danh sách dịch vụ rút gọn và TLD rủi ro trong `packages/shared/data/url-lists.json` |
 | Công cụ AI hỗ trợ phát triển | Claude Code + [my-sdlc-kit](https://github.com/AkiraTomori/my-sdlc-kit) | Viết spec, thiết kế, mã và test |
 

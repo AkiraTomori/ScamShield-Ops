@@ -1,52 +1,75 @@
-/* Tokens from docs/product/design-system.md §2 (only those used so far). */
-:root {
+/* Scan only apps/web/src, wherever the build is started from. */
+@import "tailwindcss" source("..");
+
+/* Tokens: docs/product/design-system.md §2. Declared once, here. The `initial` lines drop
+   Tailwind's default palette and type scale, so no other colour or size can be used. */
+@theme static {
+  --color-*: initial;
   --color-bg: #ffffff;
   --color-surface-subtle: #f2f4f7;
   --color-text: #101828;
   --color-text-muted: #475467;
   --color-border: #d0d5dd;
+  --color-border-strong: #667085;
   --color-primary: #3538cd;
-  color-scheme: light;
+  --color-danger: #b42318;
+
+  --color-verdict-high-risk: #b42318;
+  --color-verdict-high-risk-bg: #fef3f2;
+  --color-verdict-suspicious: #b54708;
+  --color-verdict-suspicious-bg: #fffaeb;
+  --color-verdict-no-signal: #175cd3;
+  --color-verdict-no-signal-bg: #eff8ff;
+  --color-verdict-inconclusive: #344054;
+  --color-verdict-inconclusive-bg: #f2f4f7;
+
+  --color-source-check: #0e7090;
+  --color-source-check-bg: #ecfdff;
+  --color-source-ai: #6941c6;
+  --color-source-ai-bg: #f4f3ff;
+
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-md: 1rem;
+  --text-md--line-height: 1.5rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 2rem;
+
+  --radius-control: 6px;
+  --radius-card: 10px;
 }
 
-* {
-  box-sizing: border-box;
+/* `inline`: the font variable is set by next/font in app/layout.tsx. */
+@theme inline static {
+  --font-sans: var(--font-be-vietnam-pro, system-ui), system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
 }
 
-body {
-  margin: 0;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
-}
+@layer base {
+  :root {
+    color-scheme: light;
+  }
 
-.page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: var(--text-md);
+    line-height: var(--text-md--line-height);
+  }
 
-.header,
-.main,
-.footer {
-  width: 100%;
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 1rem;
-}
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 
-.header {
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.main {
-  flex: 1;
-}
-
-.footer {
-  border-top: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      scroll-behavior: auto !important;
+    }
+  }
 }

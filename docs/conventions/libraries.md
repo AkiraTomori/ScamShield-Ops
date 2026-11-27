@@ -11,7 +11,7 @@ Thêm thư viện ngoài danh sách này phải hỏi owner ([plan §5](../runbo
 | `postgres` (postgres.js) | Driver PostgreSQL | D-02, 20/11/2026 |
 | `vitest` | Unit và integration test | D-02, 20/11/2026 |
 | `eslint` + cấu hình ESLint của Next.js, `prettier` | Lint, format | D-02, 20/11/2026 |
-| `tailwindcss` (+ plugin PostCSS/tích hợp Next.js theo tài liệu chính thức của phiên bản ghim) | Styling | O-05, 20/11/2026 ([ui-pages §8](../product/ui-pages.md#8-quyết-định-mở-cho-giao-diện)) |
+| `tailwindcss` v4 + `@tailwindcss/postcss` (cấu hình trong CSS bằng `@theme`, theo hướng dẫn kèm Next.js) | Styling | O-05, 20/11/2026 ([ui-pages §8](../product/ui-pages.md#8-quyết-định-mở-cho-giao-diện)) |
 | `@playwright/test` | Test end-to-end luồng demo | C-01, 20/11/2026 ([frontend §9](./frontend.md#9-quyết-định)) |
 | `tldts` (dựa trên Public Suffix List) | Tính tên miền đăng ký | P-02, 20/11/2026 ([analysis-pipeline §12](../design/analysis-pipeline.md#12-quyết-định)) |
 | `tsx` (devDependency) | Chạy script TypeScript trong `eval/` | S2-01, 21/11/2026 ([model-spike §9](../design/model-spike.md#9-quyết-định)) |

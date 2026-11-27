@@ -1,6 +1,6 @@
 # ScamShield Ops — Design system
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040, ở local, chưa merge). Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 ## 1. Nguyên tắc thị giác
 
@@ -12,6 +12,8 @@
 ## 2. Token
 
 Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần** dưới dạng CSS custom properties trong file CSS global và nối vào theme Tailwind, để class Tailwind và CSS thường dùng cùng giá trị; không khai báo bảng màu thứ hai trong file cấu hình. Cách nối cụ thể theo phiên bản Tailwind ghim lúc scaffold. Chỉ có giao diện sáng trong v1.
+
+**Cách nối (T-040, Tailwind v4):** token khai báo trong `@theme` ở `apps/web/src/styles/globals.css`; không có file cấu hình Tailwind. Bảng màu và thang cỡ chữ mặc định của Tailwind bị xoá (`--color-*: initial`, `--text-*: initial`), nên không có class xanh lá hay cỡ chữ ngoài bảng. Tên màu verdict: `--color-verdict-<high-risk|suspicious|no-signal|inconclusive>` và `…-bg`; badge nguồn: `--color-source-<check|ai>` và `…-bg`.
 
 **Màu.** Tỉ lệ tương phản tính theo công thức WCAG 2.x ngày 20/11/2026; chữ thường cần ≥ 4,5:1, viền thành phần UI cần ≥ 3:1.
 
@@ -42,6 +44,8 @@ Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần*
 | *Kiểm tra* | `#0E7090` | `#ECFDFF` | 5,37 |
 | *AI nhận định* | `#6941C6` | `#F4F3FF` | 6,02 |
 
+**Chữ trạng thái phép kiểm** trên nền trắng (tính 27/11): *Cảnh báo* `#B54708` 5,43; *Không tra được* `#344054` 10,46; *Không phát hiện vấn đề* dùng `--color-text-muted` (7,69).
+
 **Chữ:** font **Be Vietnam Pro** (U-01, owner chốt 26/11), nạp bằng `next/font` (tự host lúc build, không gọi Google Fonts lúc chạy), dự phòng `system-ui, sans-serif`. Font đơn cách cho nội dung tin nhắn gốc: `ui-monospace, monospace`. Font này phải ghi vào bảng tài sản có sẵn ở README khi dùng.
 
 | Token | Cỡ / dòng | Dùng cho |
@@ -52,7 +56,7 @@ Dùng **Tailwind CSS** (owner chốt 20/11/2026). Token khai báo **một lần*
 | `--text-lg` | 20 / 28 | Tiêu đề khối |
 | `--text-xl` | 24 / 32 | Nhãn verdict, tiêu đề trang |
 
-**Khoảng cách:** thang 4px (`--space-1` = 4px … `--space-8` = 32px). **Bo góc:** 6px cho ô nhập/nút, 10px cho thẻ. **Điểm ngắt:** < 640px một cột (ScamShield); ≥ 1024px hai cột cho chi tiết hồ sơ FraudOps. ScamShield phải dùng được ở 360px không cuộn ngang.
+**Khoảng cách:** thang 4px (`--spacing` = 4px; class `p-1` = 4px … `p-8` = 32px). **Bo góc:** 6px cho ô nhập/nút (`rounded-control`), 10px cho thẻ (`rounded-card`). **Điểm ngắt:** < 640px một cột (ScamShield); ≥ 1024px hai cột cho chi tiết hồ sơ FraudOps. ScamShield phải dùng được ở 360px không cuộn ngang.
 
 ## 3. Câu chữ chuẩn
 
