@@ -25,10 +25,10 @@ T-039,S3 Pipeline,"POST /api/analyses + chạy eval tập dev, ghi research B.4"
 T-040,S4 ScamShield,"Tailwind + token + component nền (design-system §2, §4)",,T-001,24/11,M,agent,done,P0,,,B
 T-041,S4 ScamShield,"Trang /: ô nhập, bộ đếm, tin mẫu, trạng thái chờ/lỗi/giới hạn (/sdlc:frontend-ui-design)",SO-01-AC02;SO-01-AC04;SO-10-AC05,T-040;T-045;T-039,24/11,M,agent,done,P0,,Dán tin trên điện thoại ra kết quả,B
 T-042,S4 ScamShield,"Khối kết quả: verdict, giải thích, signal + nguồn, chỉ dấu + phép kiểm, khuyến nghị, disclaimer",SO-03-AC03;SO-03-AC04;SO-05-AC03,T-041,25/11,M,agent,done,P0,,Ảnh chụp 360px; URL không bấm được,B
-T-050,S5 Báo cáo,POST report: tạo case + mã bí mật băm 8 ký tự + chống trùng; nới CHECK ghi chú (RP-01); tóm tắt AI gọi từ T-053,SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01,T-038;T-053,26/11,M,agent,todo,P0,,Gửi 2 lần ra 1 case,C
-T-051,S5 Báo cáo,Form gửi báo cáo + màn thành công có mã (UI),SO-04-AC01;SO-04-AC02,T-050;T-042,26/11,S,agent,todo,P0,,,B
-T-052,S5 Báo cáo,POST /api/case-status + trang /tra-cuu,SO-04-AC04,T-050,27/11,S,agent,todo,P1,4,Sai mã ra một thông báo chung,B
-T-053,S5 Báo cáo,"summarizeCase (LLM tóm tắt hồ sơ) + bộ lọc dùng chung với giải thích (RP-03, RP-04)",SO-05-AC02,T-037,26/11,M,agent,todo,P0,,"Test LLM giả: sai schema, quá hạn 8 giây, từng luật lọc",A
+T-050,S5 Báo cáo,POST report: tạo case + mã bí mật băm 8 ký tự + chống trùng; nới CHECK ghi chú (RP-01); tóm tắt AI gọi từ T-053,SO-04-AC01;SO-04-AC02;SO-04-AC03;SO-05-AC01,T-038;T-053,26/11,M,agent,done,P0,,Gửi 2 lần ra 1 case,C
+T-051,S5 Báo cáo,Form gửi báo cáo + màn thành công có mã (UI),SO-04-AC01;SO-04-AC02,T-050;T-042,26/11,S,agent,done,P0,,,B
+T-052,S5 Báo cáo,POST /api/case-status + trang /tra-cuu,SO-04-AC04,T-050,27/11,S,agent,done,P1,4,Sai mã ra một thông báo chung,B
+T-053,S5 Báo cáo,"summarizeCase (LLM tóm tắt hồ sơ) + bộ lọc dùng chung với giải thích (RP-03, RP-04)",SO-05-AC02,T-037,26/11,M,agent,done,P0,,"Test LLM giả: sai schema, quá hạn 8 giây, từng luật lọc",A
 T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,todo,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401",C
 T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,todo,P0,5 (lọc/tìm),,B (UI) + C (API)
 T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,todo,P0,,,B (UI) + C (API)

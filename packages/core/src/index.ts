@@ -1,9 +1,10 @@
 export * from "./db";
 export * from "./http";
 export * from "./llm";
-export { createAnalysisDeps, createDeps, type Deps } from "./deps";
+export { createAnalysisDeps, createDeps, createReportDeps, type Deps } from "./deps";
 export { logEvent, type LogFields } from "./log";
 export * from "./analysis";
+export * from "./reports";
 export { extractIndicators, type ExtractedIndicators } from "./indicators";
 export { consumeRateLimit, PUBLIC_LIMIT_PER_MINUTE, rateLimitKey } from "./rate-limit";
 export { redact } from "./redaction";

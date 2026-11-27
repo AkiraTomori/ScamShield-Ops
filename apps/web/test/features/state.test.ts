@@ -102,3 +102,39 @@ describe("analysis page state", () => {
     expect(analysisReducer(sending, settled({ kind: "aborted" }))).toBe(sending);
   });
 });
+
+// report-flow §5.2: nothing may drop the codes without the user saying so.
+describe("analysis page state while reporting", () => {
+  const started: Action = { type: "reportStarted" };
+  const reportSettled = (secretShown: boolean): Action => ({ type: "reportSettled", secretShown });
+  const sendingReport = analysisReducer(answered, started);
+  const reported = analysisReducer(sendingReport, reportSettled(true));
+  const others: Action[] = [typed("khác"), submit, { type: "slow" }, settled({ kind: "failed" })];
+
+  it("keeps the result and locks it while the report is on its way", () => {
+    expect(sendingReport).toEqual({ ...answered, reporting: true });
+    for (const action of [...others, { type: "reset" } as const, started]) {
+      expect(analysisReducer(sendingReport, action)).toBe(sendingReport);
+    }
+  });
+
+  it("SO-04-AC01: locks the page once a secret code is on screen", () => {
+    expect(reported).toEqual({ status: "reported", content: "tin", result: RESULT });
+    for (const action of [...others, started]) {
+      expect(analysisReducer(reported, action)).toBe(reported);
+    }
+  });
+
+  it("leaves the codes behind only for 'check another message'", () => {
+    expect(analysisReducer(reported, { type: "reset" })).toEqual(initialState);
+  });
+
+  it("goes back to the plain result when there is no secret code to keep", () => {
+    expect(analysisReducer(sendingReport, reportSettled(false))).toEqual(answered);
+  });
+
+  it("ignores report actions when there is no result", () => {
+    expect(analysisReducer(sending, started)).toBe(sending);
+    expect(analysisReducer(initialState, started)).toBe(initialState);
+  });
+});

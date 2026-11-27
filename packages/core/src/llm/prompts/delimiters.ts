@@ -1,5 +1,5 @@
 /** Matches any delimiter-looking token, whatever its nonce, so content cannot fake a block edge. */
-const DELIMITER_PATTERN = /<<<\s*\/?\s*(?:TIN_NHAN|HET|DU_LIEU)_[^>\n]{0,64}>>>/gi;
+const DELIMITER_PATTERN = /<<<\s*\/?\s*(?:TIN_NHAN|HET|DU_LIEU|GHI_CHU)_[^>\n]{0,64}>>>/gi;
 
 /**
  * Removes every delimiter-like token from user-controlled text before it is placed in a block.

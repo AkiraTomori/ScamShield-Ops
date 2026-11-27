@@ -34,7 +34,8 @@ describe("analysis page", () => {
   });
 
   // P5: nothing a user could have typed ever becomes a link.
-  it("P5: has no link", () => {
-    expect(renderToStaticMarkup(<HomePage />)).not.toMatch(/<a\b|href=/);
+  it("P5: its only link is our own lookup page", () => {
+    const html = renderToStaticMarkup(<HomePage />);
+    expect([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1])).toEqual(["/tra-cuu"]);
   });
 });

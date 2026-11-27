@@ -8,7 +8,10 @@ export type State =
   | { status: "editing"; content: string }
   | { status: "invalid"; content: string; fieldError: string }
   | { status: "submitting"; content: string; slow: boolean }
-  | { status: "result"; content: string; result: AnalysisResult }
+  /** `reporting`: a report is on its way, so nothing may drop the result it belongs to. */
+  | { status: "result"; content: string; result: AnalysisResult; reporting?: boolean }
+  /** The codes are on screen and the secret one is never shown again (report-flow §5.2). */
+  | { status: "reported"; content: string; result: AnalysisResult }
   | { status: "rateLimited"; content: string; message: string }
   | { status: "failed"; content: string };
 
@@ -21,7 +24,10 @@ export type Action =
   | { type: "slow" }
   | { type: "settled"; outcome: AnalysisOutcome }
   /** "Check another message". */
-  | { type: "reset" };
+  | { type: "reset" }
+  | { type: "reportStarted" }
+  /** `secretShown`: this answer put a new secret code on screen. */
+  | { type: "reportSettled"; secretShown: boolean };
 
 export const initialState: State = { status: "editing", content: "" };
 
@@ -33,7 +39,21 @@ export function analysisReducer(state: State, action: Action): State {
     return settle(state, state.content, action.outcome);
   }
 
+  if (state.status === "reported") {
+    // Only "check another message" (after its confirmation) leaves the codes behind.
+    return action.type === "reset" ? initialState : state;
+  }
+  if (state.status === "result" && state.reporting) {
+    if (action.type !== "reportSettled") return state;
+    const { content, result } = state;
+    return action.secretShown
+      ? { status: "reported", content, result }
+      : { status: "result", content, result };
+  }
+
   switch (action.type) {
+    case "reportStarted":
+      return state.status === "result" ? { ...state, reporting: true } : state;
     case "edit":
       return { status: "editing", content: action.content };
     case "reset":

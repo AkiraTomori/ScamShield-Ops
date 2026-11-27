@@ -10,16 +10,13 @@ import {
 import {
   AnalysisResult,
   CreateAnalysisRequest,
-  ERROR_HTTP_STATUS,
-  ERROR_MESSAGE_VI,
   INPUT_ERROR_MESSAGE_VI,
   normalizeInput,
   parseAnalysisEnv,
   type AnalysisEnv,
-  type ApiError,
-  type ErrorCode,
 } from "@scamshield/shared";
 import { getDeps } from "./deps";
+import { clientIp, failure, json, RATE_LIMIT_TIMEOUT_MS, readJson, within } from "./http";
 
 /** The I/O the route needs, replaceable in tests. */
 export interface AnalysisServices {
@@ -35,12 +32,9 @@ export interface AnalysesContext {
   rateLimitTimeoutMs?: number;
 }
 
-/** Budget of analysis-pipeline §2: one second to count, twenty for the whole request. */
-const RATE_LIMIT_TIMEOUT_MS = 1_000;
+/** Budget of analysis-pipeline §2: twenty seconds for the whole request. */
 const TOTAL_BUDGET_MS = 20_000;
 const MIN_SAVE_MS = 1_000;
-/** 2,000 characters even as `\uXXXX` escapes fit well inside this. */
-const MAX_BODY_BYTES = 64_000;
 
 function realServices(env: AnalysisEnv): AnalysisServices {
   const base = getDeps(env);
@@ -50,52 +44,6 @@ function realServices(env: AnalysisEnv): AnalysisServices {
     analyze: (content, startedAt) => analyzeMessage(content, deps, { startedAt }),
     save: (outcome) => saveAnalysis(outcome, { db: base.database.db }),
   };
-}
-
-function json(body: unknown, status: number): Response {
-  return Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
-}
-
-function failure(code: ErrorCode, message?: string, fields?: Record<string, string>): Response {
-  const body: ApiError = {
-    error: { code, message: message ?? ERROR_MESSAGE_VI[code], ...(fields ? { fields } : {}) },
-  };
-  return json(body, ERROR_HTTP_STATUS[code]);
-}
-
-function within<T>(work: Promise<T>, ms: number): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => reject(new Error("timeout")), ms);
-  });
-  return Promise.race([work, timeout]).finally(() => clearTimeout(timer));
-}
-
-/**
- * The first hop of `x-forwarded-for`. Which header the platform guarantees is a deploy check
- * (analysis-pipeline §3); without one, as in local development, everyone shares one bucket.
- */
-function clientIp(request: Request): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
-}
-
-/** Reads at most `MAX_BODY_BYTES`; null when larger. */
-async function readBody(request: Request): Promise<string | null> {
-  const reader = request.body?.getReader();
-  if (!reader) return "";
-  const decoder = new TextDecoder();
-  let text = "";
-  let size = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) return text + decoder.decode();
-    size += value.byteLength;
-    if (size > MAX_BODY_BYTES) {
-      await reader.cancel();
-      return null;
-    }
-    text += decoder.decode(value, { stream: true });
-  }
 }
 
 /**
@@ -126,9 +74,8 @@ export async function handleCreateAnalysis(
     if (!allowed) return failure("rate_limited");
 
     step = "input";
-    const raw = await readBody(request);
-    const parsed = raw === null ? null : CreateAnalysisRequest.safeParse(safeJson(raw));
-    if (!parsed?.success) return failure("validation_failed");
+    const parsed = CreateAnalysisRequest.safeParse(await readJson(request));
+    if (!parsed.success) return failure("validation_failed");
     const input = normalizeInput(parsed.data.content);
     if (!input.ok) {
       return failure("validation_failed", INPUT_ERROR_MESSAGE_VI[input.code], {
@@ -151,13 +98,5 @@ export async function handleCreateAnalysis(
       durationMs: now().getTime() - startedAt,
     });
     return failure("internal");
-  }
-}
-
-function safeJson(text: string): unknown {
-  try {
-    return JSON.parse(text);
-  } catch {
-    return undefined;
   }
 }

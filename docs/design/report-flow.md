@@ -1,6 +1,6 @@
 # Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-052)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. T-038 (S3 lưu analysis) đã merge vào `main` ngày 26/11 (PR #46), nên S5 không còn bị S3 chặn; T-050 còn phụ thuộc T-053 (tasks.csv). Lịch cũ đặt S5 ở 26–27/11.
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, chưa commit, chưa merge, chưa deploy). Chưa chạy tóm tắt AI với Groq thật. Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), chờ owner xác nhận.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-04-AC01…AC04, SO-05-AC01, AC02, SO-01-AC03, SO-03-AC05, P1, Q-05.
@@ -160,7 +160,7 @@ submitReport(analysisId: string, req: ReportRequest, deps: ReportDeps): Promise<
   | { kind: "already_reported"; caseCode: string }
   | { kind: "analysis_not_found" }>
 
-// packages/core/src/cases — vai C
+// tra trạng thái, cùng module reports (codebase.md §1) — vai C
 normalizeCaseCode(input: string): string | null
 lookupPublicStatus(req: CaseStatusRequest, deps: DbDeps): Promise<CaseStatusResponse | null>
                                                      // null cho mọi trường hợp không khớp
@@ -219,3 +219,22 @@ Tiền tố `RP-` (báo cáo, slice S5), chưa dùng ở tài liệu nào khác.
 - **Lịch:** S5 nằm sau S3, mà S3 xong muộn (merge 26/11). Thiếu thời gian thì cắt T-052 trước (plan §7 thứ 4). T-050 và T-051 là P0, không cắt.
 - **Chi phí LLM:** mỗi báo cáo mới tốn một lượt gọi, dùng chung trần `LLM_DAILY_CALL_CAP` (P-03). Chạm trần thì `aiSummary = null`, case vẫn được tạo.
 - **Tóm tắt chưa được eval:** bộ eval SO-09 đo verdict và giải thích, chưa đo tóm tắt. Chất lượng tóm tắt chỉ được kiểm bằng bộ lọc và bằng mắt, trừ khi T-101 còn thời gian.
+
+## 12. Ghi chú cài đặt (27/11/2026)
+
+Khác hoặc thêm so với bản duyệt. **Chờ owner xác nhận.**
+
+| # | Việc | Lý do |
+|---|---|---|
+| 1 | `lookupPublicStatus`, `normalizeCaseCode` nằm ở `core/src/reports/`, không phải `core/src/cases/` như §6 bản đầu; giao diện ở `features/lookup/` | `codebase.md` (cấp 4) thắng thiết kế slice (cấp 5); tránh thêm phụ thuộc `cases → reports` |
+| 2 | Trong lúc **đang gửi** báo cáo cũng khoá ô nhập, tin mẫu, nút "Kiểm tra", "Kiểm tra tin khác" và ẩn "Thử lại" (§5.2 chỉ nói sau khi thành công) | Đổi nội dung giữa chừng thì mất câu trả lời, cùng mã bí mật trong đó |
+| 3 | `reported` chỉ áp cho lần gửi **thành công** (có mã bí mật trên màn hình). "Đã gửi trước đó" không khoá, không hỏi lại | Không có mã bí mật nào để mất |
+| 4 | Ở `reported`, đóng hoặc rời trang thì trình duyệt hỏi lại (`beforeunload`); link "Tra cứu trạng thái" mở **tab mới** và ghi "(mở tab mới)" | Mở cùng tab sẽ mất mã bí mật. Safari trên iOS không hỗ trợ `beforeunload` |
+| 5 | Header trang `/` có link "Tra cứu báo cáo" theo wireframe pages §2.1; test P5 của trang `/` đổi thành "link duy nhất là `/tra-cuu`" | Wireframe đã có link này |
+| 6 | Bộ lọc P1 (RP-04) so trên chữ **bỏ dấu**, cho phép tối đa 3 từ chen giữa ("khoá ngay các tài khoản"). Cụm cấm hành động chỉ áp cho `nextSteps` | "khoá"/"khóa", "toả"/"tỏa" là hai chuỗi khác nhau |
+| 7 | Số câu 3–5 chỉ yêu cầu trong prompt, code không đếm. Quá dài thì bỏ tóm tắt, không thử lại | Đếm câu trên chữ có tên miền dễ sai |
+| 8 | Ghi chú sau khi che được **cắt ở 1.000 ký tự** | Nhãn che có thể làm 500 ký tự vượt cả CHECK mới |
+| 9 | Phần chặn trần LLM và log lỗi gọi model được tách thành `guardLlm`, dùng chung cho phân tích và tóm tắt | Một chỗ cho P-03 |
+| 10 | Câu mới chưa có trong tài liệu duyệt: ba câu giải nghĩa trạng thái (trừ câu `confirmed_scam` lấy từ wireframe), "Hãy chọn nơi bạn nhận tin.", "Ghi chú tối đa 500 ký tự.", "Hãy nhập cả mã hồ sơ và mã bí mật.", "Chưa tra cứu được do lỗi kết nối. Hãy thử lại." Ghi ở [design-system §3](../product/design-system.md#3-câu-chữ-chuẩn) | Cần câu để hiển thị |
+
+**Chưa kiểm:** tóm tắt AI với Groq thật (chất lượng, tỉ lệ bị bộ lọc loại, có kịp 8 giây không); bản deploy, `maxDuration` và header IP trên Vercel; điện thoại thật. Chống lộ qua thời gian (§4.2) mới kiểm bằng đọc mã.

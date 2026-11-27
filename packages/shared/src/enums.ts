@@ -43,6 +43,10 @@ export type CaseStatus = z.infer<typeof CaseStatus>;
 export const Decision = z.enum(["confirmed_scam", "not_scam", "insufficient_evidence"]);
 export type Decision = z.infer<typeof Decision>;
 
+/** What the reporter sees (SO-04-AC04): the case status, merged with the decision once closed. */
+export const PublicCaseStatus = z.enum(["pending_review", ...Decision.options]);
+export type PublicCaseStatus = z.infer<typeof PublicCaseStatus>;
+
 export const SignalSource = z.enum(["deterministic", "ai"]);
 export type SignalSource = z.infer<typeof SignalSource>;
 

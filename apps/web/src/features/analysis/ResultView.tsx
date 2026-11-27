@@ -43,7 +43,8 @@ export function ResultView({
 }: {
   result: AnalysisResult;
   actions: ReactNode;
-  onRetry: () => void;
+  /** Unset: this result may not be replaced, so no retry button. */
+  onRetry?: () => void;
 }) {
   const view = toViewModel(result);
 
@@ -51,7 +52,7 @@ export function ResultView({
     <div className="flex flex-col gap-5">
       <VerdictBanner verdict={view.verdict}>
         {view.note ? <p className="mt-2 font-semibold">{view.note}</p> : null}
-        {view.canRetry ? (
+        {view.canRetry && onRetry ? (
           <div className="mt-3">
             <Button variant="secondary" onClick={onRetry}>
               {vi.retry}

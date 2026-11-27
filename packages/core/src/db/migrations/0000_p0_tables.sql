@@ -55,7 +55,7 @@ CREATE TABLE "cases" (
 	CONSTRAINT "cases_code_valid" CHECK ("cases"."code" ~ '^SC-[0-9]{4,}$'),
 	CONSTRAINT "cases_status_valid" CHECK ("cases"."status" IN ('pending_review', 'closed')),
 	CONSTRAINT "cases_channel_valid" CHECK ("cases"."channel" IN ('sms', 'zalo', 'messenger', 'email', 'other')),
-	CONSTRAINT "cases_reporter_note_len" CHECK ("cases"."reporter_note" IS NULL OR char_length("cases"."reporter_note") <= 500),
+	CONSTRAINT "cases_reporter_note_len" CHECK ("cases"."reporter_note" IS NULL OR char_length("cases"."reporter_note") <= 1000),
 	CONSTRAINT "cases_engine_verdict_valid" CHECK ("cases"."engine_verdict" IN ('high_risk', 'suspicious', 'no_signal', 'inconclusive')),
 	CONSTRAINT "cases_risk_types_valid" CHECK ("cases"."risk_types" <@ ARRAY['brand_impersonation', 'otp_phishing', 'payment_request', 'fake_prize', 'other']::text[]),
 	CONSTRAINT "cases_closed_at_matches_status" CHECK (("cases"."status" = 'closed') = ("cases"."closed_at" IS NOT NULL))

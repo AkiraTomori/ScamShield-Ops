@@ -248,11 +248,11 @@ describe.skipIf(!url)("data-model §3: invariants enforced by the database", () 
       }
     });
 
-    it("limits the reporter note to 500 characters", async () => {
-      await insertCase(t.db, await insertAnalysis(t.db), { reporterNote: "n".repeat(500) });
+    it("RP-01: limits the stored reporter note to 1000 characters", async () => {
+      await insertCase(t.db, await insertAnalysis(t.db), { reporterNote: "n".repeat(1000) });
       const analysisId = await insertAnalysis(t.db);
       const error = await rejection(() =>
-        t.db.insert(cases).values(caseRow(analysisId, { reporterNote: "n".repeat(501) })),
+        t.db.insert(cases).values(caseRow(analysisId, { reporterNote: "n".repeat(1001) })),
       );
       expect(error).toMatchObject({ code: PG.check, constraint_name: "cases_reporter_note_len" });
     });
