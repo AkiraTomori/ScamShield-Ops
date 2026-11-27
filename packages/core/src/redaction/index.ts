@@ -65,6 +65,42 @@ export function redact(text: string): { text: string; counts: RedactionCounts } 
   return { text: out, counts };
 }
 
+/** A code on its own: 4–8 digits, or six written as two groups of three. */
+const NOTE_CODE = /(?<!\d)(?:\d{3}[ -]\d{3}|\d{4,8})(?!\d)/g;
+/** Dates written with dashes; the ones with slashes are covered by the amount and date rule. */
+const DASHED_DATE = /(?<!\d)(?:\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})(?!\d)/g;
+
+/**
+ * `redact` for a reporter's note (report-flow §3.1, RP-06). The victim tells what they handed over
+ * without naming it ("mình đưa mã 482913"), so every bare code is masked, at the price of some
+ * harmless numbers. Phones, links and an account written right after STK stay (Q-04). Messages do
+ * not go through this.
+ */
+export function redactNote(note: string): { text: string; counts: RedactionCounts } {
+  const { text, counts } = redact(note);
+  const urls = findUrls(text);
+  const kept: Span[] = [
+    ...urls,
+    ...findPhones(text, urls),
+    // Only directly after STK and its kind: "tài khoản … mã 482913" also reads as an account.
+    ...findAccounts(text).filter((account) => account.adjacent),
+    ...[...text.matchAll(DASHED_DATE)].map((m) => ({ start: m.index, end: m.index + m[0].length })),
+  ];
+
+  let masked = 0;
+  const out = text.replace(NOTE_CODE, (code: string, start: number) => {
+    const end = start + code.length;
+    const amountOrDate =
+      /\d[.,/]$/.test(text.slice(Math.max(0, start - 2), start)) ||
+      /^[.,/]\d/.test(text.slice(end, end + 2)) ||
+      CURRENCY_AFTER.test(fold(text.slice(end, end + 8)).text);
+    if (amountOrDate || overlaps({ start, end }, kept)) return code;
+    masked += 1;
+    return REDACTION_LABELS.otp;
+  });
+  return { text: out, counts: { ...counts, otp: counts.otp + masked } };
+}
+
 /** A full stop, line break or similar: not the dots inside 5.000.000. */
 const SENTENCE_BREAK = /[.!?;](?=\s|$)|\n/g;
 const CARD_KEYWORD = /(?<![a-z0-9])(?:so the|cvv2?|cvc2?)(?![a-z0-9])/;

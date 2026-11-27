@@ -5,7 +5,7 @@ import { analyses, cases } from "../db/schema";
 import { guardLlm, summarizeCase, type LlmClient, type LlmDeps } from "../llm";
 import { logEvent, type LogFields } from "../log";
 import type { Db } from "../rate-limit";
-import { redact } from "../redaction";
+import { redactNote } from "../redaction";
 import { formatSecretCode, generateSecretCode, hashSecret, type RandomInt } from "./secret";
 
 /** Time allowed for the AI summary (RP-03). */
@@ -97,7 +97,7 @@ async function existingCase(analysisId: string, db: Db): Promise<string | undefi
 function prepareNote(raw: string | undefined): string | null {
   const typed = standardizeText(raw ?? "");
   if (typed === "") return null;
-  return [...redact(typed).text].slice(0, MAX_STORED_NOTE_CHARS).join("");
+  return [...redactNote(typed).text].slice(0, MAX_STORED_NOTE_CHARS).join("");
 }
 
 /** Null when there is no summary to store; the case is created either way (contracts A-02). */

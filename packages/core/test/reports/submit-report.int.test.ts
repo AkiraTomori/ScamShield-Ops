@@ -169,6 +169,14 @@ describe.skipIf(!url)("submitReport", () => {
     expect(JSON.stringify(run.chatJson.mock.calls)).not.toContain("482913");
   });
 
+  it("SO-01-AC03: also hides a code the note does not name as an OTP", async () => {
+    const id = await analysis();
+    const run = deps();
+    await submitReport(id, { channel: "sms", note: "mình lỡ đưa mã 482913 cho họ" }, run.deps);
+    expect((await stored(id))[0]?.reporterNote).toBe("mình lỡ đưa mã [OTP ĐÃ CHE] cho họ");
+    expect(JSON.stringify(run.chatJson.mock.calls)).not.toContain("482913");
+  });
+
   it("RP-01: a note that redaction lengthens past the column is cut, not rejected", async () => {
     const id = await analysis();
     const note = "mk a1 ".repeat(83);
