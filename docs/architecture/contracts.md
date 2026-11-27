@@ -1,6 +1,6 @@
 # ScamShield Ops — Hợp đồng dữ liệu
 
-**Trạng thái (26/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2); trên nhánh `feat/s3-pipeline` (26/11, PR #46, chưa merge) có thêm `CheckType`, `CheckStatus`, `AnalysisResult`, `CreateAnalysisRequest`, `BrandList`, `UrlLists`. Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2); slice S3 (PR #46, đã merge 26/11) thêm `CheckType`, `CheckStatus`, `AnalysisResult`, `CreateAnalysisRequest`, `BrandList`, `UrlLists`. Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 **Thứ bậc:** khi `packages/shared` đã có schema, **schema thắng** file này; lệch thì sửa file này trong cùng PR ([conventions/contracts.md](../conventions/contracts.md)). Endpoint dùng các hình dạng này ở [api.md](./api.md). Quy tắc tính verdict **không** nằm ở đây; nó thuộc thiết kế slice pipeline (system-design §10).
 
@@ -88,7 +88,7 @@ Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá th�
 | `redactions` | `{ otp: number, password: number, card: number }` | Số chỗ đã che (SO-01-AC03); UI hiện thông báo khi tổng > 0 |
 | `explanation` | string \| null | Do LLM viết, ≤ 800 ký tự, chỉ dựa trên signal và check (SO-03-AC05). `null` khi LLM lỗi |
 | `recommendations` | string[] (2–4) | Câu mẫu do **code** chọn theo verdict và signal (A-01) |
-| `rule` | string | Mã quy tắc verdict đã kích hoạt (`R0`…`R9`, design/analysis-pipeline §7) |
+| `rule` | `RuleCode` (`R0`…`R9`) | Mã quy tắc verdict đã kích hoạt (design/analysis-pipeline §7) |
 | `promptVersion`, `rulesVersion` | string | Spec §10. `promptVersion` ghép hai prompt: `signals-v1+explain-v3` |
 | `createdAt` | ISO 8601 UTC | |
 

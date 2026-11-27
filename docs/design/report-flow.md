@@ -1,6 +1,6 @@
 # Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-052)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. T-050 phụ thuộc T-038 (S3 lưu analysis), mà S3 chưa có mã. Vì vậy chưa viết được mã S5, dù đã được duyệt. Lịch cũ đặt S5 ở 26–27/11.
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. T-038 (S3 lưu analysis) đã merge vào `main` ngày 26/11 (PR #46), nên S5 không còn bị S3 chặn; T-050 còn phụ thuộc T-053 (tasks.csv). Lịch cũ đặt S5 ở 26–27/11.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-04-AC01…AC04, SO-05-AC01, AC02, SO-01-AC03, SO-03-AC05, P1, Q-05.
@@ -197,7 +197,7 @@ lookupPublicStatus(req: CaseStatusRequest, deps: DbDeps): Promise<CaseStatusResp
 
 | Cần | Ai | Ghi chú |
 |---|---|---|
-| T-038: analysis được lưu | C | **Chặn T-050** |
+| T-038: analysis được lưu | C | Đã merge (PR #46, 26/11) |
 | `redact` (T-031) | A | Che ghi chú |
 | Schema `AnalysisResult` trong shared (S4 §4) | C | Form báo cáo nằm trong khối kết quả |
 | Mã bí mật của case mẫu | C (T-090) | Seed cần mã đã biết để demo `/tra-cuu`. Lưu mã ở chỗ chỉ đội demo đọc được (ví dụ `.env` hoặc ghi chú riêng của owner), không commit |
@@ -216,6 +216,6 @@ Tiền tố `RP-` (báo cáo, slice S5), chưa dùng ở tài liệu nào khác.
 
 ## 11. Rủi ro
 
-- **Lịch:** S5 nằm sau S3, mà S3 chưa có mã. Nếu S3 xong muộn, cắt T-052 trước (plan §7 thứ 4). T-050 và T-051 là P0, không cắt.
+- **Lịch:** S5 nằm sau S3, mà S3 xong muộn (merge 26/11). Thiếu thời gian thì cắt T-052 trước (plan §7 thứ 4). T-050 và T-051 là P0, không cắt.
 - **Chi phí LLM:** mỗi báo cáo mới tốn một lượt gọi, dùng chung trần `LLM_DAILY_CALL_CAP` (P-03). Chạm trần thì `aiSummary = null`, case vẫn được tạo.
 - **Tóm tắt chưa được eval:** bộ eval SO-09 đo verdict và giải thích, chưa đo tóm tắt. Chất lượng tóm tắt chỉ được kiểm bằng bộ lọc và bằng mắt, trừ khi T-101 còn thời gian.

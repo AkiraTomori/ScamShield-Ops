@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (26/11/2026):** bản nháp; có thêm `POST /api/analyses` trên nhánh `feat/s3-pipeline` (PR #46, chưa merge); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (27/11/2026):** bản nháp; có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) đã merge (PR #47); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -57,6 +57,18 @@ npm run eval:q08 -- --models <a>,<b> --runs 3 --confirm    # chạy thật (tố
 - Runner đọc `.env` qua `process.loadEnvFile`; thiếu `GROQ_API_KEY` thì báo lỗi, không đoán.
 - Đầu ra thô ở `eval/.cache/q08/` (gitignore); kết quả đã tổng hợp ở `eval/results/q08-<ngày>-<commit>.json` và bảng chấm tiếng Việt `eval/results/q08-grading-<model>__<hash câu>__<tag prompt>.md` (commit được; runner không ghi đè bảng đã có điểm). Dừng bằng Ctrl+C rồi chạy lại với `--resume`.
 - Tên model không ghi cứng: lấy từ `--list-models`, ghi vào [research A.6](../research/result.md).
+
+## 3c. Eval cả pipeline trên tập dev (slice S10, một phần)
+
+```bash
+npm run eval -- --set dev --gap-ms 65000        # chỉ in ước tính, không gọi
+npm run eval -- --set dev --gap-ms 65000 --yes  # chạy thật (tốn tiền, hơn 1 giờ): hỏi owner trước
+```
+
+- Cần `GROQ_API_KEY`, `GROQ_MODEL_SIGNALS`, `GROQ_MODEL_EXPLAIN` trong `.env` hoặc môi trường (`GROQ_REASONING_EFFORT` mặc định `low`). Không cần DB: không lưu, không rate limit, không trần gọi, không tra cứu ngoài.
+- Không tự thử lại khi Groq trả 429, giống production; lượt đó vẫn được tính. `--gap-ms` giãn cách các lượt.
+- Bị ngắt thì chạy lại cùng lệnh: lượt đã xong đọc từ `eval/.cache/pipeline/`. Khoá cache gồm commit HEAD, không gồm thay đổi chưa commit: sửa pipeline mà chưa commit thì xoá cache trước khi chạy lại.
+- Kết quả: `eval/results/<ngày>-dev-<commit>.json` và `…-summary.md` (có sẵn một dòng cho [research B.4](../research/result.md)). File cùng ngày và commit đã có thì lượt mới ghi thành `…-2`, `…-3`; lệnh chạy thử (không `--yes`) in tên sẽ dùng.
 
 ## 4. Migration
 

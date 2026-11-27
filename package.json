@@ -21,7 +21,8 @@
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "db:generate": "npm run db:generate -w @scamshield/core",
     "db:migrate": "npm run db:migrate -w @scamshield/core",
-    "eval:q08": "tsx eval/src/run-q08.ts"
+    "eval:q08": "tsx eval/src/run-q08.ts",
+    "eval": "tsx eval/src/run-eval.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.6",

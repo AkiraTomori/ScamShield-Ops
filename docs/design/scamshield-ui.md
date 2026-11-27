@@ -1,6 +1,6 @@
 # Thiết kế slice S4: giao diện ScamShield (T-040…T-042)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S4 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. S4 đã trễ so với lịch 24–25/11 (plan §6) và phụ thuộc schema `AnalysisResult` của S3 (§4).
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S4 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. S4 đã trễ so với lịch 24–25/11 (plan §6). Schema `AnalysisResult` (§4) và `POST /api/analyses` đã có trên `main` từ 26/11 (PR #46).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần các file đó còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-01-AC02, AC04; SO-03-AC03, AC04, AC06; SO-10-AC05; P2, P5.
@@ -250,6 +250,6 @@ Tiền tố `U-` (giao diện slice S4), chưa dùng ở tài liệu nào khác.
 
 ## 11. Rủi ro
 
-- **Phụ thuộc S3:** T-041 và T-042 không typecheck được khi chưa có schema ở §4. Tách PR schema ra làm trước là cách gỡ rẻ nhất.
+- **Phụ thuộc S3 (đã gỡ 26/11):** schema ở §4 đã có trên `main` (PR #46), nên T-041 và T-042 typecheck được.
 - **Lịch:** plan §6 đặt giao diện ScamShield ở 24–25/11; hôm nay là 26/11. Nếu cần cắt, plan §7 giữ nguyên "tách *Kiểm tra* / *AI nhận định*" và disclaimer. Phần nên hoãn là độ trau chuốt, không phải trạng thái lỗi.
 - **Tailwind và Next 16:** cú pháp tích hợp có thể khác kiến thức cũ. Đã ghi ở §6, phải kiểm theo tài liệu của phiên bản ghim.
