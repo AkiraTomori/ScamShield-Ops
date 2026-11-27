@@ -1,6 +1,6 @@
 # Quy ước frontend
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; §8 sửa theo U-06 (owner chốt 26/11); §2 thêm luật import entry con của `@scamshield/shared` (T-041, nhánh `feat/t-041-input-states`, chưa merge). Áp dụng cho `apps/web` (Next.js App Router, Tailwind). Trang và trạng thái ở [ui-pages.md](../product/ui-pages.md); token, component, câu chữ ở [design-system.md](../product/design-system.md).
+**Trạng thái (27/11/2026):** BẢN NHÁP; §8 sửa theo U-06 (owner chốt 26/11); §2 thêm luật import entry con của `@scamshield/shared` (T-041, đã merge, PR #48). Áp dụng cho `apps/web` (Next.js App Router, Tailwind). Trang và trạng thái ở [ui-pages.md](../product/ui-pages.md); token, component, câu chữ ở [design-system.md](../product/design-system.md).
 
 ## 1. Cấu trúc
 
