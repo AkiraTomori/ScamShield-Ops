@@ -19,7 +19,7 @@
 
 ## 2. Tin demo: một nguồn duy nhất (T-093)
 
-*(27/11, T-041: file đã có trên nhánh `feat/t-041-input-states` với 4 tin **tạm** cho 4 chip, trường `id`, `chip`, `content`, `expectedVerdict`; schema ở `packages/shared/src/demo-messages.ts`. T-093 thay nội dung: tin tạm M1 dùng thương hiệu giả nên chưa đạt ràng buộc R-01, M3 chưa có, M1 và M2 đã chạy một lượt qua route thật ngày 27/11 và đúng `expectedVerdict`; `prize`, `urgent` chưa chạy.)*
+*(27/11, T-041: file đã có trên nhánh `feat/t-041-input-states` với 4 tin **tạm** cho 4 chip, trường `id`, `chip`, `content`, `expectedVerdict`; schema ở `packages/shared/src/demo-messages.ts`. T-093 thay nội dung: tin tạm M1 dùng thương hiệu giả nên chưa đạt ràng buộc R-01, M3 chưa có, M1 và M2 đã chạy một lượt qua route thật ngày 27/11 và đúng `expectedVerdict`; `prize` và `urgent` chạy ở lượt điện thoại giả lập 27/11, đều ra `suspicious`: `urgent` đúng, `prize` nằm trong khoảng ở bảng trên nhưng khác `high_risk` ghi trong file (T-093 chỉnh).)*
 
 **File:** `packages/shared/data/demo-messages.json`. Trang `/` (thay cho `samples.ts` ở scamshield-ui §7), seed, E2E và eval cùng đọc file này. Không chép nội dung tin ra chỗ khác.
 
