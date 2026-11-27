@@ -1,4 +1,12 @@
-import type { CheckStatus, SignalSource, Verdict } from "@scamshield/shared";
+import type {
+  CheckStatus,
+  CheckType,
+  InconclusiveReason,
+  RedactionCounts,
+  SignalSource,
+  SignalType,
+  Verdict,
+} from "@scamshield/shared";
 
 /** All user-facing Vietnamese text (conventions/frontend §4). Wording: design-system §3. */
 export const vi = {
@@ -52,5 +60,68 @@ export const vi = {
     slow: "Vẫn đang phân tích, thường mất dưới 10 giây",
     failed: "Chưa kiểm tra được do lỗi kết nối. Nội dung của bạn vẫn còn, hãy thử lại.",
     another: "Kiểm tra tin khác",
+  },
+  // The result block: design-system §3 and the wireframe in design/pages §2.2.
+  result: {
+    explanationHeading: "Vì sao",
+    signalsHeading: "Dấu hiệu phát hiện",
+    indicatorsHeading: "Đường dẫn, số điện thoại, tài khoản",
+    recommendationsHeading: "Nên làm gì",
+    /** P-01: hard evidence decided while the model step failed. */
+    llmSkippedNote:
+      "Bước phân tích bằng AI chưa chạy được; kết quả dựa trên kiểm tra của hệ thống.",
+    redactionNotice: (kinds: string[]) =>
+      `Đã che ${kinds.join(" / ")} trong nội dung trước khi phân tích.`,
+    redactionKind: {
+      otp: "mã OTP",
+      password: "mật khẩu",
+      card: "số thẻ",
+    } satisfies Record<keyof RedactionCounts, string>,
+  },
+  inconclusiveReason: {
+    insufficient_evidence:
+      "Nội dung chưa đủ để đánh giá. Hãy thận trọng và xác minh qua kênh chính thức.",
+    timeout: "Hệ thống phân tích quá lâu. Hãy thử lại sau ít phút.",
+    llm_invalid_output: "Bước phân tích bằng AI đang gặp sự cố. Hãy thử lại sau ít phút.",
+    llm_unavailable: "Bước phân tích bằng AI đang gặp sự cố. Hãy thử lại sau ít phút.",
+  } satisfies Record<InconclusiveReason, string>,
+  signalType: {
+    claims_organization: "Tin xưng danh một tổ chức",
+    urgency: "Tạo áp lực thời gian",
+    threat: "Đe doạ khoá tài khoản, phạt hoặc kiện",
+    credential_request: "Đòi mã OTP, mật khẩu hoặc thông tin thẻ",
+    payment_request: "Yêu cầu chuyển tiền hoặc đóng phí",
+    reward_promise: "Hứa trúng thưởng, hoàn tiền hoặc lợi nhuận",
+    ai_directed_instruction: "Có câu tìm cách điều khiển hệ thống kiểm tra",
+    brand_domain_mismatch: "Tên miền không thuộc thương hiệu được nhắc tới",
+    lookalike_domain: "Tên miền giống tên miền chính thức",
+    brand_in_subdomain: "Tên thương hiệu nằm trong tên miền phụ",
+    shortened_url: "Dùng đường dẫn rút gọn",
+    ip_url: "Đường dẫn dùng địa chỉ IP",
+    risky_tld: "Đuôi tên miền hay bị lạm dụng",
+    new_domain: "Tên miền mới đăng ký gần đây",
+    blocklisted_url: "Đường dẫn có trong danh sách đen đã biết",
+    verified_indicator: "Chỉ dấu này đã được đội vận hành xác minh là lừa đảo",
+  } satisfies Record<SignalType, string>,
+  checkType: {
+    official_domain: "Tên miền chính thức của thương hiệu",
+    lookalike: "Tên miền nhái",
+    punycode: "Ký tự ngụy trang (punycode)",
+    subdomain_brand: "Tên thương hiệu nằm trong tên miền phụ",
+    shortener: "Đường dẫn rút gọn",
+    ip_host: "Đường dẫn dùng địa chỉ IP",
+    risky_tld: "Đuôi tên miền hay bị lạm dụng",
+    domain_age: "Tuổi tên miền",
+    blocklist: "Danh sách đen đã biết",
+    verified_indicator: "Đã được đội vận hành xác minh",
+  } satisfies Record<CheckType, string>,
+  /** Sentences for the short codes in `Check.detail`. */
+  checkDetail: {
+    officialDomainWarn: (brand: string) => `Không thuộc tên miền chính thức của ${brand}`,
+    officialDomainPass: (brand: string) => `Thuộc tên miền chính thức của ${brand}`,
+    nearest: (domain: string, distance: string) => `Gần giống ${domain}, khác ${distance} ký tự`,
+    containsAlias: (alias: string) => `Chứa tên thương hiệu “${alias}”`,
+    decoded: (unicode: string) => `Hiển thị thành: ${unicode}`,
+    ageDays: (days: string) => `Đăng ký ${days} ngày trước`,
   },
 } as const;

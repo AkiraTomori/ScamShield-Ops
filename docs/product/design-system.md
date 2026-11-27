@@ -1,6 +1,6 @@
 # ScamShield Ops — Design system
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); ở local, chưa merge. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (27/11/2026):** BẢN NHÁP; §2 ghi cách nối token (T-040), §4 ghi cách khoá nút khi chờ (T-041); §3 nhận bảng nhãn tín hiệu và câu mã `detail` (T-042); ở local, chưa merge. Token, component, câu chữ và luật a11y dùng cho cả ScamShield và FraudOps. Trang và trạng thái ở [ui-pages.md](./ui-pages.md). Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 ## 1. Nguyên tắc thị giác
 
@@ -100,6 +100,43 @@ Ghi chú về trạng thái phép kiểm: nhãn "Không phát hiện vấn đề
 | `verified_indicator` | Đã được đội vận hành xác minh |
 
 Trường `detail` của phép kiểm là mã ngắn; UI dịch sang câu tiếng Việt trong `copy/vi.ts` (ví dụ `age_days:3` → "Đăng ký 3 ngày trước").
+
+**Nhãn tín hiệu** (`SignalType`; chuyển từ scamshield-ui §5.1 khi viết T-042). Nhãn mô tả tin nhắn, không gọi ai là kẻ lừa đảo (P1).
+
+| `SignalType` | Nhãn |
+|---|---|
+| `claims_organization` | Tin xưng danh một tổ chức *(đã có, P-07)* |
+| `urgency` | Tạo áp lực thời gian |
+| `threat` | Đe doạ khoá tài khoản, phạt hoặc kiện |
+| `credential_request` | Đòi mã OTP, mật khẩu hoặc thông tin thẻ |
+| `payment_request` | Yêu cầu chuyển tiền hoặc đóng phí |
+| `reward_promise` | Hứa trúng thưởng, hoàn tiền hoặc lợi nhuận |
+| `ai_directed_instruction` | Có câu tìm cách điều khiển hệ thống kiểm tra |
+| `brand_domain_mismatch` | Tên miền không thuộc thương hiệu được nhắc tới |
+| `lookalike_domain` | Tên miền giống tên miền chính thức |
+| `brand_in_subdomain` | Tên thương hiệu nằm trong tên miền phụ |
+| `shortened_url` | Dùng đường dẫn rút gọn |
+| `ip_url` | Đường dẫn dùng địa chỉ IP |
+| `risky_tld` | Đuôi tên miền hay bị lạm dụng |
+| `new_domain` | Tên miền mới đăng ký gần đây |
+| `blocklisted_url` | Đường dẫn có trong danh sách đen đã biết |
+| `verified_indicator` | Chỉ dấu này đã được đội vận hành xác minh là lừa đảo *(nguyên văn SO-08-AC02)* |
+
+**Câu cho mã `detail`** (chuyển từ scamshield-ui §5.3; câu phụ thuộc cả phép kiểm, trạng thái và mã; tổ hợp ngoài bảng thì không hiện detail, không bao giờ in mã thô). Tên thương hiệu lấy từ `brands.json`.
+
+| Phép kiểm | Trạng thái | Mã | Câu | Nguồn mã |
+|---|---|---|---|---|
+| `official_domain` | `warn` | `brand:<id>` | "Không thuộc tên miền chính thức của {tên thương hiệu}" | pipeline §6.5 |
+| `official_domain` | `pass` | `brand:<id>` | "Thuộc tên miền chính thức của {tên thương hiệu}" | pipeline §6.5 |
+| `lookalike` | `warn` | `nearest:<tên miền>:distance_<n>` | "Gần giống {tên miền}, khác {n} ký tự" | pipeline §6.5 |
+| `lookalike` | `warn` | `contains:<bí danh>` | "Chứa tên thương hiệu “{bí danh}”" | pipeline §6.5 |
+| `punycode` | `warn` | `decoded:<dạng Unicode>` | "Hiển thị thành: {dạng Unicode}" | pipeline §6.5 |
+| `domain_age` | `warn` hoặc `pass` | `age_days:<n>` | "Đăng ký {n} ngày trước" | contracts §4, design-system §3 |
+
+- `nearest:…:distance_0` (tên trùng, khác đuôi; pipeline N-06): **chưa có câu**, hiện không hiện detail vì "khác 0 ký tự" gây hiểu sai. Đề xuất chờ owner: "Trùng tên với {tên miền} nhưng khác phần đuôi".
+- `contains:` trên `subdomain_brand` không có trong bảng nên không hiện detail.
+
+**Khối kết quả** (wireframe [pages §2.2](../design/pages.md)): tiêu đề "Vì sao", "Dấu hiệu phát hiện", "Đường dẫn, số điện thoại, tài khoản", "Nên làm gì". Thông báo che chỉ liệt kê loại đã che, nối bằng " / ": "Đã che mã OTP / mật khẩu / số thẻ trong nội dung trước khi phân tích." Chữ `--color-text` trên nền khối AI `#F4F3FF`: 16,15.
 
 ## 4. Component
 

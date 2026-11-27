@@ -45,6 +45,11 @@ export function AnalysisFeature() {
   }, [status]);
 
   const submit = () => dispatch({ type: "submit" });
+  const retry = () => {
+    // The retry button disappears with its block; keep keyboard focus on the page.
+    submitRef.current?.focus();
+    submit();
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -73,14 +78,7 @@ export function AnalysisFeature() {
       ) : null}
 
       {state.status === "failed" ? (
-        <ErrorState
-          message={vi.analysis.failed}
-          onRetry={() => {
-            // The retry button disappears with the error; keep keyboard focus on the page.
-            submitRef.current?.focus();
-            submit();
-          }}
-        />
+        <ErrorState message={vi.analysis.failed} onRetry={retry} />
       ) : null}
 
       {state.status === "rateLimited" ? <ErrorState message={state.message} /> : null}
@@ -89,6 +87,7 @@ export function AnalysisFeature() {
         {state.status === "result" ? (
           <ResultView
             result={state.result}
+            onRetry={retry}
             actions={
               <Button
                 variant="ghost"
