@@ -1,6 +1,6 @@
 # Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-053)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, commit `7a03690`, chưa merge, chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), **owner xác nhận 27/11**. Ghi chú có thêm luật che RP-06 (owner chốt 27/11, §3.1).
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, PR nháp #50, chưa merge, chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), **owner xác nhận 27/11**. Ghi chú có thêm luật che RP-06 (owner chốt 27/11, §3.1).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-04-AC01…AC04, SO-05-AC01, AC02, SO-01-AC03, SO-03-AC05, P1, Q-05.
