@@ -3,7 +3,7 @@
     "id": "M1",
     "chip": "Khoá tài khoản",
     "expectedVerdict": "high_risk",
-    "content": "[Ví XYZ] Tài khoản của bạn sẽ bị khoá trong hôm nay. Đăng nhập tại vi-xac-minh.example và nhập mã OTP để giữ tài khoản."
+    "content": "[Vietcombank] Tài khoản của bạn sẽ bị khoá trong hôm nay. Đăng nhập tại vi-xac-minh.example và nhập mã OTP để giữ tài khoản."
   },
   {
     "id": "M2",
@@ -12,9 +12,15 @@
     "content": "[Ví XYZ] Mã OTP của bạn là 731946, có hiệu lực trong 3 phút. Không chia sẻ mã này với bất kỳ ai."
   },
   {
+    "id": "M3",
+    "chip": null,
+    "expectedVerdict": "high_risk",
+    "content": "Vietcombank thông báo hoàn phí: quý khách bị trừ phí trùng và được hoàn 1.250.000đ. Mở vi-xac-minh.example, đăng nhập rồi nhập mã OTP trước 22h tối nay để nhận lại tiền."
+  },
+  {
     "id": "prize",
     "chip": "Trúng thưởng",
-    "expectedVerdict": "high_risk",
+    "expectedVerdict": "suspicious",
     "content": "Chúc mừng! Số điện thoại của bạn trúng thưởng 50 triệu đồng. Đóng phí nhận quà 200.000đ tại nhan-qua-xyz.example trước 24h."
   },
   {

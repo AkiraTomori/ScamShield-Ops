@@ -16,6 +16,10 @@ coverage/
 **/next-env.d.ts
 **/*.tsbuildinfo
 
+# Playwright output (screenshots of failed runs)
+**/test-results/
+**/playwright-report/
+
 # Local eval runs (committed results and hand-graded sheets go to eval/results/)
 eval/.cache/
 
