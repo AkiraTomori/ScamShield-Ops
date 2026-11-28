@@ -8,6 +8,7 @@ import { AiPanel } from "./AiPanel";
 import { DecisionSection } from "./DecisionSection";
 import { EvidencePanel } from "./EvidencePanel";
 import { LIST_PATH } from "./list-url";
+import { RelatedCasesPanel } from "./RelatedCasesPanel";
 
 /** Evidence and AI judgement side by side from 1024px, evidence first (fraudops §5.2). */
 export function CaseDetailView({ detail }: { detail: CaseDetail }) {
@@ -34,7 +35,10 @@ export function CaseDetailView({ detail }: { detail: CaseDetail }) {
       </div>
       <div className="grid items-start gap-4 lg:grid-cols-2">
         <EvidencePanel detail={detail} view={view} />
-        <AiPanel detail={detail} view={view} />
+        <div className="flex min-w-0 flex-col gap-4">
+          <AiPanel detail={detail} view={view} />
+          <RelatedCasesPanel related={detail.relatedCases} />
+        </div>
       </div>
       <div className="w-full lg:w-1/2">
         {/* Keyed so nothing typed for one case can show up on another. */}

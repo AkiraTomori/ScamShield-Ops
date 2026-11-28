@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` có trên nhánh `feat/s6-auth` (28/11), chưa merge (danh sách và chi tiết hồ sơ không có endpoint, §1). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` đã merge vào `main` (PR #51, 28/11) (danh sách và chi tiết hồ sơ không có endpoint, §1). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 

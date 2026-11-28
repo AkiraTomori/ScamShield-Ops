@@ -1,6 +1,6 @@
 # Thiết kế slice S7: hồ sơ liên quan theo chỉ dấu chung (T-070)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S7 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. SO-07 là **P1, thứ 2 trong thứ tự cắt** ở plan §7. Ngày 27/11 owner quyết có cắt P1 hay không (team-split §4). T-070 phụ thuộc T-062 (chi tiết hồ sơ, S6). Lịch cũ đặt việc này ở 29/11.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S7 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-070 xong ở local 28/11** (nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge, chưa deploy; ghi chú ở [§8](#8-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). SO-07 là **P1, thứ 2 trong thứ tự cắt** ở plan §7. T-070 được làm theo yêu cầu ngày 28/11; quyết định cắt hay giữ P1 vẫn của owner. T-070 phụ thuộc T-062 (chi tiết hồ sơ, S6). Lịch cũ đặt việc này ở 29/11.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-07](../spec/ScamShield-v1.md): AC01, AC02.
@@ -111,3 +111,22 @@ Tiền tố `ST-` (liên kết hồ sơ, slice S7), chưa dùng ở tài liệu 
 |---|---|---|---|
 | ST-01 | Có loại tên miền chính thức và dịch vụ rút gọn khỏi so khớp không (§2.1) | (a) Loại cả hai. Không nối tin lừa đảo với tin thật; lệch chữ SO-07-AC01, phải sửa spec. (b) Không loại, đúng chữ spec. Hồ sơ có tên miền thật sẽ "liên quan" tới mọi tin thật của thương hiệu đó, làm nhân viên hiểu sai | (a) · **Owner chốt 26/11** |
 | ST-02 | Hình dạng `relatedCases` | (a) `{ total, items }`, mỗi chỉ dấu chung có `type`. Sửa contracts §6. (b) Giữ mảng như contracts hiện tại: không biết tổng số khi bị giới hạn 20, không biết chỉ dấu thuộc loại nào | (a) · **Owner chốt 26/11** |
+
+## 8. Ghi chú cài đặt (28/11/2026)
+
+**Mã:** `packages/core/src/cases/related.ts` (`findRelatedCases`, `countRelatedCases`, `UNMATCHED_DOMAINS`), `apps/web/src/features/cases/RelatedCasesPanel.tsx`, cột ở `CaseList.tsx`.
+
+**Khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- Kiểu trả về giữ tên `RelatedCases` (đã có từ T-062), không phải `RelatedCasesResult` ở §3.
+- `relatedCount` của danh sách lấy bằng **một truy vấn gom nhóm thứ hai** cho đúng 25 hồ sơ của trang, thay cho truy vấn con trong câu SELECT. Phạm vi và điều kiện loại trừ như §3.
+- Dòng "đang hiện 20" ghi theo số dòng thật đang hiện: "Đang hiện {n} hồ sơ có nhiều chỉ dấu chung nhất."
+- `related.ts` import thẳng `BRANDS` và `URL_LISTS` (dữ liệu tĩnh), không nhận qua `deps` như pipeline.
+- Dòng đã đóng chỉ hiện kết luận, không hiện thêm chữ "Đã đóng" (theo §4.1; hình vẽ ở pages §6.1 ghi "Đã đóng").
+
+**Đã kiểm 28/11 ở local:**
+- `npm run verify` với `DATABASE_URL` trỏ Postgres tạm trong Docker: 71 file test qua, gồm test tích hợp ở `packages/core/test/cases/related.int.test.ts` (SO-07-AC01, AC02 qua pipeline với LLM giả).
+- `next build`; Edge headless trên DB tạm: hồ sơ chung tên miền hiện "3 hồ sơ khác có cùng chỉ dấu", hai hồ sơ chỉ chung tên miền chính thức không nối, bấm link mở hồ sơ kia, không lỗi JS, 1280px và 360px không cuộn ngang.
+
+**Chưa kiểm:**
+- Cảnh demo ở §6 "Kiểm tay" với tin M3 gửi thật và dữ liệu `demo:seed`: seed hồ sơ mẫu (T-090) chưa có. T-090 phải chèn cả `analysis_indicators` (§5).
+- Bản deploy; thời gian truy vấn khi có nhiều hồ sơ.

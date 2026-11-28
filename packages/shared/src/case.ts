@@ -18,7 +18,7 @@ export const DecisionRecord = z
   .strict();
 export type DecisionRecord = z.infer<typeof DecisionRecord>;
 
-/** Cases sharing an indicator (SO-07, related-cases §3). Empty until T-070. */
+/** Cases sharing an indicator (SO-07, related-cases §3). `items` holds at most 20 of `total`. */
 export const RelatedCases = z
   .object({
     total: z.number().int().nonnegative(),

@@ -182,7 +182,7 @@ Thiếu biến bắt buộc thì `/api/health` trả 503 với loại lỗi `con
 
 ## 11. Sơ đồ toàn hệ thống (đích MVP)
 
-Ba sơ đồ dưới cho người mới hình dung cả hệ thống. Đây là **đích** của MVP: ngoài nền móng, dữ liệu P0, S2 và S3 (đã merge, PR #46; chưa có tra cứu RDAP và Safe Browsing, T-035), S4 (đã merge, PR #48) và S5 (đã merge, PR #50), S6 (T-060…T-063, xong ở local 28/11, chưa merge), các phần khác chưa có mã. Chi tiết từng bước ở [design/analysis-pipeline.md](../design/analysis-pipeline.md) và [data-model.md](./data-model.md).
+Ba sơ đồ dưới cho người mới hình dung cả hệ thống. Đây là **đích** của MVP: ngoài nền móng, dữ liệu P0, S2 và S3 (đã merge, PR #46; chưa có tra cứu RDAP và Safe Browsing, T-035), S4 (đã merge, PR #48) và S5 (đã merge, PR #50), S6 (T-060…T-063, đã merge, PR #51), S7 (T-070, xong ở local 28/11, chưa merge), các phần khác chưa có mã. Chi tiết từng bước ở [design/analysis-pipeline.md](../design/analysis-pipeline.md) và [data-model.md](./data-model.md).
 
 **Bối cảnh và ranh giới tin cậy**
 

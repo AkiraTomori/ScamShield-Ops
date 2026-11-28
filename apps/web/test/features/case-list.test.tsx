@@ -43,6 +43,7 @@ const ITEM: CaseListItem = {
   status: "pending_review",
   isSeed: false,
   decision: null,
+  relatedCount: 0,
 };
 
 const page = (overrides: Partial<CaseListPage> = {}): CaseListPage => ({
@@ -84,6 +85,14 @@ describe("case list", () => {
       // Tailwind classes carry no % here either, so any one would be text.
       expect(html).not.toContain("%");
     }
+  });
+
+  it("SO-07-AC01: counts related cases in their own column, with a dash for none", () => {
+    expect(render(page())).toMatch(/>Liên quan<\/th>/);
+    expect(render(page())).toMatch(/<td[^>]*>—<\/td><\/tr>/);
+    expect(render(page({ items: [{ ...ITEM, relatedCount: 3 }] }))).toMatch(
+      /<td[^>]*>3<\/td><\/tr>/,
+    );
   });
 
   it("keeps the filters in the page links", () => {

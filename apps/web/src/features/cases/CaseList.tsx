@@ -53,13 +53,18 @@ export function CaseList({ page, query }: { page: CaseListPage; query: CaseListQ
         <table className="w-full min-w-2xl text-left text-sm">
           <thead>
             <tr className="border-b border-border-strong">
-              {[t.columnCode, t.columnTime, t.verdictLabel, t.columnRisks, t.statusLabel].map(
-                (heading) => (
-                  <th key={heading} scope="col" className={CELL}>
-                    {heading}
-                  </th>
-                ),
-              )}
+              {[
+                t.columnCode,
+                t.columnTime,
+                t.verdictLabel,
+                t.columnRisks,
+                t.statusLabel,
+                t.columnRelated,
+              ].map((heading) => (
+                <th key={heading} scope="col" className={CELL}>
+                  {heading}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -93,6 +98,7 @@ export function CaseList({ page, query }: { page: CaseListPage; query: CaseListQ
                     <span className="block text-text-muted">{t.decision[item.decision]}</span>
                   ) : null}
                 </td>
+                <td className={CELL}>{item.relatedCount || "—"}</td>
               </CaseRow>
             ))}
           </tbody>

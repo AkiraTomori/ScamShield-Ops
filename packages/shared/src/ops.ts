@@ -46,6 +46,8 @@ export const CaseListItem = z
     isSeed: z.boolean(),
     /** Null while the case is waiting. */
     decision: Decision.nullable(),
+    /** Other cases sharing an indicator (SO-07). */
+    relatedCount: z.number().int().nonnegative(),
   })
   .strict();
 export type CaseListItem = z.infer<typeof CaseListItem>;
