@@ -1,8 +1,10 @@
 import type { CaseDetail } from "@scamshield/shared";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vitest } from "vitest";
 import { vi } from "../../src/copy/vi";
 import { CaseDetailView } from "../../src/features/cases/CaseDetailView";
+
+vitest.mock("next/navigation", () => ({ useRouter: () => ({ refresh: () => {} }) }));
 
 const BAD = "https://vi-xac-minh.example/otp";
 
@@ -56,8 +58,9 @@ const render = (detail: CaseDetail = DETAIL) =>
 
 /** The markup of the evidence block and of the AI block. */
 function blocks(html: string) {
+  // Evidence, AI judgement, then the conclusion.
   const sections = html.split("<section").slice(1);
-  expect(sections).toHaveLength(2);
+  expect(sections).toHaveLength(3);
   return { evidence: sections[0]!, ai: sections[1]! };
 }
 
@@ -118,8 +121,52 @@ describe("case detail", () => {
     expect(html).not.toMatch(/<(img|iframe)/);
   });
 
-  it("SO-06-AC06, P1: offers no action on the next steps or anywhere else", () => {
-    expect(render()).not.toContain("<button");
+  it("SO-06-AC06, P1: the only action on the page is saving a conclusion", () => {
+    const html = render();
+    expect([...html.matchAll(/<button[^>]*>([^<]*)<\/button>/g)].map((m) => m[1])).toEqual([
+      "Lưu kết luận và đóng hồ sơ",
+    ]);
+    expect(blocks(html).ai).not.toContain("<input");
+  });
+
+  it("SO-06-AC03: asks for one of three conclusions and a reason", () => {
+    const html = render();
+    expect([...html.matchAll(/type="radio"[^>]*value="([^"]+)"/g)].map((m) => m[1])).toEqual([
+      "confirmed_scam",
+      "not_scam",
+      "insufficient_evidence",
+    ]);
+    expect(html).toMatch(/<label for="decision-reason"[^>]*>Lý do \*<\/label>/);
+    expect(html).toContain("0/500");
+    expect(html).toContain('method="post"');
+  });
+
+  const closed = (disagreesWithEngine: boolean): CaseDetail => ({
+    ...DETAIL,
+    status: "closed",
+    decision: {
+      decision: "not_scam",
+      reason: `Đã xem ${BAD} <b>kỹ</b>`,
+      decidedBy: "Giám khảo 2",
+      decidedAt: "2026-11-22T07:10:00.000Z",
+      disagreesWithEngine,
+    },
+  });
+
+  it("SO-06-AC03: replaces the form with the stored conclusion", () => {
+    const html = render(closed(false));
+    for (const text of ["Đã đóng", "Không phải lừa đảo", "Giám khảo 2", "22/11/2026 14:10"]) {
+      expect(html).toContain(text);
+    }
+    expect(html).not.toContain("<form");
+    expect(html).not.toContain("<button");
+    expect([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1])).toEqual(["/ops"]);
+    expect(html).toContain("&lt;b&gt;kỹ&lt;/b&gt;");
+  });
+
+  it("SO-06-AC04: names the disagreement only when there is one", () => {
+    expect(render(closed(true))).toContain("Nhân viên không đồng ý với đánh giá AI");
+    expect(render(closed(false))).not.toContain("không đồng ý");
   });
 
   it("A-02: says so when there is no AI summary", () => {

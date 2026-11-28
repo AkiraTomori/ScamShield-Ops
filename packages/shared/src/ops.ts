@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CaseStatus, Decision, RiskType, Verdict } from "./enums";
+import { countInputChars, standardizeText } from "./input";
 
 // Shapes of the FraudOps routes (api.md §4). Browser-safe.
 
@@ -53,3 +54,27 @@ export const CaseListPage = z
   })
   .strict();
 export type CaseListPage = z.infer<typeof CaseListPage>;
+
+export const DECISION_REASON_MIN_CHARS = 10;
+export const DECISION_REASON_MAX_CHARS = 500;
+
+export const DECISION_ERROR_MESSAGE_VI = {
+  decision: "Hãy chọn một kết luận.",
+  reason: "Lý do cần từ 10 đến 500 ký tự.",
+} as const;
+
+/** Body of POST /api/ops/cases/{caseCode}/decision (SO-06-AC03). */
+export const DecisionRequest = z
+  .object({
+    decision: Decision,
+    reason: z
+      .string()
+      .refine((reason) => {
+        const length = countInputChars(reason);
+        return length >= DECISION_REASON_MIN_CHARS && length <= DECISION_REASON_MAX_CHARS;
+      }, DECISION_ERROR_MESSAGE_VI.reason)
+      // What is counted is what is stored: the database checks the length too.
+      .transform(standardizeText),
+  })
+  .strict();
+export type DecisionRequest = z.infer<typeof DecisionRequest>;

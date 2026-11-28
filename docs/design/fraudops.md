@@ -1,6 +1,6 @@
 # Thiết kế slice S6: FraudOps (T-060…T-063)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060, T-061 và T-062 xong ở local 28/11** (nhánh `feat/s6-auth`, chưa commit, chưa merge, chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). T-063 chưa có mã. T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060…T-063 xong ở local 28/11** (nhánh `feat/s6-auth`, chưa commit, chưa merge, chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). Chỗ cài đặt khác bản duyệt vẫn chờ owner xác nhận. T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-06-AC01…AC06, SO-05-AC01, AC03, SO-10-AC02, AC03, P1.
@@ -133,7 +133,7 @@ Theo ui-pages §6.1 và pages.md §6.1. Phần bổ sung:
 
 - **`disagreesWithEngine`** = hàm thuần `disagreesWithEngine(decision, engineVerdict)` trong `packages/core/src/cases`, theo bảng đồng ý ở SO-06-AC04. Hàm này **làm TDD**, có đủ 12 cặp. Giá trị được lưu cùng `decisions.engine_verdict` (chụp từ `cases.engine_verdict`).
 - **409 phải kèm kết luận hiện có** (api.md). Dạng lỗi chung (`{ error: { code, message, fields? } }`) chưa có chỗ cho dữ liệu này. Owner chốt OP-03 (b): 409 không kèm kết luận; client tải lại trang.
-- **Móc nối SO-08:** trong cùng giao dịch, khi `decision = confirmed_scam`, gọi `recordConfirmedIndicators(tx, caseId)`. Ở S6 hàm này không làm gì; T-080 sẽ viết phần thân. S6 **không** tạo bảng `confirmed_indicators`.
+- **Móc nối SO-08:** S6 chỉ đánh dấu chỗ trong giao dịch (chú thích ở `cases/decide.ts`); S8 viết `recordConfirmedIndicators` trong `core/src/confirmed-indicators/` và gọi tại đó khi `decision = confirmed_scam`. S6 **không** tạo hàm rỗng, module hay bảng `confirmed_indicators` (sửa 28/11 cho khớp codebase.md §1: module chưa tới slice thì chưa tạo).
 - `decidedBy` trả về `displayName` của nhân viên. `CaseDetail.decision` lấy tên qua join `staff_users`.
 
 ### 5.4 Trạng thái phía client của form kết luận
@@ -272,4 +272,18 @@ T-060. **Chờ owner xác nhận** các chỗ khác hoặc thêm so với bản 
 **Đã kiểm 28/11 ở local** (DB tạm, xoá sau khi kiểm): `npm run verify` và `next build` xanh. Ba hồ sơ tạo qua `POST /api/analyses` và `/report` thật, **không gọi model** (key giả, trần lượt LLM đã hết); tóm tắt AI, một signal AI và một dòng dữ liệu hỏng được sửa bằng SQL. `curl`: chưa đăng nhập 307 giữ `next`, mã không có 404, dữ liệu hỏng 500, không link ra ngoài, mã OTP không có trong trang. Edge headless: hai cột ở 1280px, một cột ở 800px (Bằng chứng trên), không cuộn ngang tới 360px, từ danh sách vào, Tab tới "‹ Danh sách", trang không tìm thấy, trang lỗi rồi "Thử lại", không lỗi console.
 
 **Chưa kiểm:** bản deploy; hồ sơ có tóm tắt do model thật viết; hai trạng thái `high_risk` kèm lý do và giải thích AI mới kiểm bằng test render; Safari; trình đọc màn hình.
+
+### T-063 kết luận
+
+**Chờ owner xác nhận:**
+- **Xung đột (§5.4, ui-pages §6.2):** trong lúc tải lại hiện "Hồ sơ đã được người khác kết luận."; khi thẻ kết luận về thì đổi thành "Hồ sơ đã được {tên} kết luận lúc {ngày giờ}.", khớp cả hai tài liệu. Ô "Lý do bạn đang viết (chưa lưu)" chỉ đọc.
+- Lý do được lưu **sau khi chuẩn hoá** (cùng `standardizeText` dùng để đếm), nên số ký tự đã đếm và đã lưu là một.
+- Hết phiên: hiện thông báo 2 giây rồi mới chuyển tới đăng nhập.
+- Hồ sơ biến mất (404): thông báo và link về danh sách nằm dưới form, form vẫn còn.
+- Dòng nhắc của SO-08 trên form chưa có, vì SO-08 chưa nằm trong bản build.
+- **Câu chữ mới:** "Chọn kết luận", "Hãy chọn một kết luận.", "Lý do cần từ 10 đến 500 ký tự.", "Đang lưu…", "Hồ sơ đã được {tên} kết luận lúc {ngày giờ}.", "Lý do bạn đang viết (chưa lưu)".
+
+**Đã kiểm 28/11 ở local** (DB tạm, xoá sau khi kiểm, không gọi model): `npm run verify` và `next build` xanh. Test: đủ 12 cặp đồng ý/khác (viết test trước), hai kết luận đồng thời (5 vòng), rollback khi DB từ chối, route 401/403/400/404/409/200/500, và test P1 so danh sách `route.ts` với bảng api.md §2. `curl`: 401, 403, 400, 404, 200, 409, hai lệnh song song ra một 200 một 409, người báo cáo tra thấy kết luận mới. Edge headless với hai tài khoản: lỗi nhập, lưu hoàn toàn bằng bàn phím, tải lại vẫn còn, xung đột, danh sách chờ không còn hồ sơ, lỗi server giữ nội dung rồi gửi lại được, hồ sơ bị xoá, hết phiên rồi đăng nhập quay lại đúng hồ sơ.
+
+**Chưa kiểm:** bản deploy; Safari; trình đọc màn hình; đăng nhập lại từ thiết bị khác (SO-06-AC05 mới kiểm bằng tải lại và đọc từ phiên khác trong test).
 

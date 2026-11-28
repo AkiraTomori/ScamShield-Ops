@@ -207,6 +207,23 @@ export const vi = {
       backToList: "Về danh sách hồ sơ",
       failed: "Không tải được hồ sơ.",
     },
+    // The conclusion: ui-pages §6.2, fraudops §5.4, design-system §3.
+    decision: {
+      heading: "Kết luận",
+      choiceLegend: "Chọn kết luận",
+      reasonLabel: "Lý do *",
+      submit: "Lưu kết luận và đóng hồ sơ",
+      submitting: "Đang lưu…",
+      failed: "Chưa lưu được kết luận. Hãy thử lại.",
+      takenPending: "Hồ sơ đã được người khác kết luận.",
+      takenBy: (name: string, time: string) => `Hồ sơ đã được ${name} kết luận lúc ${time}.`,
+      unsavedReason: "Lý do bạn đang viết (chưa lưu)",
+      expired: "Phiên đăng nhập đã hết hạn.",
+      notFound: "Không tìm thấy hồ sơ.",
+      reason: "Lý do",
+      // Verbatim from SO-06-AC04.
+      disagrees: "Nhân viên không đồng ý với đánh giá AI",
+    },
     logout: "Đăng xuất",
     loggingOut: "Đang đăng xuất…",
     logoutFailed: "Chưa đăng xuất được. Hãy thử lại.",

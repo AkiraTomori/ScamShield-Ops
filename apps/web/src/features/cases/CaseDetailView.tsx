@@ -5,6 +5,7 @@ import { vi } from "../../copy/vi";
 import { toViewModel } from "../analysis/view-model";
 import { formatUpdatedAt } from "../lookup/format-time";
 import { AiPanel } from "./AiPanel";
+import { DecisionSection } from "./DecisionSection";
 import { EvidencePanel } from "./EvidencePanel";
 import { LIST_PATH } from "./list-url";
 
@@ -35,7 +36,14 @@ export function CaseDetailView({ detail }: { detail: CaseDetail }) {
         <EvidencePanel detail={detail} view={view} />
         <AiPanel detail={detail} view={view} />
       </div>
-      {/* The conclusion form and card go here (T-063). */}
+      <div className="w-full lg:w-1/2">
+        {/* Keyed so nothing typed for one case can show up on another. */}
+        <DecisionSection
+          key={detail.caseCode}
+          caseCode={detail.caseCode}
+          decision={detail.decision}
+        />
+      </div>
     </div>
   );
 }

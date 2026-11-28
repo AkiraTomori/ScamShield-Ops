@@ -32,7 +32,7 @@ T-053,S5 Báo cáo,"summarizeCase (LLM tóm tắt hồ sơ) + bộ lọc dùng c
 T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,done,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401",C
 T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,done,P0,5 (lọc/tìm),,B (UI) + C (API)
 T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,done,P0,,,B (UI) + C (API)
-T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,todo,P0,,Tải lại vẫn còn kết luận,B (UI) + C (API)
+T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,done,P0,,Tải lại vẫn còn kết luận,B (UI) + C (API)
 T-070,S7 Liên kết hồ sơ,Hồ sơ liên quan theo chỉ dấu chuẩn hoá + cột Liên quan,SO-07-AC01;SO-07-AC02,T-062,29/11,M,agent,todo,P1,2,,C
 T-082,S8 Chỉ dấu xác minh,Bảng confirmed_indicators (migration 0001) + ghi khi confirmed_scam trong giao dịch kết luận + API gỡ,SO-08-AC01;SO-08-AC03,T-063,28/11,M,agent,todo,P1,1,Không ghi tên miền chính thức (XM-01); gỡ hai lần ra 409,C
 T-080,S8 Chỉ dấu xác minh,Engine tra danh sách chỉ dấu đã xác minh: signal verified_indicator (phần bảng và ghi ở T-082),SO-08-AC02,T-038;T-082,29/11,M,agent,todo,P1,1,,A

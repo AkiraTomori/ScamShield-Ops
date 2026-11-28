@@ -5,6 +5,7 @@ import { analyses, cases, decisions, staffUsers } from "../db/schema";
 import { logEvent } from "../log";
 import type { Db } from "../rate-limit";
 import { normalizeCaseCode } from "../reports/lookup";
+import { toDecisionRecord } from "./decision-record";
 
 /** One investigation case (fraudops §5.1, SO-05-AC01). */
 
@@ -53,13 +54,7 @@ export async function getCaseDetail(
         createdAt: analysis.createdAt.toISOString(),
       },
       aiSummary: row.case.aiSummary,
-      decision: decision && {
-        decision: decision.decision,
-        reason: decision.reason,
-        decidedBy: row.staff,
-        decidedAt: decision.decidedAt.toISOString(),
-        disagreesWithEngine: decision.disagreesWithEngine,
-      },
+      decision: decision && toDecisionRecord(decision, row.staff),
       // SO-07 fills this (T-070).
       relatedCases: { total: 0, items: [] },
     });
