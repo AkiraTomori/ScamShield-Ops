@@ -88,10 +88,11 @@ describe.skipIf(!url)("confirmed indicators (SO-08)", () => {
     }
   });
 
-  it("XM-01: records no brand or shortener domain, and shows none in the preview", async () => {
+  it("XM-01, XM-04: records no excluded domain, and shows none in the preview", async () => {
     const { id, code } = await insertCaseWith(t.db, [
       { type: "domain", normalized: "momo.vn" },
       { type: "domain", normalized: "bit.ly" },
+      { type: "domain", normalized: "zalo.me" },
       SCAM[0],
     ]);
     expect(await listIndicatorsToConfirm(first, id, { db: t.db })).toEqual([SCAM[0]]);

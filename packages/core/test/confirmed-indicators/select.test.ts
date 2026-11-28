@@ -40,6 +40,32 @@ describe("selectIndicatorsToConfirm (verified-indicators §2)", () => {
     expect(taken).toEqual([]);
   });
 
+  it("XM-04: takes no domain from a link to a shared platform", () => {
+    const links = [
+      ...URL_LISTS.sharedPlatforms.map((entry) => `https://${entry.value}/a`),
+      "https://docs.google.com/forms/d/abc",
+      "https://m.facebook.com/trang.gia",
+      "t.me/ho_tro_gia",
+      "zalo.me/0900000001",
+    ];
+    for (const link of links) {
+      const { indicators } = extractIndicators(`Xem ${link}`, BRANDS);
+      const domains = indicators.flatMap((i) =>
+        i.type === "domain" ? [{ type: i.type, normalized: i.normalized }] : [],
+      );
+      // A link the extractor finds no domain in would make this pass for the wrong reason.
+      expect(domains, link).toHaveLength(1);
+      expect(select(domains), link).toEqual([]);
+    }
+  });
+
+  it("XM-04: keeps a tenant's own domain on a hosting platform", () => {
+    const { indicators } = extractIndicators("Xem https://nhan-qua.pages.dev/a", BRANDS);
+    const domain = { type: "domain", normalized: "nhan-qua.pages.dev" } as const;
+    expect(indicators).toContainEqual(expect.objectContaining(domain));
+    expect(select([domain])).toEqual([domain]);
+  });
+
   it("excludes domains only: the same text as a number is kept", () => {
     const phone = { type: "phone", normalized: "0900000001" } as const;
     expect(selectIndicatorsToConfirm([phone], ["0900000001"])).toEqual([phone]);

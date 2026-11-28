@@ -157,7 +157,7 @@ Một analysis quá thời gian **không** là lỗi: trả 200 với `verdict =
 
 Schema `BrandList` ở `packages/shared/src/brands.ts`; mỗi thương hiệu có `id` duy nhất. `kind`: `wallet` | `bank`. `domains` là tên miền đăng ký, chữ thường. Ví dụ trên là dữ liệu giả; nội dung thật (18 thương hiệu owner duyệt 24/11) chỉ ở file dữ liệu.
 
-`packages/shared/data/url-lists.json` (schema `UrlLists`): `{ sources: { <id>: { title, url, retrieved } }, shorteners: { value, source }[], riskyTlds: { value, source }[] }`; mỗi mục phải trỏ tới một nguồn đã khai (P-04).
+`packages/shared/data/url-lists.json` (schema `UrlLists`): `{ sources: { <id>: { title, url, retrieved } }, shorteners: { value, source }[], riskyTlds: { value, source }[], sharedPlatforms: { value, source }[] }`; mỗi mục phải trỏ tới một nguồn đã khai (P-04). `sharedPlatforms` là tên miền nền tảng dùng chung (XM-04): chỉ dùng để loại khỏi so khớp và ghi chỉ dấu, không quy tắc verdict nào đọc; nguồn của nó là quyết định của owner, không phải danh sách đã công bố ([verified-indicators §9](../design/verified-indicators.md#9-quyết-định-owner-chốt-26112026)).
 
 ## 10. Quyết định
 

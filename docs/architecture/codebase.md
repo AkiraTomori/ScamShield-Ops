@@ -36,7 +36,7 @@
 │   │   │   ├── brands.ts            schema BrandList
 │   │   │   ├── demo-messages.ts     schema + tin mẫu (demo-data §2)
 │   │   │   └── env.ts               schema biến môi trường (chỉ dùng ở server)
-│   │   └── data/                    brands.json (Q-10), url-lists.json (P-04), demo-messages.json
+│   │   └── data/                    brands.json (Q-10), url-lists.json (P-04, XM-04), demo-messages.json
 │   └── core/                        nghiệp vụ; không import next
 │       ├── scripts/                 lệnh của owner: demo-seed.ts
 │       └── src/

@@ -115,10 +115,11 @@ describe.skipIf(!url)("related cases", () => {
     expect(await related(current.id)).toEqual(NOTHING);
   });
 
-  it("SO-07-AC01: does not match official brand domains or URL shorteners (ST-01)", async () => {
+  it("SO-07-AC01: does not match brand, shortener or shared platform domains (ST-01, XM-04)", async () => {
     const ignored = [
       ...BRANDS.flatMap((brand) => brand.domains),
       ...URL_LISTS.shorteners.map((entry) => entry.value),
+      ...URL_LISTS.sharedPlatforms.map((entry) => entry.value),
     ].map((domain) => key("domain", domain));
     const first = await newCase(1, ignored);
     const second = await newCase(2, ignored);

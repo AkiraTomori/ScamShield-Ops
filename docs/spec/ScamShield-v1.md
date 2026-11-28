@@ -143,14 +143,14 @@ Bảng ánh xạ với 6 tính năng P0 đã chốt:
 
 Biến các báo cáo rời rạc thành một chiến dịch có thể truy vết, không cần thêm AI.
 
-- **SO-07-AC01** · Cho hai case trở lên có chung ít nhất một chỉ dấu đã chuẩn hoá (tên miền, SĐT, số tài khoản), khi nhân viên mở một case, thì thấy "N hồ sơ khác có cùng chỉ dấu" kèm danh sách liên kết. Tên miền chính thức của thương hiệu (`brands.json`) và tên miền dịch vụ rút gọn URL không dùng để so khớp (ST-01, owner chốt 26/11/2026).
+- **SO-07-AC01** · Cho hai case trở lên có chung ít nhất một chỉ dấu đã chuẩn hoá (tên miền, SĐT, số tài khoản), khi nhân viên mở một case, thì thấy "N hồ sơ khác có cùng chỉ dấu" kèm danh sách liên kết. Tên miền chính thức của thương hiệu (`brands.json`) và tên miền dịch vụ rút gọn URL không dùng để so khớp (ST-01, owner chốt 26/11/2026). Tên miền nền tảng dùng chung cũng không dùng để so khớp (XM-04, owner chốt 28/11/2026).
 - **SO-07-AC02** · Chuẩn hoá chỉ dấu trước khi so khớp: tên miền về chữ thường và bỏ `www.`, SĐT về một định dạng (`+84…`), bỏ khoảng trắng trong số tài khoản.
 
 ### SO-08 Chỉ dấu đã xác minh quay lại engine *(Q-02, P1 trong MVP)*
 
 Khép vòng: quyết định của con người cải thiện cảnh báo cho người dùng sau.
 
-- **SO-08-AC01** · Khi nhân viên kết luận `confirmed_scam`, các chỉ dấu của case được ghi vào danh sách **chỉ dấu đã xác minh**, kèm mã case và thời điểm. Không bao giờ ghi tên miền chính thức của thương hiệu hay tên miền dịch vụ rút gọn URL (XM-01, owner chốt 26/11/2026).
+- **SO-08-AC01** · Khi nhân viên kết luận `confirmed_scam`, các chỉ dấu của case được ghi vào danh sách **chỉ dấu đã xác minh**, kèm mã case và thời điểm. Không bao giờ ghi tên miền chính thức của thương hiệu hay tên miền dịch vụ rút gọn URL (XM-01, owner chốt 26/11/2026). Cũng không ghi, và không khớp, tên miền nền tảng dùng chung, nơi nhiều người dùng chung một tên miền đăng ký, ví dụ `google.com` hay `zalo.me` (XM-04, owner chốt 28/11/2026; danh sách ở [verified-indicators §9](../design/verified-indicators.md#9-quyết-định-owner-chốt-26112026)).
 - **SO-08-AC02** · Ở lượt phân tích sau, nếu nội dung chứa chỉ dấu đã xác minh, engine thêm signal tất định "Chỉ dấu này đã được đội vận hành xác minh là lừa đảo" và verdict là `high_risk`.
 - **SO-08-AC03** · Kết luận `not_scam` hoặc `insufficient_evidence` không thêm gì vào danh sách. Nhân viên gỡ được một chỉ dấu khỏi danh sách (kèm lý do).
 

@@ -140,4 +140,18 @@ describe.skipIf(!url)("the engine and the confirmed list (SO-08)", () => {
     });
     expect(await find([{ type: "domain", normalized: "momo.vn" }])).toEqual([]);
   });
+
+  it("XM-04: a shared platform domain recorded earlier no longer warns", async () => {
+    const { id } = await insertCaseWith(t.db, []);
+    await t.db.insert(confirmedIndicators).values({
+      type: "domain",
+      normalized: "zalo.me",
+      sourceCaseId: id,
+      confirmedBy: staff.staffUserId,
+    });
+
+    const { result } = await analyzeMessage("Nhắn mình qua https://zalo.me/g/abc", deps());
+    expect(result.rule).toBe("R0");
+    expect(result.signals.map((s) => s.type)).not.toContain("verified_indicator");
+  });
 });

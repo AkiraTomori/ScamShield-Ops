@@ -9,6 +9,11 @@
       "title": "Interisle: Phishing Activity in TLDs, May 2025 - April 2026, Table 2 (top 20 by phishing domain score)",
       "url": "https://www.cybercrimeinfocenter.org/phishing-activity-in-tlds-may-april-2026",
       "retrieved": "2026-11-26"
+    },
+    "owner-xm04-2026-11-28": {
+      "title": "Owner decision XM-04: shared platform domains (comment on PR #53)",
+      "url": "https://github.com/AkiraTomori/ScamShield-Ops/pull/53#issuecomment-7237782189",
+      "retrieved": "2026-11-28"
     }
   },
   "shorteners": [
@@ -165,6 +170,72 @@
     {
       "value": "homes",
       "source": "interisle-tld-2025-2026"
+    }
+  ],
+  "sharedPlatforms": [
+    {
+      "value": "google.com",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "google.com.vn",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "forms.gle",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "facebook.com",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "fb.com",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "fb.me",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "m.me",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "zalo.me",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "t.me",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "telegram.me",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "wa.me",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "youtube.com",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "youtu.be",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "tiktok.com",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "instagram.com",
+      "source": "owner-xm04-2026-11-28"
+    },
+    {
+      "value": "weebly.com",
+      "source": "owner-xm04-2026-11-28"
     }
   ]
 }
