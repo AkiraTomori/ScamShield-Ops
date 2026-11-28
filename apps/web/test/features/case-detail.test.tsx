@@ -1,8 +1,9 @@
-import type { CaseDetail } from "@scamshield/shared";
+import type { CaseDetail, Decision } from "@scamshield/shared";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vitest } from "vitest";
 import { vi } from "../../src/copy/vi";
 import { CaseDetailView } from "../../src/features/cases/CaseDetailView";
+import { DecisionForm, type IndicatorsToConfirm } from "../../src/features/cases/DecisionForm";
 
 vitest.mock("next/navigation", () => ({ useRouter: () => ({ refresh: () => {} }) }));
 
@@ -54,7 +55,51 @@ const DETAIL: CaseDetail = {
 };
 
 const render = (detail: CaseDetail = DETAIL) =>
-  renderToStaticMarkup(<CaseDetailView detail={detail} />);
+  renderToStaticMarkup(<CaseDetailView detail={detail} toConfirm={[]} />);
+
+/** The form as it looks with one conclusion chosen. */
+const form = (choice: Decision | null, toConfirm: IndicatorsToConfirm) =>
+  renderToStaticMarkup(
+    <DecisionForm
+      toConfirm={toConfirm}
+      choice={choice}
+      reason=""
+      sending={false}
+      onChoice={() => {}}
+      onReason={() => {}}
+      onSubmit={() => {}}
+    />,
+  );
+
+describe("preview of the indicators to confirm (SO-08-AC01)", () => {
+  const items: IndicatorsToConfirm = [
+    { type: "domain", normalized: "vi-xac-minh.example" },
+    { type: "phone", normalized: "0900000001" },
+  ];
+
+  it("lists them as text, never as links, once confirmed_scam is chosen", () => {
+    const html = form("confirmed_scam", items);
+    expect(html).toContain(vi.ops.decision.toConfirm);
+    expect(html).toContain("vi-xac-minh.example");
+    expect(html).toContain("0900000001");
+    expect(html).not.toContain("href=");
+  });
+
+  it("says so when there is nothing to add", () => {
+    const html = form("confirmed_scam", []);
+    expect(html).toContain(vi.ops.decision.toConfirmNone);
+    expect(html).not.toContain(vi.ops.decision.toConfirm);
+  });
+
+  it.each([null, "not_scam", "insufficient_evidence"] as const)(
+    "SO-08-AC03: shows nothing when %s is chosen",
+    (choice) => {
+      const html = form(choice, items);
+      expect(html).not.toContain(vi.ops.decision.toConfirm);
+      expect(html).not.toContain("vi-xac-minh.example");
+    },
+  );
+});
 
 /** The markup of the evidence block and of the AI block. */
 function blocks(html: string) {

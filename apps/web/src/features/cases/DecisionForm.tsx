@@ -1,7 +1,7 @@
 "use client";
 
 import type { Ref } from "react";
-import { Decision } from "@scamshield/shared/enums";
+import { Decision, type MatchableIndicatorType } from "@scamshield/shared/enums";
 import { countInputChars } from "@scamshield/shared/input";
 import { DECISION_REASON_MAX_CHARS } from "@scamshield/shared/ops";
 import { Button } from "../../components/Button";
@@ -10,7 +10,11 @@ import { ErrorState } from "../../components/ErrorState";
 import { TextArea } from "../../components/TextArea";
 import { vi } from "../../copy/vi";
 
+/** What confirming the case as a scam adds to the confirmed list; computed on the server. */
+export type IndicatorsToConfirm = readonly { type: MatchableIndicatorType; normalized: string }[];
+
 export interface DecisionFormProps {
+  toConfirm: IndicatorsToConfirm;
   choice: Decision | null;
   reason: string;
   sending: boolean;
@@ -25,8 +29,27 @@ export interface DecisionFormProps {
   onSubmit: () => void;
 }
 
+/** SO-08-AC01: staff see what will be recorded before saving. Text only, never links (P5). */
+function ToConfirm({ items }: { items: IndicatorsToConfirm }) {
+  const t = vi.ops.decision;
+  if (items.length === 0) return <p className="text-sm">{t.toConfirmNone}</p>;
+  return (
+    <div className="flex flex-col gap-1 text-sm">
+      <p className="font-semibold">{t.toConfirm}</p>
+      <ul className="flex flex-col gap-1">
+        {items.map(({ type, normalized }) => (
+          <li key={`${type}:${normalized}`} className="wrap-anywhere">
+            {vi.ops.detail.indicatorType[type]}: <span className="font-mono">{normalized}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /** The conclusion form of ui-pages §6.2. State lives in `DecisionSection`. */
 export function DecisionForm({
+  toConfirm,
   choice,
   reason,
   sending,
@@ -80,6 +103,10 @@ export function DecisionForm({
             {choiceError}
           </p>
         ) : null}
+        {/* Always mounted: a live region that appears already filled is often not read. */}
+        <div aria-live="polite">
+          {choice === "confirmed_scam" ? <ToConfirm items={toConfirm} /> : null}
+        </div>
       </fieldset>
 
       <TextArea

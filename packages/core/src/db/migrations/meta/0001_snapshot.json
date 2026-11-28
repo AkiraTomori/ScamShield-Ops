@@ -1,0 +1,929 @@
+{
+  "id": "546038d7-b5e5-421f-b37f-88446c7b5f8d",
+  "prevId": "e840c957-6b09-405f-9741-682d341c4a98",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.analyses": {
+      "name": "analyses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "redacted_content": {
+          "name": "redacted_content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "redaction_counts": {
+          "name": "redaction_counts",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "verdict": {
+          "name": "verdict",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule": {
+          "name": "rule",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inconclusive_reason": {
+          "name": "inconclusive_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "risk_types": {
+          "name": "risk_types",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "details": {
+          "name": "details",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rules_version": {
+          "name": "rules_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model_signals": {
+          "name": "model_signals",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "model_explain": {
+          "name": "model_explain",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "trace": {
+          "name": "trace",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latency_ms": {
+          "name": "latency_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_seed": {
+          "name": "is_seed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "analyses_created_at_idx": {
+          "name": "analyses_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "analyses_redacted_content_len": {
+          "name": "analyses_redacted_content_len",
+          "value": "char_length(\"analyses\".\"redacted_content\") <= 4000"
+        },
+        "analyses_verdict_valid": {
+          "name": "analyses_verdict_valid",
+          "value": "\"analyses\".\"verdict\" IN ('high_risk', 'suspicious', 'no_signal', 'inconclusive')"
+        },
+        "analyses_inconclusive_reason_valid": {
+          "name": "analyses_inconclusive_reason_valid",
+          "value": "\"analyses\".\"inconclusive_reason\" IS NULL OR \"analyses\".\"inconclusive_reason\" IN ('insufficient_evidence', 'timeout', 'llm_invalid_output', 'llm_unavailable')"
+        },
+        "analyses_inconclusive_has_reason": {
+          "name": "analyses_inconclusive_has_reason",
+          "value": "\"analyses\".\"verdict\" <> 'inconclusive' OR \"analyses\".\"inconclusive_reason\" IS NOT NULL"
+        },
+        "analyses_risk_types_valid": {
+          "name": "analyses_risk_types_valid",
+          "value": "\"analyses\".\"risk_types\" <@ ARRAY['brand_impersonation', 'otp_phishing', 'payment_request', 'fake_prize', 'other']::text[]"
+        },
+        "analyses_latency_ms_nonneg": {
+          "name": "analyses_latency_ms_nonneg",
+          "value": "\"analyses\".\"latency_ms\" >= 0"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.analysis_indicators": {
+      "name": "analysis_indicators",
+      "schema": "",
+      "columns": {
+        "analysis_id": {
+          "name": "analysis_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "normalized": {
+          "name": "normalized",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "analysis_indicators_type_normalized_idx": {
+          "name": "analysis_indicators_type_normalized_idx",
+          "columns": [
+            {
+              "expression": "type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "normalized",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "analysis_indicators_analysis_id_analyses_id_fk": {
+          "name": "analysis_indicators_analysis_id_analyses_id_fk",
+          "tableFrom": "analysis_indicators",
+          "tableTo": "analyses",
+          "columnsFrom": [
+            "analysis_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "analysis_indicators_analysis_id_type_normalized_pk": {
+          "name": "analysis_indicators_analysis_id_type_normalized_pk",
+          "columns": [
+            "analysis_id",
+            "type",
+            "normalized"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "analysis_indicators_type_valid": {
+          "name": "analysis_indicators_type_valid",
+          "value": "\"analysis_indicators\".\"type\" IN ('domain', 'phone', 'bank_account')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.cases": {
+      "name": "cases",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'SC-' || lpad(nextval('case_code_seq')::text, 4, '0')"
+        },
+        "analysis_id": {
+          "name": "analysis_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending_review'"
+        },
+        "channel": {
+          "name": "channel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reporter_note": {
+          "name": "reporter_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "secret_hash": {
+          "name": "secret_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "engine_verdict": {
+          "name": "engine_verdict",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "risk_types": {
+          "name": "risk_types",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "ai_summary": {
+          "name": "ai_summary",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "summary_prompt_version": {
+          "name": "summary_prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_seed": {
+          "name": "is_seed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "closed_at": {
+          "name": "closed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "cases_status_created_at_idx": {
+          "name": "cases_status_created_at_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": false,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cases_engine_verdict_created_at_idx": {
+          "name": "cases_engine_verdict_created_at_idx",
+          "columns": [
+            {
+              "expression": "engine_verdict",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": false,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "cases_analysis_id_analyses_id_fk": {
+          "name": "cases_analysis_id_analyses_id_fk",
+          "tableFrom": "cases",
+          "tableTo": "analyses",
+          "columnsFrom": [
+            "analysis_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "cases_code_unique": {
+          "name": "cases_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        },
+        "cases_analysis_id_unique": {
+          "name": "cases_analysis_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "analysis_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "cases_code_valid": {
+          "name": "cases_code_valid",
+          "value": "\"cases\".\"code\" ~ '^SC-[0-9]{4,}$'"
+        },
+        "cases_status_valid": {
+          "name": "cases_status_valid",
+          "value": "\"cases\".\"status\" IN ('pending_review', 'closed')"
+        },
+        "cases_channel_valid": {
+          "name": "cases_channel_valid",
+          "value": "\"cases\".\"channel\" IN ('sms', 'zalo', 'messenger', 'email', 'other')"
+        },
+        "cases_reporter_note_len": {
+          "name": "cases_reporter_note_len",
+          "value": "\"cases\".\"reporter_note\" IS NULL OR char_length(\"cases\".\"reporter_note\") <= 1000"
+        },
+        "cases_engine_verdict_valid": {
+          "name": "cases_engine_verdict_valid",
+          "value": "\"cases\".\"engine_verdict\" IN ('high_risk', 'suspicious', 'no_signal', 'inconclusive')"
+        },
+        "cases_risk_types_valid": {
+          "name": "cases_risk_types_valid",
+          "value": "\"cases\".\"risk_types\" <@ ARRAY['brand_impersonation', 'otp_phishing', 'payment_request', 'fake_prize', 'other']::text[]"
+        },
+        "cases_closed_at_matches_status": {
+          "name": "cases_closed_at_matches_status",
+          "value": "(\"cases\".\"status\" = 'closed') = (\"cases\".\"closed_at\" IS NOT NULL)"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.decisions": {
+      "name": "decisions",
+      "schema": "",
+      "columns": {
+        "case_id": {
+          "name": "case_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "decision": {
+          "name": "decision",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_by": {
+          "name": "decided_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_at": {
+          "name": "decided_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "engine_verdict": {
+          "name": "engine_verdict",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "disagrees_with_engine": {
+          "name": "disagrees_with_engine",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "decisions_case_id_cases_id_fk": {
+          "name": "decisions_case_id_cases_id_fk",
+          "tableFrom": "decisions",
+          "tableTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "decisions_decided_by_staff_users_id_fk": {
+          "name": "decisions_decided_by_staff_users_id_fk",
+          "tableFrom": "decisions",
+          "tableTo": "staff_users",
+          "columnsFrom": [
+            "decided_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "decisions_decision_valid": {
+          "name": "decisions_decision_valid",
+          "value": "\"decisions\".\"decision\" IN ('confirmed_scam', 'not_scam', 'insufficient_evidence')"
+        },
+        "decisions_reason_len": {
+          "name": "decisions_reason_len",
+          "value": "char_length(\"decisions\".\"reason\") BETWEEN 10 AND 500"
+        },
+        "decisions_engine_verdict_valid": {
+          "name": "decisions_engine_verdict_valid",
+          "value": "\"decisions\".\"engine_verdict\" IN ('high_risk', 'suspicious', 'no_signal', 'inconclusive')"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.confirmed_indicators": {
+      "name": "confirmed_indicators",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "normalized": {
+          "name": "normalized",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_case_id": {
+          "name": "source_case_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmed_by": {
+          "name": "confirmed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmed_at": {
+          "name": "confirmed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "removed_at": {
+          "name": "removed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "removed_by": {
+          "name": "removed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "removal_reason": {
+          "name": "removal_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "confirmed_indicators_active_idx": {
+          "name": "confirmed_indicators_active_idx",
+          "columns": [
+            {
+              "expression": "type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "normalized",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"confirmed_indicators\".\"removed_at\" IS NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "confirmed_indicators_source_case_id_cases_id_fk": {
+          "name": "confirmed_indicators_source_case_id_cases_id_fk",
+          "tableFrom": "confirmed_indicators",
+          "tableTo": "cases",
+          "columnsFrom": [
+            "source_case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "confirmed_indicators_confirmed_by_staff_users_id_fk": {
+          "name": "confirmed_indicators_confirmed_by_staff_users_id_fk",
+          "tableFrom": "confirmed_indicators",
+          "tableTo": "staff_users",
+          "columnsFrom": [
+            "confirmed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "confirmed_indicators_removed_by_staff_users_id_fk": {
+          "name": "confirmed_indicators_removed_by_staff_users_id_fk",
+          "tableFrom": "confirmed_indicators",
+          "tableTo": "staff_users",
+          "columnsFrom": [
+            "removed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "confirmed_indicators_type_valid": {
+          "name": "confirmed_indicators_type_valid",
+          "value": "\"confirmed_indicators\".\"type\" IN ('domain', 'phone', 'bank_account')"
+        },
+        "confirmed_indicators_removal_complete": {
+          "name": "confirmed_indicators_removal_complete",
+          "value": "(\"confirmed_indicators\".\"removed_at\" IS NULL) = (\"confirmed_indicators\".\"removed_by\" IS NULL) AND (\"confirmed_indicators\".\"removed_at\" IS NULL) = (\"confirmed_indicators\".\"removal_reason\" IS NULL)"
+        },
+        "confirmed_indicators_removal_reason_len": {
+          "name": "confirmed_indicators_removal_reason_len",
+          "value": "\"confirmed_indicators\".\"removal_reason\" IS NULL OR char_length(\"confirmed_indicators\".\"removal_reason\") BETWEEN 10 AND 500"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.llm_daily_usage": {
+      "name": "llm_daily_usage",
+      "schema": "",
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "date",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "calls": {
+          "name": "calls",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "llm_daily_usage_calls_nonneg": {
+          "name": "llm_daily_usage_calls_nonneg",
+          "value": "\"llm_daily_usage\".\"calls\" >= 0"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.rate_limit_counters": {
+      "name": "rate_limit_counters",
+      "schema": "",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "rate_limit_counters_key_window_start_pk": {
+          "name": "rate_limit_counters_key_window_start_pk",
+          "columns": [
+            "key",
+            "window_start"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "rate_limit_counters_count_positive": {
+          "name": "rate_limit_counters_count_positive",
+          "value": "\"rate_limit_counters\".\"count\" >= 1"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "public.staff_sessions": {
+      "name": "staff_sessions",
+      "schema": "",
+      "columns": {
+        "token_hash": {
+          "name": "token_hash",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "staff_user_id": {
+          "name": "staff_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "staff_sessions_expires_at_idx": {
+          "name": "staff_sessions_expires_at_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "staff_sessions_staff_user_id_staff_users_id_fk": {
+          "name": "staff_sessions_staff_user_id_staff_users_id_fk",
+          "tableFrom": "staff_sessions",
+          "tableTo": "staff_users",
+          "columnsFrom": [
+            "staff_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.staff_users": {
+      "name": "staff_users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_demo": {
+          "name": "is_demo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "disabled_at": {
+          "name": "disabled_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "staff_users_username_unique": {
+          "name": "staff_users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "staff_users_username_valid": {
+          "name": "staff_users_username_valid",
+          "value": "\"staff_users\".\"username\" = lower(\"staff_users\".\"username\") AND \"staff_users\".\"username\" ~ '^[a-z0-9_]{3,32}$'"
+        }
+      },
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {
+    "public.case_code_seq": {
+      "name": "case_code_seq",
+      "schema": "public",
+      "increment": "1",
+      "startWith": "101",
+      "minValue": "1",
+      "maxValue": "9999",
+      "cache": "1",
+      "cycle": false
+    }
+  },
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

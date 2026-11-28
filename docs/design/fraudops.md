@@ -133,7 +133,7 @@ Theo ui-pages §6.1 và pages.md §6.1. Phần bổ sung:
 
 - **`disagreesWithEngine`** = hàm thuần `disagreesWithEngine(decision, engineVerdict)` trong `packages/core/src/cases`, theo bảng đồng ý ở SO-06-AC04. Hàm này **làm TDD**, có đủ 12 cặp. Giá trị được lưu cùng `decisions.engine_verdict` (chụp từ `cases.engine_verdict`).
 - **409 phải kèm kết luận hiện có** (api.md). Dạng lỗi chung (`{ error: { code, message, fields? } }`) chưa có chỗ cho dữ liệu này. Owner chốt OP-03 (b): 409 không kèm kết luận; client tải lại trang.
-- **Móc nối SO-08:** S6 chỉ đánh dấu chỗ trong giao dịch (chú thích ở `cases/decide.ts`); S8 viết `recordConfirmedIndicators` trong `core/src/confirmed-indicators/` và gọi tại đó khi `decision = confirmed_scam`. S6 **không** tạo hàm rỗng, module hay bảng `confirmed_indicators` (sửa 28/11 cho khớp codebase.md §1: module chưa tới slice thì chưa tạo).
+- **Móc nối SO-08** (T-082, 28/11: đã có `recordConfirmedIndicators`, [verified-indicators §11](./verified-indicators.md#11-ghi-chú-cài-đặt-28112026))**:** S6 chỉ đánh dấu chỗ trong giao dịch (chú thích ở `cases/decide.ts`); S8 viết `recordConfirmedIndicators` trong `core/src/confirmed-indicators/` và gọi tại đó khi `decision = confirmed_scam`. S6 **không** tạo hàm rỗng, module hay bảng `confirmed_indicators` (sửa 28/11 cho khớp codebase.md §1: module chưa tới slice thì chưa tạo).
 - `decidedBy` trả về `displayName` của nhân viên. `CaseDetail.decision` lấy tên qua join `staff_users`.
 
 ### 5.4 Trạng thái phía client của form kết luận
@@ -280,7 +280,7 @@ T-060. **Chờ owner xác nhận** các chỗ khác hoặc thêm so với bản 
 - Lý do được lưu **sau khi chuẩn hoá** (cùng `standardizeText` dùng để đếm), nên số ký tự đã đếm và đã lưu là một.
 - Hết phiên: hiện thông báo 2 giây rồi mới chuyển tới đăng nhập.
 - Hồ sơ biến mất (404): thông báo và link về danh sách nằm dưới form, form vẫn còn.
-- Dòng nhắc của SO-08 trên form chưa có, vì SO-08 chưa nằm trong bản build.
+- Khi xong T-063, form chưa có dòng nhắc của SO-08 vì SO-08 chưa nằm trong bản build. T-082 sau đó thêm phần xem trước ([verified-indicators §11](./verified-indicators.md#11-ghi-chú-cài-đặt-28112026)).
 - **Câu chữ mới:** "Chọn kết luận", "Hãy chọn một kết luận.", "Lý do cần từ 10 đến 500 ký tự.", "Đang lưu…", "Hồ sơ đã được {tên} kết luận lúc {ngày giờ}.", "Lý do bạn đang viết (chưa lưu)".
 
 **Đã kiểm 28/11 ở local** (DB tạm, xoá sau khi kiểm, không gọi model): `npm run verify` và `next build` xanh. Test: đủ 12 cặp đồng ý/khác (viết test trước), hai kết luận đồng thời (5 vòng), rollback khi DB từ chối, route 401/403/400/404/409/200/500, và test P1 so danh sách `route.ts` với bảng api.md §2. `curl`: 401, 403, 400, 404, 200, 409, hai lệnh song song ra một 200 một 409, người báo cáo tra thấy kết luận mới. Edge headless với hai tài khoản: lỗi nhập, lưu hoàn toàn bằng bàn phím, tải lại vẫn còn, xung đột, danh sách chờ không còn hồ sơ, lỗi server giữ nội dung rồi gửi lại được, hồ sơ bị xoá, hết phiên rồi đăng nhập quay lại đúng hồ sơ.

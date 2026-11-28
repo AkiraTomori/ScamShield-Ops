@@ -11,6 +11,7 @@ export {
   type FoundAccount,
   type FoundNumber,
 } from "./numbers";
+export { UNMATCHED_DOMAINS } from "./unmatched";
 export { findUrls, type FoundUrl } from "./urls";
 
 /** Per analysis, per kind: bounds the work a hostile message can cause (§6.1). */

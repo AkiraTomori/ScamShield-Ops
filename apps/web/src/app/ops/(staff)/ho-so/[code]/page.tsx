@@ -1,4 +1,4 @@
-import { getCaseDetail } from "@scamshield/core";
+import { getCaseDetail, listIndicatorsToConfirm } from "@scamshield/core";
 import { parseRuntimeDatabaseEnv } from "@scamshield/shared";
 import { notFound } from "next/navigation";
 import { CaseDetailView } from "../../../../../features/cases/CaseDetailView";
@@ -13,11 +13,17 @@ export default async function CasePage({ params }: { params: Promise<{ code: str
   const session = await requireStaffPage(caseHref(code));
   const env = parseRuntimeDatabaseEnv(process.env);
   if (!env.success) throw new Error("config_missing");
-  const detail = await getCaseDetail(session, code, { db: getDeps(env.data).database.db });
+  const deps = { db: getDeps(env.data).database.db };
+  const detail = await getCaseDetail(session, code, deps);
   if (!detail) notFound();
+  // Only the form of a waiting case shows it.
+  const toConfirm =
+    detail.status === "pending_review"
+      ? await listIndicatorsToConfirm(session, detail.caseId, deps)
+      : [];
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-4">
-      <CaseDetailView detail={detail} />
+      <CaseDetailView detail={detail} toConfirm={toConfirm} />
     </main>
   );
 }

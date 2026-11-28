@@ -1,6 +1,6 @@
-# ScamShield Ops — Mô hình dữ liệu (P0)
+# ScamShield Ops — Mô hình dữ liệu
 
-**Trạng thái (21/11/2026):** ĐÃ DUYỆT để triển khai (owner duyệt 21/11/2026). Schema Drizzle và migration `0000_p0_tables` đã viết, đã chạy trên Postgres local (DB tạm trong test tích hợp; 77 test xanh ngày 21/11, gồm CHECK `analyses_inconclusive_has_reason` của DB-06); **chưa chạy trên DB deploy**, việc đó chỉ owner làm (plan §5). Seed và reset demo (§7) **chưa làm**, thuộc slice riêng. Quyết định ở §9: DB-01…DB-04, DB-06, O-04 đã chốt; DB-05 là đề xuất.
+**Trạng thái (28/11/2026):** thêm bảng `confirmed_indicators` (§2.9, migration `0001_confirmed_indicators`, T-082, nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa chạy trên DB deploy). Phần P0: ĐÃ DUYỆT để triển khai (owner duyệt 21/11/2026). Schema Drizzle và migration `0000_p0_tables` đã viết, đã chạy trên Postgres local (DB tạm trong test tích hợp; 77 test xanh ngày 21/11, gồm CHECK `analyses_inconclusive_has_reason` của DB-06); **chưa chạy trên DB deploy**, việc đó chỉ owner làm (plan §5). Seed và reset demo (§7) **chưa làm**, thuộc slice riêng. Quyết định ở §9: DB-01…DB-04, DB-06, O-04 đã chốt; DB-05 là đề xuất.
 
 **Căn cứ:**
 - [spec §10](../spec/ScamShield-v1.md#10-ảnh-hưởng-tới-dữ-liệu-và-api-mức-đặc-tả)
@@ -8,7 +8,7 @@
 - [design/analysis-pipeline §3, §10](../design/analysis-pipeline.md)
 - [system-design §4](./system-design.md#4-truy-cập-dữ-liệu): RLS, pooler, migration
 
-**Ngoài file này:** bảng chỉ dấu đã xác minh (SO-08, P1), viết bằng migration riêng khi slice P1 được duyệt (§8).
+**P1:** bảng chỉ dấu đã xác minh (SO-08) ở §2.9, thiết kế slice ở [design/verified-indicators](../design/verified-indicators.md).
 
 ## 1. Thực thể và ai sở hữu dữ liệu
 
@@ -19,6 +19,8 @@ erDiagram
     cases ||--o| decisions : "được kết luận (tối đa 1)"
     staff_users ||--o{ decisions : "kết luận"
     staff_users ||--o{ staff_sessions : "đăng nhập"
+    cases ||--o{ confirmed_indicators : "là nguồn"
+    staff_users ||--o{ confirmed_indicators : "xác nhận, gỡ"
     rate_limit_counters
     llm_daily_usage
 ```
@@ -33,6 +35,7 @@ erDiagram
 | `staff_sessions` | Phiên đăng nhập | Đăng nhập tạo, đăng xuất xoá | Hết hạn sau thời gian cố định |
 | `rate_limit_counters` | Bộ đếm theo IP đã băm, cửa sổ 1 phút | Middleware rate limit | Xoá sau 1 giờ |
 | `llm_daily_usage` | Số lời gọi LLM trong ngày (P-03) | Module `llm` | Một dòng mỗi ngày |
+| `confirmed_indicators` | Chỉ dấu nhân viên đã xác nhận là lừa đảo (SO-08, P1) | Giao dịch kết luận tạo; nhân viên gỡ | Gỡ là xoá mềm; xác nhận lại tạo dòng mới |
 
 ## 2. Bảng
 
@@ -157,6 +160,24 @@ Index `(expires_at)` để dọn phiên hết hạn.
 
 Giữ chỗ trước mỗi lời gọi LLM: tạo dòng nếu chưa có, rồi `UPDATE … SET calls = calls + 1 WHERE day = $1 AND calls < $cap RETURNING calls`. Không có dòng trả về nghĩa là đã chạm trần, và bước LLM bị bỏ (P-03). Không đặt `LLM_DAILY_CALL_CAP` thì bỏ qua bảng này.
 
+### 2.9 `confirmed_indicators` (SO-08, P1, migration `0001_confirmed_indicators`)
+
+| Cột | Kiểu | Ràng buộc / ghi chú |
+|---|---|---|
+| `id` | uuid | PK |
+| `type` | text | NOT NULL, CHECK ∈ `domain`, `phone`, `bank_account` |
+| `normalized` | text | NOT NULL, cùng dạng với `analysis_indicators` |
+| `source_case_id` | uuid | NOT NULL, FK → `cases.id` ON DELETE RESTRICT |
+| `confirmed_by` | uuid | NOT NULL, FK → `staff_users.id` ON DELETE RESTRICT |
+| `confirmed_at` | timestamptz | NOT NULL, bằng `decided_at` của kết luận |
+| `removed_at` | timestamptz | NULL |
+| `removed_by` | uuid | NULL, FK → `staff_users.id` ON DELETE RESTRICT (hành động xoá: T-082 chọn, **chờ owner xác nhận**) |
+| `removal_reason` | text | NULL, CHECK `char_length BETWEEN 10 AND 500` |
+
+- CHECK: `removed_at`, `removed_by`, `removal_reason` cùng NULL hoặc cùng khác NULL.
+- UNIQUE một phần `(type, normalized) WHERE removed_at IS NULL`; cũng phục vụ tra cứu của engine (T-080).
+- Không bao giờ ghi tên miền chính thức của thương hiệu hay tên miền rút gọn (SO-08-AC01, XM-01).
+
 ## 3. Bất biến và nơi bảo đảm
 
 | Bất biến | Bảo đảm bằng |
@@ -168,6 +189,8 @@ Giữ chỗ trước mỗi lời gọi LLM: tạo dòng nếu chưa có, rồi `
 | Không lưu nội dung gốc, IP thô, mã bí mật gốc, mật khẩu gốc, token phiên gốc | Không có cột cho chúng; review |
 | Analysis và chỉ dấu không đổi sau khi tạo | Không có đường code `UPDATE`; FK RESTRICT ngăn xoá analysis còn case |
 | Verdict `inconclusive` luôn kèm lý do (DB-06) | CHECK trên `analyses`. Mọi quy tắc cho ra `inconclusive` đều có lý do (design/analysis-pipeline §7: R0, R8) |
+| Mỗi chỉ dấu có tối đa một dòng đã xác minh chưa gỡ (SO-08) | UNIQUE một phần trên `confirmed_indicators` |
+| Case `confirmed_scam` không thiếu chỉ dấu đã xác minh | Ghi trong cùng giao dịch kết luận; có test tích hợp rollback |
 | Giá trị enum hợp lệ | CHECK + zod |
 | JSON đúng hình dạng | zod khi ghi và khi đọc (DB-02) |
 
@@ -177,7 +200,8 @@ Giữ chỗ trước mỗi lời gọi LLM: tạo dòng nếu chưa có, rồi `
 |---|---|---|
 | Lưu analysis | `INSERT analyses` + `INSERT analysis_indicators` | Không tranh chấp |
 | Gửi báo cáo | Sinh mã bí mật → `INSERT cases`. Tóm tắt AI gọi **trước** giao dịch, không giữ giao dịch mở trong lúc chờ LLM | Hai request cùng analysis: một bên vi phạm UNIQUE (`23505`), bắt lỗi rồi đọc case đã có, trả `alreadyReported: true` |
-| Kết luận | `UPDATE cases SET status='closed', closed_at=now(), updated_at=now() WHERE code=$1 AND status='pending_review' RETURNING id` → không có dòng: đọc kết luận hiện có, trả 409 → có dòng: `INSERT decisions` (P1: thêm chỉ dấu đã xác minh, SO-08-AC01) | Hai nhân viên cùng lúc: chỉ một `UPDATE` khớp điều kiện |
+| Kết luận | `UPDATE cases SET status='closed', closed_at=now(), updated_at=now() WHERE code=$1 AND status='pending_review' RETURNING id` → không có dòng: đọc kết luận hiện có, trả 409 → có dòng: `INSERT decisions` → nếu `confirmed_scam`: `INSERT confirmed_indicators … ON CONFLICT DO NOTHING` (SO-08-AC01) | Hai nhân viên cùng lúc: chỉ một `UPDATE` khớp điều kiện. Hai hồ sơ chung chỉ dấu: chèn theo thứ tự cố định, dòng đến sau bị bỏ qua |
+| Gỡ chỉ dấu | Một `UPDATE … WHERE id = $1 AND removed_at IS NULL`; không có dòng thì đọc lại để phân biệt 409 và 404 | Hai người gỡ cùng lúc: chỉ một `UPDATE` khớp |
 | Rate limit | Một câu upsert (§2.7) | Nguyên tử ở mức dòng |
 | Trần LLM | Một câu update có điều kiện (§2.8) | Nguyên tử ở mức dòng |
 | Đăng nhập | `INSERT staff_sessions` | Không tranh chấp |
@@ -217,14 +241,9 @@ Ghi thất bại thì giao dịch rollback toàn bộ: không có case thiếu a
 - Analysis seed không chạy pipeline. Dữ liệu `details` soạn sẵn trong mã seed, dùng `*.example`, và phải qua cùng zod schema.
 - **Thứ tự sau P1:** khi có bảng chỉ dấu đã xác minh (§8), reset cũng phải gỡ chỉ dấu sinh từ case seed, để `vi-xac-minh.example` không nằm sẵn trong danh sách trước khi quay (demo.md S2).
 
-## 8. Để sau (P1, migration riêng)
+## 8. P1 và migration riêng
 
-`confirmed_indicators` (owner duyệt S8 ngày 26/11; cột, ràng buộc và thứ tự reset chi tiết ở [design/verified-indicators §4](../design/verified-indicators.md#4-bảng-confirmed_indicators-migration-0001_confirmed_indicators), chuyển vào §2 khi viết migration):
-- Cột: `id`, `type`, `normalized`, `source_case_id` (FK), `confirmed_by`, `confirmed_at`, `removed_at`, `removed_by`, `removal_reason`.
-- UNIQUE một phần `(type, normalized) WHERE removed_at IS NULL`.
-- Gỡ là xoá mềm (api.md §4).
-
-Thiết kế chi tiết khi slice SO-08 được duyệt.
+`confirmed_indicators` (owner duyệt S8 ngày 26/11) đã có ở §2.9. Lý do chọn cột và thứ tự reset ở [design/verified-indicators §4](../design/verified-indicators.md#4-bảng-confirmed_indicators-migration-0001_confirmed_indicators). Vì FK `source_case_id` là RESTRICT, `demo:reset` (T-090) phải xoá chỉ dấu sinh từ case seed **trước** khi xoá case seed.
 
 ## 9. Quyết định
 
@@ -244,4 +263,5 @@ Thiết kế chi tiết khi slice SO-08 được duyệt.
 2. Chạy trên Postgres local (Docker), chạy test tích hợp: các bất biến ở §3, giao dịch ở §4, mã hồ sơ, RLS. Mỗi file test tạo một database tạm, áp migration từ đầu rồi xoá, nên không đụng DB dev. Seed và reset chưa có test vì chưa có lệnh.
 3. DB đã deploy: **chỉ owner** chạy `npm run db:migrate` với `DATABASE_URL_MIGRATE` (hiện hoãn theo D-05).
 4. Không sửa `0000_p0_tables` sau khi đã chạy trên DB deploy; thay đổi sau viết migration mới (backend.md §3).
-5. Trước khi có dữ liệu thật thì không cần kế hoạch rollback dữ liệu. Sau khi deploy, mọi migration phải chỉ thêm (thêm cột NULL được, thêm bảng), không xoá hay ghi đè dữ liệu.
+5. `0001_confirmed_indicators` chỉ thêm một bảng, index và RLS; không sửa bảng cũ. **Owner chạy trên DB deploy trước khi deploy mã của T-082.**
+6. Trước khi có dữ liệu thật thì không cần kế hoạch rollback dữ liệu. Sau khi deploy, mọi migration phải chỉ thêm (thêm cột NULL được, thêm bảng), không xoá hay ghi đè dữ liệu.

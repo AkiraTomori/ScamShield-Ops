@@ -1,6 +1,6 @@
 # Thiết kế slice S8: chỉ dấu đã xác minh quay lại engine (T-080, T-081)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). T-080 (engine) và T-081 (trang) chưa làm. SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-08](../spec/ScamShield-v1.md): AC01…AC03, P1, P4.
@@ -26,7 +26,7 @@
 
 ## 2. Ghi chỉ dấu khi kết luận (SO-08-AC01, AC03)
 
-Thân của `recordConfirmedIndicators(tx, caseId, staffUserId)`, móc nối đã chừa ở S6 §5.3 (28/11: mới là chú thích trong `core/src/cases/decide.ts`, chưa có hàm; [fraudops §11](./fraudops.md#11-ghi-chú-cài-đặt-28112026)). Hàm chạy **trong cùng giao dịch** với kết luận. Lỗi ở đây thì kết luận cũng rollback, để không có case `confirmed_scam` mà thiếu chỉ dấu.
+Thân của `recordConfirmedIndicators(tx, caseId, staffUserId)`, móc nối đã chừa ở S6 §5.3 (T-082, 28/11: đã có hàm, [§11](#11-ghi-chú-cài-đặt-28112026)). Hàm chạy **trong cùng giao dịch** với kết luận. Lỗi ở đây thì kết luận cũng rollback, để không có case `confirmed_scam` mà thiếu chỉ dấu.
 
 - **Chỉ chạy khi `decision = confirmed_scam`.** `not_scam` và `insufficient_evidence` không gọi hàm này (SO-08-AC03).
 - **Nguồn:** các dòng `analysis_indicators` của analysis thuộc case, gồm `domain`, `phone`, `bank_account`. Không dùng `url` hay `brand`.
@@ -153,3 +153,29 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 - **Dương tính giả lan rộng:** một chỉ dấu sai làm mọi tin sau có chỉ dấu đó ra `high_risk`. XM-01, phần xem trước ở form và việc gỡ có lý do là ba lớp chặn.
 - **Eval lệch:** nếu eval runner gọi engine với DB thật, kết quả thay đổi theo những gì giám khảo đã kết luận. §3 bắt buộc eval dùng deps rỗng.
 - **Lịch:** plan đặt S8 ở 29/11, sát hạn đóng băng 30/11, và còn cần owner chạy migration trên DB deploy. Nếu cắt, engine vẫn dùng deps rỗng và không phải sửa gì.
+
+## 11. Ghi chú cài đặt (28/11/2026)
+
+**T-082, nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** `packages/core/src/confirmed-indicators/{select,record,remove}.ts`, `core/src/db/schema/confirmed-indicators.ts`, migration `0001_confirmed_indicators`, `core/src/indicators/unmatched.ts`, `apps/web/src/server/ops-indicator-removal.ts`, `apps/web/src/app/api/ops/confirmed-indicators/[id]/removal/`, khối xem trước trong `features/cases/DecisionForm.tsx`.
+
+**Chỗ khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- `recordConfirmedIndicators(tx, caseId, staffUserId, at)`: thêm `at` để `confirmed_at` bằng đúng `decided_at`; **bỏ** tham số `exclusions`, hàm luôn dùng danh sách loại trừ của XM-01 nên nơi gọi không truyền được danh sách rỗng.
+- Thêm `listIndicatorsToConfirm(session, caseId, deps)` cho phần xem trước. Xem trước và ghi đọc cùng `analysis_indicators`, cùng qua `selectIndicatorsToConfirm`; `CaseDetail` (contracts §6) không đổi.
+- Danh sách loại trừ (`UNMATCHED_DOMAINS`, dùng chung với S7 ST-01) chuyển sang `core/src/indicators/unmatched.ts`, tránh vòng phụ thuộc `cases` ↔ `confirmed-indicators`.
+- `removed_by` có FK `ON DELETE RESTRICT` (§4 không ghi hành động).
+- Xem trước liệt kê **cả** chỉ dấu đã có trong danh sách; khi ghi, dòng cũ giữ nguyên.
+- Xem trước hiện ngay dưới nhóm lựa chọn, trong vùng `aria-live`.
+- `{id}` không phải UUID trả 400 không kèm `fields`.
+
+**Chưa có trong T-082:** `listConfirmedIndicators` (T-081), `findVerifiedMatches` và signal `verified_indicator` (T-080), bước reset của seed (T-090).
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1012 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start` và Edge headless, xoá sau khi kiểm: xem trước đúng ở 1280px và 360px, không có link, không cuộn ngang, ẩn khi chọn "Không phải lừa đảo", câu trống khi hồ sơ không có gì để thêm; kết luận `confirmed_scam` ghi 3 dòng, không ghi `momo.vn`; route gỡ trả 403, 401, 400, 404, 200, rồi 409.
+
+**Chưa kiểm:** bản deploy; Safari; trình đọc màn hình; migration trên DB deploy.
+
+**Cần biết khi triển khai:**
+- **Chạy migration trước khi deploy mã này.** Thiếu bảng thì mọi kết luận `confirmed_scam` trả 500 (giao dịch rollback) và route gỡ trả 500. DB local đã có từ trước cũng phải chạy `npm run db:migrate`.
+- Hồ sơ đã kết luận `confirmed_scam` trước khi có bảng không được ghi bù.
+- Cho tới khi có T-081, không gỡ được chỉ dấu bằng giao diện (chỉ có API, và chưa có chỗ xem `id`). Cho tới khi có T-080, danh sách chưa ảnh hưởng kết quả phân tích.

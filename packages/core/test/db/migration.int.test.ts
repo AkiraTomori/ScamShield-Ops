@@ -5,10 +5,12 @@ import { createTestDatabase, type TestDatabase } from "./helpers";
 // Integration: needs the local Docker Postgres. Skipped when DATABASE_URL is not in the environment.
 const url = process.env.DATABASE_URL;
 
-const P0_TABLES = [
+/** The eight P0 tables plus `confirmed_indicators` (migration 0001, SO-08). */
+const TABLES = [
   "analyses",
   "analysis_indicators",
   "cases",
+  "confirmed_indicators",
   "decisions",
   "llm_daily_usage",
   "rate_limit_counters",
@@ -25,11 +27,11 @@ describe.skipIf(!url)("migration on an empty database (data-model §6, §10)", (
     await t?.drop();
   });
 
-  it("creates exactly the eight P0 tables", async () => {
+  it("creates exactly the P0 tables and confirmed_indicators", async () => {
     const rows = await t.sql<{ table_name: string }[]>`
       SELECT table_name FROM information_schema.tables
       WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name`;
-    expect(rows.map((r) => r.table_name)).toEqual(P0_TABLES);
+    expect(rows.map((r) => r.table_name)).toEqual(TABLES);
   });
 
   it("enables row level security on every table and defines no policy", async () => {
@@ -37,7 +39,7 @@ describe.skipIf(!url)("migration on an empty database (data-model §6, §10)", (
       SELECT c.relname, c.relrowsecurity FROM pg_class c
       JOIN pg_namespace n ON n.oid = c.relnamespace
       WHERE n.nspname = 'public' AND c.relkind = 'r' ORDER BY c.relname`;
-    expect(tables.map((r) => r.relname)).toEqual(P0_TABLES);
+    expect(tables.map((r) => r.relname)).toEqual(TABLES);
     expect(tables.filter((r) => !r.relrowsecurity)).toEqual([]);
 
     const policies = await t.sql`SELECT 1 FROM pg_policies WHERE schemaname = 'public'`;
@@ -52,6 +54,9 @@ describe.skipIf(!url)("migration on an empty database (data-model §6, §10)", (
     expect(action).toEqual({
       analysis_indicators_analysis_id_analyses_id_fk: "c",
       cases_analysis_id_analyses_id_fk: "r",
+      confirmed_indicators_confirmed_by_staff_users_id_fk: "r",
+      confirmed_indicators_removed_by_staff_users_id_fk: "r",
+      confirmed_indicators_source_case_id_cases_id_fk: "r",
       decisions_case_id_cases_id_fk: "c",
       decisions_decided_by_staff_users_id_fk: "r",
       staff_sessions_staff_user_id_staff_users_id_fk: "c",

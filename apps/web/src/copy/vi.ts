@@ -232,6 +232,9 @@ export const vi = {
       expired: "Phiên đăng nhập đã hết hạn.",
       notFound: "Không tìm thấy hồ sơ.",
       closedWithoutDecision: "Hồ sơ đã đóng nhưng không có kết luận được lưu.",
+      // SO-08 preview under "Xác nhận lừa đảo" (verified-indicators §2).
+      toConfirm: "Sẽ thêm vào danh sách đã xác minh:",
+      toConfirmNone: "Hồ sơ này không có chỉ dấu nào để thêm.",
       reason: "Lý do",
       // Verbatim from SO-06-AC04.
       disagrees: "Nhân viên không đồng ý với đánh giá AI",

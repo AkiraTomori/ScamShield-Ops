@@ -1,6 +1,6 @@
 # Kịch bản demo và ngày chấm
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Dùng cho video ≤ 3 phút (nộp 03/12), cho giám khảo tự dùng thử (03/12–11/12) và cho phần trình bày chung kết (11/12). Kịch bản gốc ở [spec §8](../spec/ScamShield-v1.md#8-kịch-bản-demo--3-phút-dùng-cho-video); file này thêm lời thoại, dữ liệu cần chuẩn bị, checklist và cách xử lý sự cố.
+**Trạng thái (28/11/2026):** BẢN NHÁP; thêm bước kiểm danh sách đã xác minh (S8) vào §3. Dùng cho video ≤ 3 phút (nộp 03/12), cho giám khảo tự dùng thử (03/12–11/12) và cho phần trình bày chung kết (11/12). Kịch bản gốc ở [spec §8](../spec/ScamShield-v1.md#8-kịch-bản-demo--3-phút-dùng-cho-video); file này thêm lời thoại, dữ liệu cần chuẩn bị, checklist và cách xử lý sự cố.
 
 **Luật:** video quay **sản phẩm chạy thật trên URL công khai** (plan §9). Không dựng cảnh, không chèn kết quả giả. Tính năng nào bị cắt (plan §7) thì bỏ đoạn tương ứng, không quay bản dở.
 
@@ -35,6 +35,7 @@ Thương hiệu được mạo danh trong M1, M3 là một thương hiệu thậ
 
 - [ ] Bản deploy production đúng commit sẽ nộp; `/api/health` trả 200.
 - [ ] `npm run demo:reset` đã chạy (owner); FraudOps có 20–40 hồ sơ mẫu.
+- [ ] (Có S8) `vi-xac-minh.example` **không** còn dòng chưa gỡ trong danh sách đã xác minh; `demo:reset` không xoá dòng sinh từ hồ sơ thật. Làm lại trước mỗi buổi chấm. Khi đã có trang `/ops/chi-dau` (T-081) thì gỡ ở đó. Chưa có thì owner tra `id` bằng `SELECT id FROM confirmed_indicators WHERE normalized = 'vi-xac-minh.example' AND removed_at IS NULL;` rồi gỡ qua `POST /api/ops/confirmed-indicators/{id}/removal` ([api.md §4](../architecture/api.md#4-phía-fraudops)).
 - [ ] Chạy thử M1, M2, M3 trên bản deploy **ít nhất 3 lần**, verdict ổn định.
 - [ ] Trình duyệt ẩn danh, không tiện ích, zoom 100%; tắt thông báo hệ điều hành.
 - [ ] ScamShield quay ở khung 360–414px (DevTools hoặc điện thoại thật); FraudOps ở 1280px trở lên.

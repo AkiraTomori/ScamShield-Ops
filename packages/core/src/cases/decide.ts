@@ -1,6 +1,7 @@
 import { Verdict, type DecisionRecord, type DecisionRequest } from "@scamshield/shared";
 import { and, eq } from "drizzle-orm";
 import type { StaffSession } from "../auth/session";
+import { recordConfirmedIndicators } from "../confirmed-indicators/record";
 import { cases, decisions, staffUsers } from "../db/schema";
 import type { Db } from "../rate-limit";
 import { normalizeCaseCode } from "../reports/lookup";
@@ -61,8 +62,10 @@ export async function decideCase(
       })
       .returning();
     if (!stored) throw new Error("decision insert returned no row");
-    // SO-08 (T-082) records the confirmed indicators here, in this transaction, when the decision is
-    // confirmed_scam (verified-indicators §2). Nothing is recorded until then.
+    // In this transaction, so no case ends up confirmed_scam without its indicators (SO-08-AC01).
+    if (req.decision === "confirmed_scam") {
+      await recordConfirmedIndicators(tx, closed.id, session.staffUserId, at);
+    }
     return { kind: "decided", decision: toDecisionRecord(stored, session.displayName) };
   });
 }
