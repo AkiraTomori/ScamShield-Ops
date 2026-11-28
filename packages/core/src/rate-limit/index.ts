@@ -12,6 +12,9 @@ export type Db = PostgresJsDatabase<typeof schema>;
 /** Shared by /api/analyses, /report and /case-status (Q-06). */
 export const PUBLIC_LIMIT_PER_MINUTE = 10;
 
+/** Sign-in attempts have their own budget (OP-01). */
+export const LOGIN_LIMIT_PER_MINUTE = 5;
+
 const WINDOW_MS = 60_000;
 const KEEP_MS = 3_600_000;
 const CLEANUP_PROBABILITY = 1 / 50;

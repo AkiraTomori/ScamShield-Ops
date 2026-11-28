@@ -73,6 +73,8 @@ Câu ghi "nguyên văn spec" phải dùng đúng từng chữ. Toàn hệ thốn
 | Chỉ dấu đã xác minh | "Chỉ dấu này đã được đội vận hành xác minh là lừa đảo" | Nguyên văn SO-08-AC02 |
 | Trạng thái case (phía người dùng) | `Đang chờ xem xét` · `Đã xác nhận lừa đảo` · `Không phát hiện lừa đảo` · `Chưa đủ bằng chứng` | Nguyên văn SO-04-AC04 |
 | Kết luận (phía nhân viên) | Xác nhận lừa đảo · Không phải lừa đảo · Chưa đủ bằng chứng | SO-06-AC03 |
+| Trạng thái hồ sơ (phía nhân viên) | Chờ xem xét · Đã đóng | ui-pages §5 |
+| Loại rủi ro (`RiskType`) | `brand_impersonation` Mạo danh thương hiệu · `otp_phishing` Lừa lấy OTP · `payment_request` Yêu cầu chuyển tiền · `fake_prize` Trúng thưởng giả · `other` Khác | design/fraudops §4 |
 | Bất đồng | "Nhân viên không đồng ý với đánh giá AI" | Nguyên văn SO-06-AC04 |
 | Nguồn tín hiệu | *Kiểm tra* · *AI nhận định* | Spec P2, SO-03-AC04 |
 | Trạng thái phép kiểm | **Cảnh báo** (`warn`) · **Không phát hiện vấn đề** (`pass`) · **Không tra được** (`unavailable`, kèm "Không tra được kết quả. Điều này không có nghĩa là không có vấn đề.") | SO-02-AC03 |
@@ -159,6 +161,7 @@ Tự viết bằng React + Tailwind, không dùng bộ component ngoài (thêm b
 | `TextArea` + `CharCounter` | Ô nhập tin, bộ đếm `n/2.000` | Bộ đếm gắn `aria-describedby`; lỗi gắn `aria-invalid` |
 | `SampleChips` | Các nút tin mẫu | Là `button`, không phải link |
 | `VerdictBanner` | Nhãn + biểu tượng + câu giải nghĩa theo §3 | Nằm trong vùng `aria-live="polite"`; tiêu đề `h2` |
+| `VerdictBadge` | Verdict một dòng trong bảng FraudOps: biểu tượng + nhãn, cùng màu với `VerdictBanner` | Không chỉ dựa vào màu |
 | `SourceBadge` | *Kiểm tra* / *AI nhận định* | Chữ đầy đủ, không chỉ màu |
 | `SignalList` | Danh sách tín hiệu, mỗi dòng có `SourceBadge` | `ul` |
 | `IndicatorCard` | Chỉ dấu + danh sách phép kiểm + `CheckStatus` | URL là văn bản thuần, `overflow-wrap: anywhere` (class `wrap-anywhere`; chỉ ngắt giữa từ khi chuỗi không vừa dòng, không như `break-all`), không có `href` (P5) |

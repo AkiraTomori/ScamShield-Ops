@@ -26,7 +26,7 @@
 
 ## 2. Ghi chỉ dấu khi kết luận (SO-08-AC01, AC03)
 
-Thân của `recordConfirmedIndicators(tx, caseId, staffUserId)`, móc nối đã chừa ở S6 §5.3. Hàm chạy **trong cùng giao dịch** với kết luận. Lỗi ở đây thì kết luận cũng rollback, để không có case `confirmed_scam` mà thiếu chỉ dấu.
+Thân của `recordConfirmedIndicators(tx, caseId, staffUserId)`, móc nối đã chừa ở S6 §5.3 (28/11: mới là chú thích trong `core/src/cases/decide.ts`, chưa có hàm; [fraudops §11](./fraudops.md#11-ghi-chú-cài-đặt-28112026)). Hàm chạy **trong cùng giao dịch** với kết luận. Lỗi ở đây thì kết luận cũng rollback, để không có case `confirmed_scam` mà thiếu chỉ dấu.
 
 - **Chỉ chạy khi `decision = confirmed_scam`.** `not_scam` và `insufficient_evidence` không gọi hàm này (SO-08-AC03).
 - **Nguồn:** các dòng `analysis_indicators` của analysis thuộc case, gồm `domain`, `phone`, `bank_account`. Không dùng `url` hay `brand`.

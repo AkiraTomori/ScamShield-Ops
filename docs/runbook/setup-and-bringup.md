@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (27/11/2026):** bản nháp; có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) đã merge (PR #47); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (28/11/2026):** bản nháp; đăng nhập FraudOps (T-060, nhánh `feat/s6-auth`, chưa merge); có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) đã merge (PR #47); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -27,6 +27,14 @@ curl -s http://localhost:3000/api/analyses -H 'content-type: application/json' \
 ```
 
 Server log `llm_call_failed` với `unavailable_429` nghĩa là Groq đang giới hạn tần suất; `config_401` là sai `GROQ_API_KEY`, `config_404` là sai tên model.
+
+### Đăng nhập FraudOps ở local
+
+1. Cần đã chạy migration (§4) và đặt trong `.env`: `RATE_LIMIT_SALT`, `DEMO_STAFF_PASSWORDS` (5 mật khẩu ngăn bởi dấu phẩy, mỗi mật khẩu ít nhất 12 ký tự).
+2. `npm run demo:seed`: tạo hoặc cập nhật `judge1…judge5` trên DB mà `DATABASE_URL` trỏ tới. **Kiểm `DATABASE_URL` trước khi chạy**; với DB deploy chỉ owner chạy. Chưa chèn hồ sơ mẫu (T-090).
+3. `npm run dev`, mở `http://localhost:3000/ops`. Đăng nhập quá 5 lượt trong một phút thì nhận 429.
+
+Trên Vercel (khi deploy): sau migration, owner chạy `demo:seed` với `DATABASE_URL` của production, rồi kiểm ngay một lượt đăng nhập. Nếu nhận 403 `forbidden_origin` thì header `Host` hoặc `x-forwarded-proto` sau proxy không khớp `Origin` ([fraudops §11](../design/fraudops.md#11-ghi-chú-cài-đặt-28112026)).
 
 ## 2. Postgres local (Docker)
 

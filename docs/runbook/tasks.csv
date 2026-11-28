@@ -29,10 +29,10 @@ T-050,S5 Báo cáo,POST report: tạo case + mã bí mật băm 8 ký tự + ch�
 T-051,S5 Báo cáo,Form gửi báo cáo + màn thành công có mã (UI),SO-04-AC01;SO-04-AC02,T-050;T-042,26/11,S,agent,done,P0,,,B
 T-052,S5 Báo cáo,POST /api/case-status + trang /tra-cuu,SO-04-AC04,T-050,27/11,S,agent,done,P1,4,Sai mã ra một thông báo chung,B
 T-053,S5 Báo cáo,"summarizeCase (LLM tóm tắt hồ sơ) + bộ lọc dùng chung với giải thích (RP-03, RP-04)",SO-05-AC02,T-037,26/11,M,agent,done,P0,,"Test LLM giả: sai schema, quá hạn 8 giây, từng luật lọc",A
-T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,todo,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401",C
-T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,todo,P0,5 (lọc/tìm),,B (UI) + C (API)
-T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,todo,P0,,,B (UI) + C (API)
-T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,todo,P0,,Tải lại vẫn còn kết luận,B (UI) + C (API)
+T-060,S6 FraudOps,"Tài khoản nhân viên, đăng nhập/đăng xuất, phiên cookie, kiểm Origin, guard /ops",SO-06-AC01,T-011,26/11,M,agent,done,P0,,"Chưa đăng nhập: trang chuyển hướng, API 401",C
+T-061,S6 FraudOps,"Danh sách hồ sơ: mới nhất trước, lọc, tìm, phân trang, badge Dữ liệu mẫu",SO-06-AC02;SO-10-AC03,T-060,27/11,M,agent,done,P0,5 (lọc/tìm),,B (UI) + C (API)
+T-062,S6 FraudOps,Chi tiết hồ sơ: khối Bằng chứng / Nhận định AI,SO-05-AC01;SO-05-AC03,T-060;T-050,27/11,M,agent,done,P0,,,B (UI) + C (API)
+T-063,S6 FraudOps,"Kết luận + lý do bắt buộc, đóng có điều kiện (409), nhãn không đồng ý AI",SO-06-AC03;SO-06-AC04;SO-06-AC05;SO-06-AC06,T-062,28/11,M,agent,done,P0,,Tải lại vẫn còn kết luận,B (UI) + C (API)
 T-070,S7 Liên kết hồ sơ,Hồ sơ liên quan theo chỉ dấu chuẩn hoá + cột Liên quan,SO-07-AC01;SO-07-AC02,T-062,29/11,M,agent,todo,P1,2,,C
 T-082,S8 Chỉ dấu xác minh,Bảng confirmed_indicators (migration 0001) + ghi khi confirmed_scam trong giao dịch kết luận + API gỡ,SO-08-AC01;SO-08-AC03,T-063,28/11,M,agent,todo,P1,1,Không ghi tên miền chính thức (XM-01); gỡ hai lần ra 409,C
 T-080,S8 Chỉ dấu xác minh,Engine tra danh sách chỉ dấu đã xác minh: signal verified_indicator (phần bảng và ghi ở T-082),SO-08-AC02,T-038;T-082,29/11,M,agent,todo,P1,1,,A

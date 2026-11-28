@@ -5,8 +5,16 @@ export { createAnalysisDeps, createDeps, createReportDeps, type Deps } from "./d
 export { logEvent, type LogFields } from "./log";
 export * from "./analysis";
 export * from "./reports";
+export * from "./auth";
+export * from "./cases";
+export { upsertDemoStaff } from "./demo";
 export { extractIndicators, type ExtractedIndicators } from "./indicators";
-export { consumeRateLimit, PUBLIC_LIMIT_PER_MINUTE, rateLimitKey } from "./rate-limit";
+export {
+  consumeRateLimit,
+  LOGIN_LIMIT_PER_MINUTE,
+  PUBLIC_LIMIT_PER_MINUTE,
+  rateLimitKey,
+} from "./rate-limit";
 export { redact } from "./redaction";
 export { checkDomain, checkUrl, detectInjection } from "./url-checks";
 export { decide, recommend, RULES_VERSION, type Decision, type DecisionInput } from "./verdict";

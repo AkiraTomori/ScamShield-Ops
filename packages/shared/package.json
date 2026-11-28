@@ -11,6 +11,7 @@
     "./enums": "./src/enums.ts",
     "./errors": "./src/errors.ts",
     "./input": "./src/input.ts",
+    "./ops": "./src/ops.ts",
     "./report": "./src/report.ts"
   },
   "scripts": {

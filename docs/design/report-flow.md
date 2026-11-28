@@ -1,6 +1,6 @@
 # Thiết kế slice S5: gửi báo cáo và tra trạng thái (T-050…T-053)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (nhánh `feat/s5-report`, PR nháp #50, chưa merge, chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), **owner xác nhận 27/11**. Ghi chú có thêm luật che RP-06 (owner chốt 27/11, §3.1).
+**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S5 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. **T-053, T-050, T-051, T-052 xong ở local 27/11** (đã merge vào `main`, PR #50, 27/11; chưa deploy). Đã kiểm ở local 27/11, kết quả ở [§13](#13-kết-quả-kiểm-27112026). Chỗ cài đặt khác hoặc thêm so với bản duyệt ở [§12](#12-ghi-chú-cài-đặt-27112026), **owner xác nhận 27/11**. Ghi chú có thêm luật che RP-06 (owner chốt 27/11, §3.1).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-04-AC01…AC04, SO-05-AC01, AC02, SO-01-AC03, SO-03-AC05, P1, Q-05.
@@ -263,7 +263,7 @@ Chạy ở local trên commit `7a03690`. Postgres 17 tạm (Docker, đã xoá), 
 
 **Rủi ro:** ở local, đổi header `x-forwarded-for` là sang khoá rate limit khác. SO-01-AC04 và ước tính dò mã ở §4.1 chỉ đúng khi header IP của nền tảng đáng tin (mục kiểm lúc deploy).
 
-**Chưa kiểm:** SO-05-AC01 phần "nguồn (`user_report`)": chưa có trong mã S5, theo [contracts §6](../architecture/contracts.md#6-hồ-sơ-casedetail-dùng-ở-fraudops) là trường của `CaseDetail` (T-062), nên §8 ghi quá phạm vi test hiện có. Chống lộ qua thời gian (§4.2): mới đọc mã (`lookupPublicStatus` luôn chạy scrypt, kể cả trên `DUMMY_SECRET_HASH`), chưa đo. Bản deploy, `maxDuration` và header IP trên Vercel; điện thoại thật; trình đọc màn hình; DB dev local đã có CHECK 1.000 ký tự hay chưa; nút sao chép khi trình duyệt cho phép clipboard (mới kiểm nhánh bị chặn).
+**Chưa kiểm:** SO-05-AC01 phần "nguồn (`user_report`)": chưa có trong mã S5, theo [contracts §6](../architecture/contracts.md#6-hồ-sơ-casedetail-dùng-ở-fraudops) là trường của `CaseDetail` (T-062), nên §8 ghi quá phạm vi test hiện có (28/11: T-062 có test cho `source`). Chống lộ qua thời gian (§4.2): mới đọc mã (`lookupPublicStatus` luôn chạy scrypt, kể cả trên `DUMMY_SECRET_HASH`), chưa đo. Bản deploy, `maxDuration` và header IP trên Vercel; điện thoại thật; trình đọc màn hình; DB dev local đã có CHECK 1.000 ký tự hay chưa; nút sao chép khi trình duyệt cho phép clipboard (mới kiểm nhánh bị chặn).
 
 **Sửa sau review (27/11, commit `8f59b75`):** cảnh báo rời trang nay bật cả khi đang gửi báo cáo (`leavingLosesCodes` ở `features/analysis/state.ts`, có test). `npm run verify` (661 đạt, 68 test tích hợp bỏ qua vì không có DB) và `next build` xanh. Chromium headless 360px, hai API giả trong trình duyệt: đang gửi thì link header và tải lại đều hỏi lại; chọn ở lại thì mã vẫn tới; gửi lỗi thì rời trang không bị hỏi. Safari trên iOS vẫn không hỏi.
 

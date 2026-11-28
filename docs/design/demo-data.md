@@ -1,6 +1,6 @@
 # Thiết kế slice S9: dữ liệu demo, seed/reset, E2E (T-090…T-093)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã, trừ `demo-messages.json` bản tạm và schema của nó (§2; T-041, đã merge, PR #48). Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`), nên **soạn được ngay**. T-091 là việc của owner trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã, trừ `upsertDemoStaff` và `npm run demo:seed` phần tài khoản (làm sớm trong T-060 theo OP-04, nhánh `feat/s6-auth`, 28/11, chưa merge) và `demo-messages.json` bản tạm và schema của nó (§2; T-041, đã merge, PR #48). Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`), nên **soạn được ngay**. T-091 là việc của owner trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-10](../spec/ScamShield-v1.md): AC01…AC05, Q-07, spec §8 (kịch bản demo).
@@ -79,6 +79,7 @@ Tổng: **24 case**, mã `SC-0001…SC-0024`.
   - `details` qua được zod schema `AnalysisResult` (DB-02).
   - `verdict`, `rule` và `riskTypes` **phải khớp** kết quả của `decide()` (rules-v1) trên signal của chính case đó. Có test bắt buộc (§6), để dữ liệu mẫu không mâu thuẫn với quy tắc mà slide trình bày (P4).
   - Có dòng `analysis_indicators` cho mọi chỉ dấu `domain`, `phone`, `bank_account` (S7 cần).
+  - Case `closed` luôn có `closed_at` và một dòng `decisions`, chèn trong cùng giao dịch. Thiếu dòng này thì trang hồ sơ chỉ báo "không có kết luận được lưu" ([fraudops §11](./fraudops.md#11-ghi-chú-cài-đặt-28112026)).
   - Chỉ dùng tên miền `*.example` và thương hiệu giả "Ví XYZ", trừ ba case S1 dùng cùng thương hiệu với M1.
   - `disagrees_with_engine` tính bằng hàm `disagreesWithEngine` của S6, không gõ tay.
 - **Thời điểm:** `created_at` rải trong 7 ngày trước lúc chạy reset, theo thứ tự mã. Danh sách luôn trông mới, và thứ tự vẫn ổn định.

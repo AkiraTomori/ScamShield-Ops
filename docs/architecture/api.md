@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (27/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã có trên nhánh `feat/s5-report` (27/11), chưa merge. Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` có trên nhánh `feat/s6-auth` (28/11), chưa merge (danh sách và chi tiết hồ sơ không có endpoint, §1). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 
@@ -121,9 +121,9 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 
 ## 4. Phía FraudOps
 
-**Phiên:** cookie `HttpOnly`, `Secure`, `SameSite=Lax`, đường dẫn `/`. Mọi route `/api/ops/*` (trừ đăng nhập) không có phiên hợp lệ → 401 `unauthorized` (SO-06-AC01).
+**Phiên:** cookie `ops_session`: `HttpOnly`, `Secure` (trừ `next dev`, OP-02), `SameSite=Lax`, đường dẫn `/`, hết hạn cố định 12 giờ. Mọi route `/api/ops/*` (trừ đăng nhập) không có phiên hợp lệ → 401 `unauthorized` (SO-06-AC01).
 
-**Chống CSRF:** ngoài `SameSite=Lax`, mọi request thay đổi dữ liệu dưới `/api/ops/*` phải có header `Origin` trùng origin của app; sai → 403 `forbidden_origin`.
+**Chống CSRF:** ngoài `SameSite=Lax`, mọi request thay đổi dữ liệu dưới `/api/ops/*` phải có header `Origin` trùng origin của app; thiếu hoặc sai → 403 `forbidden_origin`. Đăng nhập cũng kiểm.
 
 ### `POST /api/ops/session` — đăng nhập
 
@@ -133,9 +133,17 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 
 **204** + `Set-Cookie`. Sai → 401 `invalid_credentials` (không nói sai phần nào). Thời gian phản hồi khi sai tên đăng nhập và khi sai mật khẩu phải tương đương (vẫn chạy băm mật khẩu giả).
 
+| Lỗi | Khi nào |
+|---|---|
+| 403 `forbidden_origin` | Thiếu hoặc sai `Origin` (kiểm đầu tiên) |
+| 429 `rate_limited` | Quá 5 lượt/phút/IP |
+| 400 `validation_failed` | Body sai dạng; `username` (bỏ khoảng trắng đầu cuối, viết thường) rỗng, quá 64 ký tự, hoặc chứa ký tự điều khiển hay surrogate lẻ; `password` rỗng hoặc quá 200 ký tự |
+| 401 `invalid_credentials` | Sai tên, sai mật khẩu hoặc tài khoản bị khoá |
+| 500 `internal` | Lỗi không dự đoán được, thiếu `DATABASE_URL` hoặc `RATE_LIMIT_SALT` |
+
 ### `DELETE /api/ops/session` — đăng xuất
 
-**204**, xoá phiên phía server và cookie.
+**204**, xoá phiên phía server và cookie. Sai `Origin` → 403; không có phiên hợp lệ → 401 `unauthorized`.
 
 ### `POST /api/ops/cases/{caseCode}/decision`
 
@@ -145,10 +153,15 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 
 | Kết quả | Body |
 |---|---|
-| **200** | `CaseDetail.decision` (contracts §6), có `disagreesWithEngine` |
+| **200** | `DecisionRecord` = `CaseDetail.decision` (contracts §6): `{ decision, reason, decidedBy, decidedAt, disagreesWithEngine }` |
+| 403 `forbidden_origin` | Thiếu hoặc sai `Origin` |
+| 401 `unauthorized` | Không có phiên hợp lệ |
 | 400 `validation_failed` | Thiếu lý do, lý do quá ngắn/dài, kết luận không hợp lệ |
 | 404 `not_found` | Không có hồ sơ |
 | 409 `conflict` | Hồ sơ đã đóng (người khác kết luận trước). Body là dạng lỗi chung, **không** kèm kết luận; UI tải lại trang để hiện kết luận hiện có (OP-03, owner chốt 26/11) |
+| 500 `internal` | Lỗi không dự đoán được, thiếu `DATABASE_URL` |
+
+`reason` dài 10–500 ký tự sau khi trim, đếm theo cùng luật đếm ký tự với ô nhập tin (U-02).
 
 Trong **một transaction**: cập nhật case có điều kiện `status = pending_review`, ghi decision, và nếu `confirmed_scam` thì thêm các chỉ dấu `domain`/`phone`/`bank_account` vào danh sách đã xác minh (SO-08-AC01). `not_scam` và `insufficient_evidence` không thêm gì (SO-08-AC03).
 
