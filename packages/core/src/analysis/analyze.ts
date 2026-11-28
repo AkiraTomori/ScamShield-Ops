@@ -236,7 +236,7 @@ export async function analyzeMessage(
 }
 
 /** Deterministic checks for every url and domain indicator (SO-02-AC02). */
-function runChecks(
+export function runChecks(
   extracted: ExtractedIndicators,
   deps: Pick<AnalysisDeps, "brands" | "urlLists">,
 ): { indicators: Indicator[]; signals: Signal[] } {
