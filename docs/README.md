@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; S6 T-060…T-063 đã merge, PR #51; T-070 xong ở local trên nhánh `feat/s7-related-cases`, chưa commit, chưa merge).
+Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; S6 T-060…T-063 đã merge, PR #51; T-070 xong ở local trên nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge).
 
 | Phần | Trạng thái |
 |---|---|
@@ -107,7 +107,7 @@ Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã
 | S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); T-040 (nền giao diện) xong 27/11; T-041 (trang `/`) xong 27/11 (owner chấp nhận điện thoại giả lập là đủ tạm thời, chưa thử trên máy thật); T-042 (khối kết quả) xong 27/11, còn phải xoá `/xem-truoc` trước 30/11; cả ba đã merge vào `main` (PR #48, 27/11), chưa deploy; trễ so với lịch 24–25/11; schema `AnalysisResult` đã có trên `main` (PR #46) |
 | S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); T-050…T-053 đã merge vào `main` (PR #50, 27/11), chưa deploy; đã kiểm ở local 27/11 ([§13](./design/report-flow.md#13-kết-quả-kiểm-27112026)): tóm tắt AI thường thiếu khi Groq trả 429. Chỗ khác bản duyệt và RP-06: owner chốt 27/11 |
 | S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); T-060…T-063 xong ở local 28/11, đã merge vào `main` (PR #51, 28/11), chưa deploy ([§11](./design/fraudops.md#11-ghi-chú-cài-đặt-28112026)) |
-| S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); T-070 xong ở local 28/11 (nhánh `feat/s7-related-cases`, chưa merge, chưa deploy, [§8](./design/related-cases.md#8-ghi-chú-cài-đặt-28112026)); không cần migration |
+| S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); T-070 xong ở local 28/11 (nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge, chưa deploy, [§8](./design/related-cases.md#8-ghi-chú-cài-đặt-28112026)); không cần migration |
 | S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |
 | S9 dữ liệu demo, seed/reset, E2E ([design](./design/demo-data.md)) | **Owner duyệt thiết kế 26/11** (DM-01…DM-03 theo đề xuất; DM-04: một ngân hàng); chưa có mã; T-093 không bị chặn |
 | Bộ eval SO-09 ([design S10](./design/eval-suite.md)) | 20/60–100 câu; held-out chưa tạo; dev chạy một lượt 27/11; **owner duyệt thiết kế S10 26/11** (EV-01…EV-05 theo đề xuất); có runner tối thiểu cho tập dev (một phần T-101, PR #47) |

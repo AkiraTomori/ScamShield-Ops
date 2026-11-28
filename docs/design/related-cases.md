@@ -1,6 +1,6 @@
 # Thiết kế slice S7: hồ sơ liên quan theo chỉ dấu chung (T-070)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S7 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-070 xong ở local 28/11** (nhánh `feat/s7-related-cases`, chưa commit, chưa merge, chưa deploy; ghi chú ở [§8](#8-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). SO-07 là **P1, thứ 2 trong thứ tự cắt** ở plan §7. T-070 được làm theo yêu cầu ngày 28/11; quyết định cắt hay giữ P1 vẫn của owner. T-070 phụ thuộc T-062 (chi tiết hồ sơ, S6). Lịch cũ đặt việc này ở 29/11.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S7 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-070 xong ở local 28/11** (nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge, chưa deploy; ghi chú ở [§8](#8-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). SO-07 là **P1, thứ 2 trong thứ tự cắt** ở plan §7. T-070 được làm theo yêu cầu ngày 28/11; quyết định cắt hay giữ P1 vẫn của owner. T-070 phụ thuộc T-062 (chi tiết hồ sơ, S6). Lịch cũ đặt việc này ở 29/11.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-07](../spec/ScamShield-v1.md): AC01, AC02.
