@@ -1,6 +1,6 @@
 # Thiết kế slice S7: hồ sơ liên quan theo chỉ dấu chung (T-070)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S7 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-070 xong ở local 28/11** (nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge, chưa deploy; ghi chú ở [§8](#8-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). SO-07 là **P1, thứ 2 trong thứ tự cắt** ở plan §7. T-070 được làm theo yêu cầu ngày 28/11; quyết định cắt hay giữ P1 vẫn của owner. T-070 phụ thuộc T-062 (chi tiết hồ sơ, S6). Lịch cũ đặt việc này ở 29/11.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S7 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-070 xong ở local 28/11** (đã merge vào `main` (PR #52, 28/11), chưa deploy; ghi chú ở [§8](#8-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). **Owner chốt 28/11 XM-04** (không so khớp thêm tên miền nền tảng dùng chung, §2.1); xong ở local 28/11, chưa merge. SO-07 là **P1, thứ 2 trong thứ tự cắt** ở plan §7. T-070 được làm theo yêu cầu ngày 28/11; quyết định cắt hay giữ P1 vẫn của owner. T-070 phụ thuộc T-062 (chi tiết hồ sơ, S6). Lịch cũ đặt việc này ở 29/11.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-07](../spec/ScamShield-v1.md): AC01, AC02.
@@ -35,6 +35,8 @@ Hai **case** liên quan khi analysis của chúng có chung ít nhất một c�
 - **Dịch vụ rút gọn URL** (`url-lists.json`, P-04). Mọi tin dùng cùng một dịch vụ rút gọn sẽ bị nối với nhau, dù không liên quan.
 
 Đề xuất: **không so khớp** hai loại tên miền này. Danh sách đọc từ hai file dữ liệu đã có, không thêm danh sách thứ ba. Đây là thay đổi hành vi so với chữ của spec; owner chốt ST-01 ngày 26/11 và câu SO-07-AC01 đã được sửa.
+
+**Bổ sung 28/11 (XM-04, owner chốt; có mã ở local 28/11, chưa merge):** không so khớp thêm tên miền nền tảng dùng chung, đọc từ khoá mới `sharedPlatforms` trong `url-lists.json`. Đây là loại danh sách thứ ba, thay câu "không thêm danh sách thứ ba" ở trên; file dữ liệu vẫn là hai. Danh sách và lý do ở [verified-indicators §9](./verified-indicators.md#9-quyết-định-owner-chốt-26112026).
 
 Số tổng đài `1800`/`1900` giữ nguyên trong so khớp. Hai báo cáo cùng một số tổng đài lạ là tín hiệu có ích.
 
@@ -109,12 +111,12 @@ Tiền tố `ST-` (liên kết hồ sơ, slice S7), chưa dùng ở tài liệu 
 
 | ID | Câu hỏi | Phương án và đánh đổi | Đề xuất |
 |---|---|---|---|
-| ST-01 | Có loại tên miền chính thức và dịch vụ rút gọn khỏi so khớp không (§2.1) | (a) Loại cả hai. Không nối tin lừa đảo với tin thật; lệch chữ SO-07-AC01, phải sửa spec. (b) Không loại, đúng chữ spec. Hồ sơ có tên miền thật sẽ "liên quan" tới mọi tin thật của thương hiệu đó, làm nhân viên hiểu sai | (a) · **Owner chốt 26/11** |
+| ST-01 | Có loại tên miền chính thức và dịch vụ rút gọn khỏi so khớp không (§2.1) | (a) Loại cả hai. Không nối tin lừa đảo với tin thật; lệch chữ SO-07-AC01, phải sửa spec. (b) Không loại, đúng chữ spec. Hồ sơ có tên miền thật sẽ "liên quan" tới mọi tin thật của thương hiệu đó, làm nhân viên hiểu sai | (a) · **Owner chốt 26/11**; mở rộng bởi XM-04, owner chốt 28/11 |
 | ST-02 | Hình dạng `relatedCases` | (a) `{ total, items }`, mỗi chỉ dấu chung có `type`. Sửa contracts §6. (b) Giữ mảng như contracts hiện tại: không biết tổng số khi bị giới hạn 20, không biết chỉ dấu thuộc loại nào | (a) · **Owner chốt 26/11** |
 
 ## 8. Ghi chú cài đặt (28/11/2026)
 
-**Mã:** `packages/core/src/cases/related.ts` (`findRelatedCases`, `countRelatedCases`, `UNMATCHED_DOMAINS`), `apps/web/src/features/cases/RelatedCasesPanel.tsx`, cột ở `CaseList.tsx`.
+**Mã:** `packages/core/src/cases/related.ts` (`findRelatedCases`, `countRelatedCases`), `core/src/indicators/unmatched.ts` (`UNMATCHED_DOMAINS`, chuyển sang đây ở T-082), `apps/web/src/features/cases/RelatedCasesPanel.tsx`, cột ở `CaseList.tsx`.
 
 **Khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
 - Kiểu trả về giữ tên `RelatedCases` (đã có từ T-062), không phải `RelatedCasesResult` ở §3.

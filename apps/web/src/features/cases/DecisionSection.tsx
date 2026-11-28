@@ -11,7 +11,7 @@ import { TextArea } from "../../components/TextArea";
 import { vi } from "../../copy/vi";
 import { formatUpdatedAt } from "../lookup/format-time";
 import { DecisionCard } from "./DecisionCard";
-import { DecisionForm } from "./DecisionForm";
+import { DecisionForm, type IndicatorsToConfirm } from "./DecisionForm";
 import { caseHref, LIST_PATH } from "./list-url";
 import { submitDecision } from "./submit-decision";
 
@@ -28,10 +28,12 @@ export function DecisionSection({
   caseCode,
   closed,
   decision,
+  toConfirm,
 }: {
   caseCode: string;
   closed: boolean;
   decision: DecisionRecord | null;
+  toConfirm: IndicatorsToConfirm;
 }) {
   const t = vi.ops.decision;
   const id = useId();
@@ -124,6 +126,7 @@ export function DecisionSection({
 
       {!closed && !decision && !taken ? (
         <DecisionForm
+          toConfirm={toConfirm}
           choice={choice}
           reason={reason}
           sending={sending}

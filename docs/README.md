@@ -38,7 +38,7 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 | [`architecture/system-design.md`](./architecture/system-design.md) | **Kiến trúc:** modular monolith, triển khai, ranh giới module, truy cập dữ liệu; **§11 sơ đồ toàn hệ thống** | Bản nháp | 2 |
 | [`architecture/contracts.md`](./architecture/contracts.md) | Hợp đồng dữ liệu: enum, chỉ dấu, signal, kết quả, hồ sơ, đầu ra LLM, mã lỗi | Bản nháp | 3 |
 | [`architecture/api.md`](./architecture/api.md) | Endpoint công khai và FraudOps, ví dụ request/response, mã lỗi | Bản nháp | 3 |
-| [`architecture/data-model.md`](./architecture/data-model.md) | Bảng P0, ràng buộc, giao dịch, quyền riêng tư, seed/reset, migration | **Đã duyệt 21/11** (DB-05 còn là đề xuất) | 3 |
+| [`architecture/data-model.md`](./architecture/data-model.md) | Bảng P0, ràng buộc, giao dịch, quyền riêng tư, seed/reset, migration | **Đã duyệt 21/11** (DB-05 còn là đề xuất); thêm bảng P1 ngày 28/11 | 3 |
 | [`architecture/codebase.md`](./architecture/codebase.md) | Cây thư mục, phụ thuộc module, lệnh, test theo tầng | Bản nháp | 4 |
 | [`conventions/`](./conventions/README.md) | Cách viết code chung, backend, frontend, hợp đồng dữ liệu; thư viện được phép | Bản nháp | 4 |
 
@@ -50,8 +50,8 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 | [`design/scamshield-ui.md`](./design/scamshield-ui.md) | Slice S4: module và ranh giới client, state machine, phụ thuộc schema, bảng nhãn signal / mã detail, kiểm thử | **Owner duyệt 26/11**; T-040…T-042 đã merge (PR #48) | 5 |
 | [`design/report-flow.md`](./design/report-flow.md) | Slice S5: route báo cáo, tóm tắt AI, mã bí mật, tra trạng thái không lộ hồ sơ, sửa state machine S4; che ghi chú (RP-06) | **Owner duyệt 26/11**; T-050…T-053 đã merge (PR #50, 27/11) | 5 |
 | [`design/fraudops.md`](./design/fraudops.md) | Slice S6: kiểm phiên sát dữ liệu, đăng nhập/phiên/Origin, danh sách, chi tiết, kết luận và xung đột | **Owner duyệt 26/11**; T-060…T-063 đã merge (PR #51, 28/11) | 5 |
-| [`design/related-cases.md`](./design/related-cases.md) | Slice S7 (P1): hồ sơ liên quan theo chỉ dấu chung, loại tên miền quá phổ biến, truy vấn, khối giao diện | **Owner duyệt 26/11**; T-070 xong ở local 28/11, chưa merge | 5 |
-| [`design/verified-indicators.md`](./design/verified-indicators.md) | Slice S8 (P1): ghi chỉ dấu khi xác nhận lừa đảo, engine dùng lại, gỡ có lý do, bảng `confirmed_indicators` | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/related-cases.md`](./design/related-cases.md) | Slice S7 (P1): hồ sơ liên quan theo chỉ dấu chung, loại tên miền quá phổ biến, truy vấn, khối giao diện | **Owner duyệt 26/11**; T-070 đã merge (PR #52) | 5 |
+| [`design/verified-indicators.md`](./design/verified-indicators.md) | Slice S8 (P1): ghi chỉ dấu khi xác nhận lừa đảo, engine dùng lại, gỡ có lý do, bảng `confirmed_indicators` | **Owner duyệt 26/11**; T-082, T-080, T-081 xong ở local 28/11, PR nháp #53, chưa merge | 5 |
 | [`design/demo-data.md`](./design/demo-data.md) | Slice S9: tin demo một nguồn, seed/reset một đường code, nội dung 24 case mẫu, E2E 6 bước | **Owner duyệt 26/11**, chưa có mã | 5 |
 | [`design/eval-suite.md`](./design/eval-suite.md) | Slice S10: thành phần 80 câu, chia tập chống rò rỉ, runner gọi đúng pipeline, chỉ số B.3, đóng băng và chặn chạy held-out | **Owner duyệt 26/11**; có runner tập dev (một phần T-101) | 5 |
 | [`design/submission.md`](./design/submission.md) | Slice S11: đường găng nộp bài, nội dung README/slide/A4/video, đóng gói zip có kiểm secret, giữ link sống | **Owner duyệt 26/11**, chưa có mã | 5 |
@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; S6 T-060…T-063 đã merge, PR #51; T-070 xong ở local trên nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge).
+Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; S6 T-060…T-063 đã merge, PR #51; T-070 đã merge, PR #52; T-082, T-080, T-081 xong ở local trên nhánh `feat/s8-confirmed-indicators`, PR nháp #53, chưa merge).
 
 | Phần | Trạng thái |
 |---|---|
@@ -107,8 +107,8 @@ Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã
 | S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); T-040 (nền giao diện) xong 27/11; T-041 (trang `/`) xong 27/11 (owner chấp nhận điện thoại giả lập là đủ tạm thời, chưa thử trên máy thật); T-042 (khối kết quả) xong 27/11, còn phải xoá `/xem-truoc` trước 30/11; cả ba đã merge vào `main` (PR #48, 27/11), chưa deploy; trễ so với lịch 24–25/11; schema `AnalysisResult` đã có trên `main` (PR #46) |
 | S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); T-050…T-053 đã merge vào `main` (PR #50, 27/11), chưa deploy; đã kiểm ở local 27/11 ([§13](./design/report-flow.md#13-kết-quả-kiểm-27112026)): tóm tắt AI thường thiếu khi Groq trả 429. Chỗ khác bản duyệt và RP-06: owner chốt 27/11 |
 | S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); T-060…T-063 xong ở local 28/11, đã merge vào `main` (PR #51, 28/11), chưa deploy ([§11](./design/fraudops.md#11-ghi-chú-cài-đặt-28112026)) |
-| S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); T-070 xong ở local 28/11 (nhánh `feat/s7-related-cases`, PR nháp #52, chưa merge, chưa deploy, [§8](./design/related-cases.md#8-ghi-chú-cài-đặt-28112026)); không cần migration |
-| S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |
+| S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); T-070 xong ở local 28/11, đã merge vào `main` (PR #52), chưa deploy ([§8](./design/related-cases.md#8-ghi-chú-cài-đặt-28112026)); không cần migration |
+| S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); T-082 xong ở local 28/11 (nhánh `feat/s8-confirmed-indicators`, PR nháp #53, chưa merge, chưa deploy, [§11](./design/verified-indicators.md#11-ghi-chú-cài-đặt-28112026)); T-080 xong ở local 28/11 ([§12](./design/verified-indicators.md#12-ghi-chú-cài-đặt-t-080-28112026)); T-081 xong ở local 28/11 ([§13](./design/verified-indicators.md#13-ghi-chú-cài-đặt-t-081-28112026)); migration `0001_confirmed_indicators` chưa chạy trên DB deploy; owner chốt 28/11 XM-04 (loại tên miền nền tảng dùng chung), xong ở local 28/11, chưa merge ([§14](./design/verified-indicators.md#14-ghi-chú-cài-đặt-xm-04-28112026)) |
 | S9 dữ liệu demo, seed/reset, E2E ([design](./design/demo-data.md)) | **Owner duyệt thiết kế 26/11** (DM-01…DM-03 theo đề xuất; DM-04: một ngân hàng); chưa có mã; T-093 không bị chặn |
 | Bộ eval SO-09 ([design S10](./design/eval-suite.md)) | 20/60–100 câu; held-out chưa tạo; dev chạy một lượt 27/11; **owner duyệt thiết kế S10 26/11** (EV-01…EV-05 theo đề xuất); có runner tối thiểu cho tập dev (một phần T-101, PR #47) |
 | S11 nộp bài ([design](./design/submission.md)) | **Owner duyệt thiết kế 26/11** (NB-01…NB-03 theo đề xuất; NB-04: vai A); hạn nộp trước 03/12, mục tiêu 02/12 tối |

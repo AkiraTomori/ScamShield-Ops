@@ -50,6 +50,7 @@ function setup(
     models: { signals: "m-signals", explain: "m-explain" },
     brands: FAKE,
     urlLists: URL_LISTS,
+    verifiedIndicators: async () => [],
     now: () => new Date(clock.t),
     random: () => "abc123",
     newId: () => "6f1c0b1e-5a3e-4e7b-9d0a-2c6f1b8a9d10",

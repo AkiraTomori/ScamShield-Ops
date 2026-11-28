@@ -81,6 +81,27 @@ describe("data files", () => {
     expect(URL_LISTS.shorteners.length).toBeGreaterThan(0);
     expect(URL_LISTS.riskyTlds.length).toBeGreaterThan(0);
   });
+
+  it("XM-04: url-lists.json holds the 16 shared platforms the owner listed", () => {
+    expect(URL_LISTS.sharedPlatforms.map((entry) => entry.value)).toEqual([
+      "google.com",
+      "google.com.vn",
+      "forms.gle",
+      "facebook.com",
+      "fb.com",
+      "fb.me",
+      "m.me",
+      "zalo.me",
+      "t.me",
+      "telegram.me",
+      "wa.me",
+      "youtube.com",
+      "youtu.be",
+      "tiktok.com",
+      "instagram.com",
+      "weebly.com",
+    ]);
+  });
 });
 
 describe("parseAnalysisEnv", () => {

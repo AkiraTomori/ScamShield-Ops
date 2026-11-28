@@ -13,7 +13,8 @@ export interface EvalPipelineDepsOptions {
 
 /**
  * Dependencies of `analyzeMessage` for eval (eval-suite §3.1): production model settings and data
- * files; no external lookup, no daily cap, nothing stored. No rate-limit retry either: production
+ * files; no external lookup, no daily cap, nothing stored. The confirmed-indicator list is always
+ * empty, so a measurement never depends on what staff have concluded (verified-indicators §3). No rate-limit retry either: production
  * does not retry a 429, so neither does the measurement.
  */
 export function createEvalPipelineDeps(options: EvalPipelineDepsOptions): AnalysisDeps {
@@ -23,6 +24,7 @@ export function createEvalPipelineDeps(options: EvalPipelineDepsOptions): Analys
     llmOptions: { reasoningEffort: options.reasoningEffort },
     brands: BRANDS,
     urlLists: URL_LISTS,
+    verifiedIndicators: async () => [],
     now: options.now ?? (() => new Date()),
     random: () => randomBytes(8).toString("hex"),
     newId: randomUUID,

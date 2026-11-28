@@ -8,6 +8,13 @@
       "when": 1795253929769,
       "tag": "0000_p0_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795856863520,
+      "tag": "0001_confirmed_indicators",
+      "breakpoints": true
     }
   ]
 }

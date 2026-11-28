@@ -5,13 +5,20 @@ import { vi } from "../../copy/vi";
 import { toViewModel } from "../analysis/view-model";
 import { formatUpdatedAt } from "../lookup/format-time";
 import { AiPanel } from "./AiPanel";
+import type { IndicatorsToConfirm } from "./DecisionForm";
 import { DecisionSection } from "./DecisionSection";
 import { EvidencePanel } from "./EvidencePanel";
 import { LIST_PATH } from "./list-url";
 import { RelatedCasesPanel } from "./RelatedCasesPanel";
 
 /** Evidence and AI judgement side by side from 1024px, evidence first (fraudops §5.2). */
-export function CaseDetailView({ detail }: { detail: CaseDetail }) {
+export function CaseDetailView({
+  detail,
+  toConfirm,
+}: {
+  detail: CaseDetail;
+  toConfirm: IndicatorsToConfirm;
+}) {
   const t = vi.ops.detail;
   // The same labels and sentences as the sender's result; only the layout differs.
   const view = toViewModel(detail.analysis);
@@ -47,6 +54,7 @@ export function CaseDetailView({ detail }: { detail: CaseDetail }) {
           caseCode={detail.caseCode}
           closed={detail.status === "closed"}
           decision={detail.decision}
+          toConfirm={toConfirm}
         />
       </div>
     </div>

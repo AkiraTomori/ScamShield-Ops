@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` đã merge vào `main` (PR #51, 28/11) (danh sách và chi tiết hồ sơ không có endpoint, §1). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` đã merge vào `main` (PR #51, 28/11) (danh sách và chi tiết hồ sơ không có endpoint, §1); `POST …/confirmed-indicators/{id}/removal` có từ T-082, và `POST /api/analyses` tra danh sách đã xác minh từ T-080, thêm một nguyên nhân 500 (cùng nhánh `feat/s8-confirmed-indicators`, 28/11, chưa merge). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 
@@ -68,7 +68,7 @@ Content-Type: application/json
 1. Kiểm giới hạn tần suất → 429, **không** gọi LLM (SO-01-AC04).
 2. Parse body; rỗng, chỉ khoảng trắng hay > 2.000 ký tự → 400, **không** gọi LLM (SO-01-AC02).
 3. Che dữ liệu nạn nhân (SO-01-AC03); từ đây chỉ dùng bản đã che.
-4. Trích chỉ dấu, chạy phép kiểm tất định và tra cứu ngoài (song song, có timeout); gọi LLM trích signal.
+4. Trích chỉ dấu, chạy phép kiểm tất định, tra danh sách chỉ dấu đã xác minh (SO-08-AC02); rồi tra cứu ngoài (song song, có timeout) và gọi LLM trích signal.
 5. Quy tắc tính verdict (P4) → LLM viết giải thích → chọn khuyến nghị.
 6. Lưu analysis, trả 200.
 
@@ -78,7 +78,7 @@ Hết trần 20 giây ở bất kỳ bước nào sau bước 3 → vẫn **200*
 |---|---|
 | 400 `validation_failed` | Bước 2, kể cả body không phải JSON, có trường lạ hoặc lớn hơn 64 KB |
 | 429 `rate_limited` | Bước 1 |
-| 500 `internal` | Lỗi không dự đoán được (ví dụ không ghi được DB), bộ đếm tần suất lỗi hoặc quá 1 s, thiếu biến môi trường của pipeline |
+| 500 `internal` | Lỗi không dự đoán được (ví dụ không ghi được DB), bộ đếm tần suất lỗi hoặc quá 1 s, không đọc được danh sách chỉ dấu đã xác minh hoặc quá 1 s, thiếu biến môi trường của pipeline |
 
 ### `POST /api/analyses/{analysisId}/report`
 
@@ -163,7 +163,7 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 
 `reason` dài 10–500 ký tự sau khi trim, đếm theo cùng luật đếm ký tự với ô nhập tin (U-02).
 
-Trong **một transaction**: cập nhật case có điều kiện `status = pending_review`, ghi decision, và nếu `confirmed_scam` thì thêm các chỉ dấu `domain`/`phone`/`bank_account` vào danh sách đã xác minh (SO-08-AC01). `not_scam` và `insufficient_evidence` không thêm gì (SO-08-AC03).
+Trong **một transaction**: cập nhật case có điều kiện `status = pending_review`, ghi decision, và nếu `confirmed_scam` thì thêm các chỉ dấu `domain`/`phone`/`bank_account` vào danh sách đã xác minh, trừ tên miền chính thức và tên miền rút gọn (SO-08-AC01). `not_scam` và `insufficient_evidence` không thêm gì (SO-08-AC03).
 
 ### `POST /api/ops/confirmed-indicators/{id}/removal`
 
@@ -171,7 +171,17 @@ Trong **một transaction**: cập nhật case có điều kiện `status = pend
 { "reason": "Tên miền đã được chủ sở hữu thật thu hồi." }
 ```
 
-**200** `{ "removed": true }`. Gỡ là xoá mềm (giữ lịch sử, người gỡ, lý do, thời điểm). Đã gỡ trước đó → 409 `conflict`. Không tồn tại → 404.
+`reason` dài 10–500 ký tự, cùng luật với lý do kết luận. Gỡ là xoá mềm (giữ lịch sử, người gỡ, lý do, thời điểm).
+
+| Kết quả | Body |
+|---|---|
+| **200** | `{ "removed": true }` |
+| 403 `forbidden_origin` | Thiếu hoặc sai `Origin` |
+| 401 `unauthorized` | Không có phiên hợp lệ |
+| 400 `validation_failed` | `{id}` không phải UUID; lý do thiếu, quá ngắn hoặc quá dài (`fields.reason`) |
+| 404 `not_found` | Không có chỉ dấu với `id` này |
+| 409 `conflict` | Đã gỡ trước đó; `message` là "Chỉ dấu này đã được gỡ trước đó." |
+| 500 `internal` | Lỗi không dự đoán được, thiếu `DATABASE_URL` |
 
 ## 5. Giới hạn tần suất
 

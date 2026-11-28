@@ -7,6 +7,7 @@ export * from "./analysis";
 export * from "./reports";
 export * from "./auth";
 export * from "./cases";
+export * from "./confirmed-indicators";
 export { upsertDemoStaff } from "./demo";
 export { extractIndicators, type ExtractedIndicators } from "./indicators";
 export {

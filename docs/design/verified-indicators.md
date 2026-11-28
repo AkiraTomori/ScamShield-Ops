@@ -1,6 +1,6 @@
 # Thiết kế slice S8: chỉ dấu đã xác minh quay lại engine (T-080, T-081)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, PR nháp #53, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). **T-080 xong ở local 28/11** (engine tra danh sách, signal và check `verified_indicator`; [§12](#12-ghi-chú-cài-đặt-t-080-28112026)). **T-081 xong ở local 28/11** (trang `/ops/chi-dau`, gỡ có lý do; [§13](#13-ghi-chú-cài-đặt-t-081-28112026)). **Owner chốt 28/11 XM-04** (loại thêm tên miền nền tảng dùng chung, [§9](#9-quyết-định-owner-chốt-26112026)); **XM-04 xong ở local 28/11**, chưa merge, chưa deploy ([§14](#14-ghi-chú-cài-đặt-xm-04-28112026)). SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-08](../spec/ScamShield-v1.md): AC01…AC03, P1, P4.
@@ -26,11 +26,11 @@
 
 ## 2. Ghi chỉ dấu khi kết luận (SO-08-AC01, AC03)
 
-Thân của `recordConfirmedIndicators(tx, caseId, staffUserId)`, móc nối đã chừa ở S6 §5.3 (28/11: mới là chú thích trong `core/src/cases/decide.ts`, chưa có hàm; [fraudops §11](./fraudops.md#11-ghi-chú-cài-đặt-28112026)). Hàm chạy **trong cùng giao dịch** với kết luận. Lỗi ở đây thì kết luận cũng rollback, để không có case `confirmed_scam` mà thiếu chỉ dấu.
+Thân của `recordConfirmedIndicators(tx, caseId, staffUserId)`, móc nối đã chừa ở S6 §5.3 (T-082, 28/11: đã có hàm, [§11](#11-ghi-chú-cài-đặt-28112026)). Hàm chạy **trong cùng giao dịch** với kết luận. Lỗi ở đây thì kết luận cũng rollback, để không có case `confirmed_scam` mà thiếu chỉ dấu.
 
 - **Chỉ chạy khi `decision = confirmed_scam`.** `not_scam` và `insufficient_evidence` không gọi hàm này (SO-08-AC03).
 - **Nguồn:** các dòng `analysis_indicators` của analysis thuộc case, gồm `domain`, `phone`, `bank_account`. Không dùng `url` hay `brand`.
-- **Loại trừ (XM-01):** **không bao giờ** ghi tên miền chính thức trong `brands.json`, và không ghi tên miền dịch vụ rút gọn trong `url-lists.json`. Danh sách loại trừ là cùng danh sách với S7 ST-01. Lý do:
+- **Loại trừ (XM-01):** **không bao giờ** ghi tên miền chính thức trong `brands.json`, và không ghi tên miền dịch vụ rút gọn trong `url-lists.json`. Danh sách loại trừ là cùng danh sách với S7 ST-01. Từ 28/11, XM-04 thêm tên miền nền tảng dùng chung vào danh sách này (§9; cài đặt ở §14). Lý do:
   - Tin lừa đảo hay chèn tên miền thật để trông đáng tin.
   - Nếu tên miền thật vào danh sách, R1 sẽ đẩy **mọi tin thật** của thương hiệu đó (kể cả M2) lên `high_risk`. Đây là lỗi nặng nhất slice này có thể gây ra.
 - **Đã có trong danh sách** (dòng chưa gỡ, cùng `type` và `normalized`): `INSERT … ON CONFLICT DO NOTHING` dựa trên UNIQUE một phần. Dòng cũ giữ nguyên hồ sơ nguồn và người xác nhận đầu tiên.
@@ -147,9 +147,90 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 | XM-01 | Có loại tên miền chính thức và dịch vụ rút gọn khi ghi chỉ dấu không (§2) | (a) Loại. Không bao giờ biến tên miền thật thành "đã xác minh lừa đảo"; lệch chữ SO-08-AC01 ("các chỉ dấu của case"), phải sửa spec. (b) Ghi tất cả, đúng chữ spec. Một kết luận có thể đẩy mọi tin thật của một ngân hàng lên `high_risk` cho tới khi có người gỡ | (a). Nên chốt cùng ST-01 của S7 · **Owner chốt 26/11** |
 | XM-02 | Số tổng đài `1800`/`1900` của tổ chức thật xuất hiện trong tin lừa đảo | `brands.json` không có số điện thoại, nên chưa loại được. (a) Chấp nhận; nhân viên thấy trước ở form (§2) và gỡ tay khi cần. (b) Thêm số tổng đài chính thức vào `brands.json`: cần nguồn tra cho từng số, tốn thời gian | (a) · **Owner chốt 26/11** |
 | XM-03 | Có cắt S8 không | Thứ 1 trong thứ tự cắt (plan §7). Cần một migration mới, đụng vào engine (A), giao dịch kết luận (C) và một trang (B) | **Chưa cắt**, owner chốt 26/11; xem lại cùng các P1 khác ngày 27/11 (team-split §4) |
+| XM-04 | Có loại tên miền nền tảng dùng chung không (phát hiện 1 của review PR #53) | (a) Loại ở cả XM-01 và ST-01. (b) Chỉ XM-01: hồ sơ liên quan vẫn nối theo tên miền nền tảng. (c) Giữ nguyên, dựa vào xem trước và gỡ tay | (a) · **Owner chốt 28/11**. Danh sách 16 tên: `google.com`, `google.com.vn`, `forms.gle`, `facebook.com`, `fb.com`, `fb.me`, `m.me`, `zalo.me`, `t.me`, `telegram.me`, `wa.me`, `youtube.com`, `youtu.be`, `tiktok.com`, `instagram.com`, `weebly.com`. Đặt ở khoá riêng `sharedPlatforms` trong `url-lists.json`, không trộn vào `shorteners` (quy tắc verdict không đổi). Nguồn của các mục là quyết định này của owner (comment ở PR #53), không phải danh sách đã công bố: ngoại lệ được chấp nhận. Không loại tên miền riêng theo người dùng (`*.github.io`, `*.pages.dev`, `*.blogspot.com`…) |
 
 ## 10. Rủi ro
 
 - **Dương tính giả lan rộng:** một chỉ dấu sai làm mọi tin sau có chỉ dấu đó ra `high_risk`. XM-01, phần xem trước ở form và việc gỡ có lý do là ba lớp chặn.
+- **Đánh đổi của XM-04:** link như `zalo.me/<số>` hay `t.me/<tên>` không còn tên miền để so khớp, và phần sau dấu `/` chưa được trích thành chỉ dấu. Trích phần đó là việc chưa quyết, không nằm trong XM-04. Dòng đã ghi từ trước sẽ hết khớp (lọc cả lúc đọc, §12) nhưng vẫn hiện ở `/ops/chi-dau` tới khi được gỡ.
 - **Eval lệch:** nếu eval runner gọi engine với DB thật, kết quả thay đổi theo những gì giám khảo đã kết luận. §3 bắt buộc eval dùng deps rỗng.
 - **Lịch:** plan đặt S8 ở 29/11, sát hạn đóng băng 30/11, và còn cần owner chạy migration trên DB deploy. Nếu cắt, engine vẫn dùng deps rỗng và không phải sửa gì.
+
+## 11. Ghi chú cài đặt (28/11/2026)
+
+**T-082, nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** `packages/core/src/confirmed-indicators/{select,record,remove}.ts`, `core/src/db/schema/confirmed-indicators.ts`, migration `0001_confirmed_indicators`, `core/src/indicators/unmatched.ts`, `apps/web/src/server/ops-indicator-removal.ts`, `apps/web/src/app/api/ops/confirmed-indicators/[id]/removal/`, khối xem trước trong `features/cases/DecisionForm.tsx`.
+
+**Chỗ khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- `recordConfirmedIndicators(tx, caseId, staffUserId, at)`: thêm `at` để `confirmed_at` bằng đúng `decided_at`; **bỏ** tham số `exclusions`, hàm luôn dùng danh sách loại trừ của XM-01 nên nơi gọi không truyền được danh sách rỗng.
+- Thêm `listIndicatorsToConfirm(session, caseId, deps)` cho phần xem trước. Xem trước và ghi đọc cùng `analysis_indicators`, cùng qua `selectIndicatorsToConfirm`; `CaseDetail` (contracts §6) không đổi.
+- Danh sách loại trừ (`UNMATCHED_DOMAINS`, dùng chung với S7 ST-01) chuyển sang `core/src/indicators/unmatched.ts`, tránh vòng phụ thuộc `cases` ↔ `confirmed-indicators`.
+- `removed_by` có FK `ON DELETE RESTRICT` (§4 không ghi hành động).
+- Xem trước liệt kê **cả** chỉ dấu đã có trong danh sách; khi ghi, dòng cũ giữ nguyên.
+- Xem trước hiện ngay dưới nhóm lựa chọn, trong vùng `aria-live`.
+- `{id}` không phải UUID trả 400 không kèm `fields`.
+
+**Chưa có trong T-082:** `listConfirmedIndicators` (làm ở T-081, §13), bước reset của seed (T-090); `findVerifiedMatches` và signal `verified_indicator` làm ở T-080 (§12).
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1012 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start` và Edge headless, xoá sau khi kiểm: xem trước đúng ở 1280px và 360px, không có link, không cuộn ngang, ẩn khi chọn "Không phải lừa đảo", câu trống khi hồ sơ không có gì để thêm; kết luận `confirmed_scam` ghi 3 dòng, không ghi `momo.vn`; route gỡ trả 403, 401, 400, 404, 200, rồi 409.
+
+**Chưa kiểm:** bản deploy; Safari; trình đọc màn hình; migration trên DB deploy.
+
+**Cần biết khi triển khai:**
+- **Chạy migration trước khi deploy mã này.** Thiếu bảng thì mọi kết luận `confirmed_scam` trả 500 (giao dịch rollback) và route gỡ trả 500. DB local đã có từ trước cũng phải chạy `npm run db:migrate`.
+- Hồ sơ đã kết luận `confirmed_scam` trước khi có bảng không được ghi bù.
+- Gỡ bằng giao diện ở `/ops/chi-dau` (T-081, §13). Từ T-080 danh sách ảnh hưởng kết quả phân tích (§12).
+
+## 12. Ghi chú cài đặt T-080 (28/11/2026)
+
+**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** `core/src/confirmed-indicators/lookup.ts` (`findVerifiedMatches`), bước `applyConfirmedList` trong `core/src/analysis/analyze.ts`, nối ở `createAnalysisDeps`; runner eval truyền hàm luôn trả rỗng. `rules-v1` và prompt **không đổi**, nên không chạy lại eval tập dev.
+
+**Chỗ khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- `findVerifiedMatches` áp **cả lúc đọc** danh sách loại trừ của XM-01: tên miền được thêm vào `brands.json` sau khi đã ghi thì không còn khớp.
+- `AnalysisDeps.verifiedIndicators` là trường **bắt buộc**, để không nơi nào bỏ sót danh sách mà vẫn typecheck được.
+- Tin không có tên miền, SĐT hay số tài khoản thì không truy vấn.
+- Signal `verified_indicator` đứng **đầu** danh sách signal; check đứng sau các check khác của chỉ dấu.
+- Lỗi hoặc quá 1 s: log `verified_lookup_failed` rồi ném lỗi mới, không mang theo lỗi gốc (lỗi của driver chứa giá trị truy vấn).
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1028 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start`, không gọi model (trần LLM đã hết, key giả): M3 trước kết luận `inconclusive`; báo cáo M1 rồi kết luận `confirmed_scam`; M3 ra `high_risk` R1 kèm `llm_unavailable`; Edge headless 360px hiện câu của SO-08-AC02 với nhãn *Kiểm tra*, câu "AI chưa chạy được", check "Đã được đội vận hành xác minh", không có link, không cuộn ngang; gỡ qua API rồi dán lại thì hết cảnh báo.
+
+**Số đo eval:** eval truyền danh sách rỗng, nên độ trễ eval không gồm một lượt truy vấn DB mà production có.
+
+**Chưa kiểm:** bản deploy; Safari; điện thoại thật; trường hợp khớp khi model chạy được (kể cả câu giải thích khi có signal này); E2E của T-092.
+
+**Rủi ro khi triển khai (nặng hơn T-082):** DB chưa chạy `0001_confirmed_indicators` thì **mọi tin có tên miền, SĐT hoặc số tài khoản trả 500** ở `/api/analyses` (đã thử: có link → 500, không có chỉ dấu → 200). Chạy migration trước khi deploy.
+
+**Câu hỏi cho owner:** có muốn "thiếu bảng" được coi là "không khớp" thay vì 500 không? §3 hiện yêu cầu 500; chưa đổi.
+
+## 13. Ghi chú cài đặt T-081 (28/11/2026)
+
+**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** `core/src/confirmed-indicators/list.ts` (`listConfirmedIndicators`), `ConfirmedIndicatorItem` và `ConfirmedIndicatorPage` (`shared/src/ops.ts`), `apps/web/src/app/ops/(staff)/chi-dau/`, `features/indicators/{ConfirmedList,RemoveDialog}.tsx` + `{submit-removal,url}.ts`, mục "Chỉ dấu đã xác minh" ở `ops/(staff)/layout.tsx`. Không thêm endpoint.
+
+**Chỗ khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- Hộp thoại là component riêng `RemoveDialog`, **không** dùng `ConfirmDialog` (§6): `ConfirmDialog` đóng trước khi gọi lại nên không giữ được lý do khi lỗi mạng.
+- Nút ở dòng ghi "Gỡ", tên đọc màn hình là "Gỡ {chỉ dấu} khỏi danh sách"; nút trong hộp thoại ghi "Gỡ khỏi danh sách".
+- Sau khi gỡ (hoặc 409), focus chuyển tới vùng thông báo phía trên bảng, vì nút gốc mất cùng dòng.
+- Đang gửi thì `Esc` và "Huỷ" bị khoá.
+- 404 (dòng bị xoá hẳn, ví dụ reset seed): báo "Không tìm thấy chỉ dấu này." rồi tải lại.
+- 401: hiện "Phiên đăng nhập đã hết hạn." 2 giây rồi mới tới đăng nhập, giống form kết luận.
+- Trong cùng một kết luận, các dòng xếp theo loại rồi giá trị.
+- **Câu chữ mới:** "Người xác nhận", "Thao tác" (ẩn), "Huỷ", "Đang gỡ…", "Đã gỡ {chỉ dấu}", "Không tìm thấy chỉ dấu này.", "Chưa gỡ được chỉ dấu. Hãy thử lại."
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1048 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start`, Edge headless dùng phím thật: không có phiên thì 307 tới đăng nhập; trạng thái trống; hộp thoại đưa focus vào ô lý do, trong 10 lần Tab có 8 lần focus ở trong hộp thoại, 2 lần trình duyệt báo `body` (điểm dừng ở giao diện trình duyệt của hộp thoại modal), không lần nào vào phần tử của trang ngoài hộp thoại; `Esc` và "Huỷ" trả focus về nút gốc; lý do ngắn báo lỗi, không gửi request; mất mạng thì hộp thoại và lý do còn nguyên; gỡ được thì dòng biến mất và có thông báo; 409 có câu báo; hết phiên về đăng nhập kèm `next`; gỡ dòng cuối còn trạng thái trống; 360px trang không cuộn ngang (bảng tự cuộn). Lỗi tìm ra khi kiểm và đã sửa: chữ ẩn của cột thao tác làm cả trang cuộn ngang ở 360px.
+
+**Chưa kiểm:** bản deploy; Safari; trình đọc màn hình (focus vào vùng `aria-live` có thể bị đọc hai lần); điện thoại thật; trên trình duyệt: phân trang (mới kiểm ở test tích hợp), trường hợp 404, và việc khoá `Esc`/"Huỷ" khi đang gửi; E2E của T-092.
+
+## 14. Ghi chú cài đặt XM-04 (28/11/2026)
+
+**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** khoá `sharedPlatforms` trong `shared/data/url-lists.json` và schema `UrlLists` (16 tên miền ở §9; nguồn `owner-xm04-2026-11-28` trỏ tới comment ở PR #53), thêm vào `UNMATCHED_DOMAINS` (`core/src/indicators/unmatched.ts`). Mọi đường đọc danh sách loại trừ đó đổi theo: xem trước trên form kết luận, ghi khi kết luận, tra cứu của engine, hồ sơ liên quan. `shorteners` và quy tắc verdict không đổi, không cần migration, không chạy lại eval (eval dùng danh sách đã xác minh rỗng).
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1068 test, gồm tích hợp trên một container Postgres 17 dùng một lần) và `next build`. Tạm bỏ dòng thêm vào `UNMATCHED_DOMAINS` thì ba test XM-04 (chọn chỉ dấu, hồ sơ liên quan, engine với dòng ghi từ trước) đỏ.
+
+**Chưa kiểm:** UI trên trình duyệt (không đổi mã giao diện), bản deploy.

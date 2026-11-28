@@ -1,6 +1,6 @@
 # ScamShield Ops — Trang và trạng thái giao diện
 
-**Trạng thái (20/11/2026):** BẢN NHÁP. Mô tả **trang, khối giao diện và trạng thái** của ScamShield và FraudOps. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (28/11/2026):** BẢN NHÁP; §6.2 và §7 sửa theo thiết kế S8 owner duyệt 26/11. Mô tả **trang, khối giao diện và trạng thái** của ScamShield và FraudOps. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 **Thứ bậc:** hành vi theo [spec](../spec/ScamShield-v1.md); kiến trúc theo [system-design](../architecture/system-design.md). File này **không** định nghĩa endpoint hay trường JSON: mỗi trang chỉ ghi "cần dữ liệu gì". Hình dạng chính xác ở zod schema trong `packages/shared` và [api.md](../architecture/api.md). Token, component và câu chữ ở [design-system.md](./design-system.md). Wireframe từng trang và ma trận trang ↔ API ở [design/pages.md](../design/pages.md).
 
@@ -134,7 +134,7 @@ Cắt việc (plan §7 mục 5): bỏ lọc và tìm, giữ sắp xếp mới nh
 
 - Ba lựa chọn (radio): **Xác nhận lừa đảo** (`confirmed_scam`), **Không phải lừa đảo** (`not_scam`), **Chưa đủ bằng chứng** (`insufficient_evidence`).
 - "Lý do" bắt buộc, tối thiểu 10, tối đa 500 ký tự (O-04).
-- Khi chọn "Xác nhận lừa đảo" và SO-08 có trong bản build: dòng nhắc "Các chỉ dấu của hồ sơ này sẽ được thêm vào danh sách đã xác minh và cảnh báo cho người dùng sau." (SO-08-AC01).
+- Khi chọn "Xác nhận lừa đảo" và SO-08 có trong bản build: "Sẽ thêm vào danh sách đã xác minh:" kèm danh sách chỉ dấu (văn bản, không bấm được); không có gì để thêm thì "Hồ sơ này không có chỉ dấu nào để thêm." (SO-08-AC01, [verified-indicators §2](../design/verified-indicators.md)).
 - Nút "Lưu kết luận và đóng hồ sơ".
 
 | Trạng thái | Hiển thị | AC |
@@ -150,7 +150,7 @@ Cắt việc (plan §7 mục 5): bỏ lọc và tìm, giữ sắp xếp mới nh
 
 **Cần dữ liệu:** danh sách chỉ dấu đã xác minh (giá trị chuẩn hoá, loại, mã case nguồn, thời điểm, người xác nhận).
 
-- Bảng: Chỉ dấu · Loại · Từ hồ sơ (link) · Thời điểm.
+- Bảng: Chỉ dấu · Loại · Từ hồ sơ (link) · Thời điểm · Người xác nhận.
 - Mỗi dòng có "Gỡ khỏi danh sách" → hộp thoại bắt buộc nhập lý do → xác nhận (SO-08-AC03). Gỡ xong dòng biến mất, có thông báo ngắn.
 - Trống: "Chưa có chỉ dấu nào được xác minh."
 - Cắt SO-08 (plan §7 mục 1) thì bỏ cả trang và mục điều hướng.

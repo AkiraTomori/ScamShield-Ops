@@ -1,6 +1,6 @@
 # Cài đặt và bring-up (local)
 
-**Trạng thái (28/11/2026):** bản nháp; đăng nhập FraudOps (T-060, nhánh `feat/s6-auth`, chưa merge); có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) đã merge (PR #47); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
+**Trạng thái (28/11/2026):** bản nháp; đăng nhập FraudOps (T-060, đã merge, PR #51); có `POST /api/analyses` (PR #46, đã merge, chưa deploy); runner eval dev (§3c) đã merge (PR #47); có slice nền móng, schema P0 (chưa seed/reset) và runner thử model S2 (đã merge vào `main`, PR #4; đã chạy Groq thật 21–23/11). Phần deploy (Supabase, Vercel) là việc của owner, xem [system-design §8](../architecture/system-design.md#8-việc-owner-phải-làm-agent-không-làm-thay).
 
 ## 1. Chạy lần đầu
 
@@ -82,6 +82,7 @@ npm run eval -- --set dev --gap-ms 65000 --yes  # chạy thật (tốn tiền, h
 
 - `npm run db:generate`: sinh SQL từ schema (đọc lại file trước khi commit).
 - `npm run db:migrate`: dùng `DATABASE_URL_MIGRATE`, nếu trống thì `DATABASE_URL`. Với DB local thì tự chạy được; với DB đã deploy chỉ owner chạy. Khi `DATABASE_URL_MIGRATE` đang trỏ DB deploy mà cần migrate DB local, chạy `DATABASE_URL_MIGRATE= npm run db:migrate` (biến rỗng thắng giá trị trong `.env`, rồi rơi về `DATABASE_URL`).
+- Migration `0001_confirmed_indicators` (bảng chỉ dấu đã xác minh, T-082, nhánh `feat/s8-confirmed-indicators`): DB đã migrate trước đó phải chạy lại `npm run db:migrate`. Với DB deploy, owner chạy **trước** khi deploy mã.
 - Migration `0000_p0_tables` (8 bảng P0) đã có; test tích hợp `*.int.test.ts` chỉ chạy khi đặt `DATABASE_URL` trỏ tới Postgres local.
 
 ## 5. Lỗi thường gặp
@@ -91,6 +92,9 @@ npm run eval -- --set dev --gap-ms 65000 --yes  # chạy thật (tốn tiền, h
 | `/api/health` trả 503 | `docker compose ps` chưa healthy; mật khẩu trong `DATABASE_URL` lệch `POSTGRES_PASSWORD`; chưa có `.env`. Nhật ký chỉ ghi `timeout`, `connect_failed` hoặc `config_missing` |
 | Đổi `POSTGRES_PASSWORD` mà vẫn sai mật khẩu | Volume cũ giữ mật khẩu cũ; xem §3 |
 | Gửi báo cáo có ghi chú dài trả 500, log `report_failed` | DB local đã migrate trước 27/11 vẫn giữ CHECK ghi chú 500 ký tự (RP-01 sửa thẳng `0000_p0_tables`, drizzle không chạy lại). Chạy `ALTER TABLE cases DROP CONSTRAINT cases_reporter_note_len, ADD CONSTRAINT cases_reporter_note_len CHECK (reporter_note IS NULL OR char_length(reporter_note) <= 1000);` bằng `docker compose exec postgres psql`, hoặc xoá cả volume (`docker compose down -v`, **mất dữ liệu**) rồi migrate lại |
+| Kiểm tin có link, SĐT hay số tài khoản trả 500, log `verified_lookup_failed` rồi `analysis_failed` | DB chưa có bảng `confirmed_indicators`: chạy `npm run db:migrate` (§4). Tin không có chỉ dấu vẫn chạy bình thường |
+| `/ops/chi-dau` hiện "Không tải được danh sách." | DB chưa có bảng `confirmed_indicators`: chạy `npm run db:migrate` (§4) |
+| Lưu kết luận "Xác nhận lừa đảo" trả 500, log `ops_decision_failed` | DB chưa có bảng `confirmed_indicators`: chạy `npm run db:migrate` (§4) |
 | `docker compose up` báo thiếu `POSTGRES_PASSWORD` | Chưa tạo `.env` |
 | Cổng 5432 bận | Đặt `POSTGRES_PORT` khác trong `.env` và sửa cổng trong `DATABASE_URL` |
 

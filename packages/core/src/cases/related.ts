@@ -1,8 +1,9 @@
-import { BRANDS, RelatedCases, URL_LISTS } from "@scamshield/shared";
+import { RelatedCases } from "@scamshield/shared";
 import { and, count, countDistinct, desc, eq, inArray, ne, notInArray, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { StaffSession } from "../auth/session";
 import { analysisIndicators, cases, decisions } from "../db/schema";
+import { UNMATCHED_DOMAINS } from "../indicators";
 import type { Db } from "../rate-limit";
 
 /**
@@ -11,15 +12,6 @@ import type { Db } from "../rate-limit";
  */
 
 export const RELATED_CASES_LIMIT = 20;
-
-/**
- * Domains that link nothing (ST-01): a brand's own sites and URL shorteners appear in unrelated
- * messages. Both come from their single data file.
- */
-export const UNMATCHED_DOMAINS: readonly string[] = [
-  ...BRANDS.flatMap((brand) => brand.domains),
-  ...URL_LISTS.shorteners.map((entry) => entry.value),
-];
 
 const current = alias(cases, "current_case");
 const mine = alias(analysisIndicators, "mine");
