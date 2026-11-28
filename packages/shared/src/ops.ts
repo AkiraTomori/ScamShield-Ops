@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CaseStatus, Decision, RiskType, Verdict } from "./enums";
+import { CaseStatus, Decision, MatchableIndicatorType, RiskType, Verdict } from "./enums";
 import { countInputChars, standardizeText } from "./input";
 
 // Shapes of the FraudOps routes (api.md §4). Browser-safe.
@@ -90,6 +90,30 @@ export const ALREADY_REMOVED_MESSAGE_VI = "Chỉ dấu này đã được gỡ t
 
 /** The `{id}` of a confirmed indicator. */
 export const IndicatorId = z.uuid();
+
+/** One active row of the confirmed list, as `/ops/chi-dau` shows it (verified-indicators §6). */
+export const ConfirmedIndicatorItem = z
+  .object({
+    id: IndicatorId,
+    type: MatchableIndicatorType,
+    normalized: z.string(),
+    sourceCaseCode: z.string().min(1),
+    confirmedAt: z.iso.datetime(),
+    /** Display name of the staff member. */
+    confirmedBy: z.string().min(1),
+  })
+  .strict();
+export type ConfirmedIndicatorItem = z.infer<typeof ConfirmedIndicatorItem>;
+
+export const ConfirmedIndicatorPage = z
+  .object({
+    items: z.array(ConfirmedIndicatorItem),
+    /** The page returned, which is the last one when a later page was asked for. */
+    page: z.number().int().min(1),
+    totalPages: z.number().int().min(1),
+  })
+  .strict();
+export type ConfirmedIndicatorPage = z.infer<typeof ConfirmedIndicatorPage>;
 
 /** Body of POST /api/ops/confirmed-indicators/{id}/removal (SO-08-AC03, verified-indicators §5). */
 export const IndicatorRemovalRequest = z.object({ reason: StaffReason }).strict();

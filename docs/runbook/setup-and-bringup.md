@@ -93,6 +93,7 @@ npm run eval -- --set dev --gap-ms 65000 --yes  # chạy thật (tốn tiền, h
 | Đổi `POSTGRES_PASSWORD` mà vẫn sai mật khẩu | Volume cũ giữ mật khẩu cũ; xem §3 |
 | Gửi báo cáo có ghi chú dài trả 500, log `report_failed` | DB local đã migrate trước 27/11 vẫn giữ CHECK ghi chú 500 ký tự (RP-01 sửa thẳng `0000_p0_tables`, drizzle không chạy lại). Chạy `ALTER TABLE cases DROP CONSTRAINT cases_reporter_note_len, ADD CONSTRAINT cases_reporter_note_len CHECK (reporter_note IS NULL OR char_length(reporter_note) <= 1000);` bằng `docker compose exec postgres psql`, hoặc xoá cả volume (`docker compose down -v`, **mất dữ liệu**) rồi migrate lại |
 | Kiểm tin có link, SĐT hay số tài khoản trả 500, log `verified_lookup_failed` rồi `analysis_failed` | DB chưa có bảng `confirmed_indicators`: chạy `npm run db:migrate` (§4). Tin không có chỉ dấu vẫn chạy bình thường |
+| `/ops/chi-dau` hiện "Không tải được danh sách." | DB chưa có bảng `confirmed_indicators`: chạy `npm run db:migrate` (§4) |
 | Lưu kết luận "Xác nhận lừa đảo" trả 500, log `ops_decision_failed` | DB chưa có bảng `confirmed_indicators`: chạy `npm run db:migrate` (§4) |
 | `docker compose up` báo thiếu `POSTGRES_PASSWORD` | Chưa tạo `.env` |
 | Cổng 5432 bận | Đặt `POSTGRES_PORT` khác trong `.env` và sửa cổng trong `DATABASE_URL` |

@@ -1,6 +1,6 @@
 # Thiết kế slice S8: chỉ dấu đã xác minh quay lại engine (T-080, T-081)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). **T-080 xong ở local 28/11** (engine tra danh sách, signal và check `verified_indicator`; [§12](#12-ghi-chú-cài-đặt-t-080-28112026)). T-081 (trang) chưa làm. SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). **T-080 xong ở local 28/11** (engine tra danh sách, signal và check `verified_indicator`; [§12](#12-ghi-chú-cài-đặt-t-080-28112026)). **T-081 xong ở local 28/11** (trang `/ops/chi-dau`, gỡ có lý do; [§13](#13-ghi-chú-cài-đặt-t-081-28112026)). SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-08](../spec/ScamShield-v1.md): AC01…AC03, P1, P4.
@@ -169,7 +169,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 - Xem trước hiện ngay dưới nhóm lựa chọn, trong vùng `aria-live`.
 - `{id}` không phải UUID trả 400 không kèm `fields`.
 
-**Chưa có trong T-082:** `listConfirmedIndicators` (T-081), bước reset của seed (T-090); `findVerifiedMatches` và signal `verified_indicator` làm ở T-080 (§12).
+**Chưa có trong T-082:** `listConfirmedIndicators` (làm ở T-081, §13), bước reset của seed (T-090); `findVerifiedMatches` và signal `verified_indicator` làm ở T-080 (§12).
 
 **Đã kiểm 28/11 ở local:** `npm run verify` (1012 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start` và Edge headless, xoá sau khi kiểm: xem trước đúng ở 1280px và 360px, không có link, không cuộn ngang, ẩn khi chọn "Không phải lừa đảo", câu trống khi hồ sơ không có gì để thêm; kết luận `confirmed_scam` ghi 3 dòng, không ghi `momo.vn`; route gỡ trả 403, 401, 400, 404, 200, rồi 409.
 
@@ -178,7 +178,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 **Cần biết khi triển khai:**
 - **Chạy migration trước khi deploy mã này.** Thiếu bảng thì mọi kết luận `confirmed_scam` trả 500 (giao dịch rollback) và route gỡ trả 500. DB local đã có từ trước cũng phải chạy `npm run db:migrate`.
 - Hồ sơ đã kết luận `confirmed_scam` trước khi có bảng không được ghi bù.
-- Cho tới khi có T-081, không gỡ được chỉ dấu bằng giao diện (chỉ có API, và chưa có chỗ xem `id`). Từ T-080 danh sách ảnh hưởng kết quả phân tích (§12).
+- Gỡ bằng giao diện ở `/ops/chi-dau` (T-081, §13). Từ T-080 danh sách ảnh hưởng kết quả phân tích (§12).
 
 ## 12. Ghi chú cài đặt T-080 (28/11/2026)
 
@@ -202,3 +202,23 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 **Rủi ro khi triển khai (nặng hơn T-082):** DB chưa chạy `0001_confirmed_indicators` thì **mọi tin có tên miền, SĐT hoặc số tài khoản trả 500** ở `/api/analyses` (đã thử: có link → 500, không có chỉ dấu → 200). Chạy migration trước khi deploy.
 
 **Câu hỏi cho owner:** có muốn "thiếu bảng" được coi là "không khớp" thay vì 500 không? §3 hiện yêu cầu 500; chưa đổi.
+
+## 13. Ghi chú cài đặt T-081 (28/11/2026)
+
+**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** `core/src/confirmed-indicators/list.ts` (`listConfirmedIndicators`), `ConfirmedIndicatorItem` và `ConfirmedIndicatorPage` (`shared/src/ops.ts`), `apps/web/src/app/ops/(staff)/chi-dau/`, `features/indicators/{ConfirmedList,RemoveDialog}.tsx` + `{submit-removal,url}.ts`, mục "Chỉ dấu đã xác minh" ở `ops/(staff)/layout.tsx`. Không thêm endpoint.
+
+**Chỗ khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- Hộp thoại là component riêng `RemoveDialog`, **không** dùng `ConfirmDialog` (§6): `ConfirmDialog` đóng trước khi gọi lại nên không giữ được lý do khi lỗi mạng.
+- Nút ở dòng ghi "Gỡ", tên đọc màn hình là "Gỡ {chỉ dấu} khỏi danh sách"; nút trong hộp thoại ghi "Gỡ khỏi danh sách".
+- Sau khi gỡ (hoặc 409), focus chuyển tới vùng thông báo phía trên bảng, vì nút gốc mất cùng dòng.
+- Đang gửi thì `Esc` và "Huỷ" bị khoá.
+- 404 (dòng bị xoá hẳn, ví dụ reset seed): báo "Không tìm thấy chỉ dấu này." rồi tải lại.
+- 401: hiện "Phiên đăng nhập đã hết hạn." 2 giây rồi mới tới đăng nhập, giống form kết luận.
+- Trong cùng một kết luận, các dòng xếp theo loại rồi giá trị.
+- **Câu chữ mới:** "Người xác nhận", "Thao tác" (ẩn), "Huỷ", "Đang gỡ…", "Đã gỡ {chỉ dấu}", "Không tìm thấy chỉ dấu này.", "Chưa gỡ được chỉ dấu. Hãy thử lại."
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1048 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start`, Edge headless dùng phím thật: không có phiên thì 307 tới đăng nhập; trạng thái trống; hộp thoại đưa focus vào ô lý do, trong 10 lần Tab có 8 lần focus ở trong hộp thoại, 2 lần trình duyệt báo `body` (điểm dừng ở giao diện trình duyệt của hộp thoại modal), không lần nào vào phần tử của trang ngoài hộp thoại; `Esc` và "Huỷ" trả focus về nút gốc; lý do ngắn báo lỗi, không gửi request; mất mạng thì hộp thoại và lý do còn nguyên; gỡ được thì dòng biến mất và có thông báo; 409 có câu báo; hết phiên về đăng nhập kèm `next`; gỡ dòng cuối còn trạng thái trống; 360px trang không cuộn ngang (bảng tự cuộn). Lỗi tìm ra khi kiểm và đã sửa: chữ ẩn của cột thao tác làm cả trang cuộn ngang ở 360px.
+
+**Chưa kiểm:** bản deploy; Safari; trình đọc màn hình (focus vào vùng `aria-live` có thể bị đọc hai lần); điện thoại thật; trên trình duyệt: phân trang (mới kiểm ở test tích hợp), trường hợp 404, và việc khoá `Esc`/"Huỷ" khi đang gửi; E2E của T-092.
