@@ -1,6 +1,6 @@
 # Thiết kế slice S9: dữ liệu demo, seed/reset, E2E (T-090…T-093)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Trước T-090 đã có `upsertDemoStaff` và `npm run demo:seed` phần tài khoản (làm sớm trong T-060 theo OP-04, đã merge, PR #51) và `demo-messages.json` bản tạm và schema của nó (§2; T-041, đã merge, PR #48). **T-090 xong ở local 28/11** (seed, reset, `demo:reset`; [§10](#10-ghi-chú-cài-đặt-t-090-28112026)). **T-092 xong ở local 28/11; T-093 đã soạn tin, chờ đội đọc lại** ([§11](#11-ghi-chú-cài-đặt-t-092-t-093-28112026)). Cả ba ở nhánh `feat/s9-demo-seed`, chưa merge, chưa deploy. Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`). T-091 là việc của owner trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Trước T-090 đã có `upsertDemoStaff` và `npm run demo:seed` phần tài khoản (làm sớm trong T-060 theo OP-04, đã merge, PR #51) và `demo-messages.json` bản tạm và schema của nó (§2; T-041, đã merge, PR #48). **T-090 xong ở local 28/11** (seed, reset, `demo:reset`; [§10](#10-ghi-chú-cài-đặt-t-090-28112026)). **T-092 xong ở local 28/11; T-093 đã soạn tin, chờ đội đọc lại** ([§11](#11-ghi-chú-cài-đặt-t-092-t-093-28112026)). Cả ba ở PR #54 (nhánh `feat/s9-demo-seed`), chưa merge, chưa deploy. Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`). T-091 là việc của owner trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-10](../spec/ScamShield-v1.md): AC01…AC05, Q-07, spec §8 (kịch bản demo).
@@ -175,7 +175,7 @@ Tiền tố `DM-` (demo, slice S9), chưa dùng ở tài liệu nào khác.
 
 ## 10. Ghi chú cài đặt T-090 (28/11/2026)
 
-**Nhánh `feat/s9-demo-seed`, chưa merge, chưa deploy.**
+**PR #54 (nhánh `feat/s9-demo-seed`), chưa merge, chưa deploy.**
 
 **Đã làm:**
 - `packages/core/src/demo/{seed-data,reset}.ts`; script `packages/core/scripts/demo-{seed,reset}.ts` dùng chung `scripts/demo.ts`; lệnh `npm run demo:reset`; biến `DEMO_LOOKUP_SECRET` trong `.env.example`. Không cần migration.
@@ -206,7 +206,7 @@ Tiền tố `DM-` (demo, slice S9), chưa dùng ở tài liệu nào khác.
 
 ## 11. Ghi chú cài đặt T-092, T-093 (28/11/2026)
 
-**Nhánh `feat/s9-demo-seed`, chưa commit, chưa merge, chưa deploy.**
+**PR #54 (nhánh `feat/s9-demo-seed`), chưa merge, chưa deploy.**
 
 **T-093, tin demo:**
 - M1 giữ câu cũ, đổi thương hiệu thành **Vietcombank** (DM-04, R-01). M3 mới (hoàn phí), cùng tên miền và thương hiệu, không có chip.
