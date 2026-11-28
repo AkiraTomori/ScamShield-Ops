@@ -1,6 +1,6 @@
 # Kịch bản demo và ngày chấm
 
-**Trạng thái (28/11/2026):** BẢN NHÁP; thêm bước kiểm danh sách đã xác minh (S8) vào §3. Dùng cho video ≤ 3 phút (nộp 03/12), cho giám khảo tự dùng thử (03/12–11/12) và cho phần trình bày chung kết (11/12). Kịch bản gốc ở [spec §8](../spec/ScamShield-v1.md#8-kịch-bản-demo--3-phút-dùng-cho-video); file này thêm lời thoại, dữ liệu cần chuẩn bị, checklist và cách xử lý sự cố.
+**Trạng thái (28/11/2026):** BẢN NHÁP; thêm bước kiểm danh sách đã xác minh (S8) vào §3; M1, M2, M3 đã soạn (T-093, chưa deploy). Dùng cho video ≤ 3 phút (nộp 03/12), cho giám khảo tự dùng thử (03/12–11/12) và cho phần trình bày chung kết (11/12). Kịch bản gốc ở [spec §8](../spec/ScamShield-v1.md#8-kịch-bản-demo--3-phút-dùng-cho-video); file này thêm lời thoại, dữ liệu cần chuẩn bị, checklist và cách xử lý sự cố.
 
 **Luật:** video quay **sản phẩm chạy thật trên URL công khai** (plan §9). Không dựng cảnh, không chèn kết quả giả. Tính năng nào bị cắt (plan §7) thì bỏ đoạn tương ứng, không quay bản dở.
 
@@ -29,6 +29,8 @@
 | S1 | Seed | 3 hồ sơ `is_seed` chứa `vi-xac-minh.example`, trạng thái khác nhau, để SO-07 hiện "3 hồ sơ khác" |
 | S2 | Trạng thái trước khi quay | `vi-xac-minh.example` **chưa** nằm trong danh sách đã xác minh (nếu không M1 đã ra cảnh báo SO-08 từ đầu). Chạy `npm run demo:reset` trước khi quay |
 
+Nội dung M1, M2, M3 nằm ở `packages/shared/data/demo-messages.json` (nguồn duy nhất; M3 dán tay thì chép từ file này). M1, M3 và ba hồ sơ S1 mạo danh Vietcombank.
+
 Thương hiệu được mạo danh trong M1, M3 là một thương hiệu thật trong `brands.json` (R-01, §6), nên phép kiểm "tên miền chính thức" chạy được.
 
 ## 3. Checklist trước khi quay
@@ -36,7 +38,8 @@ Thương hiệu được mạo danh trong M1, M3 là một thương hiệu thậ
 - [ ] Bản deploy production đúng commit sẽ nộp; `/api/health` trả 200.
 - [ ] `npm run demo:reset` đã chạy (owner); FraudOps có 20–40 hồ sơ mẫu.
 - [ ] (Có S8) `vi-xac-minh.example` **không** còn dòng chưa gỡ trong danh sách đã xác minh; `demo:reset` không xoá dòng sinh từ hồ sơ thật. Làm lại trước mỗi buổi chấm: đăng nhập FraudOps, mở `/ops/chi-dau`, nếu có dòng này thì gỡ (kèm lý do).
-- [ ] Chạy thử M1, M2, M3 trên bản deploy **ít nhất 3 lần**, verdict ổn định.
+- [ ] Chạy thử M1, M2, M3 trên bản deploy **ít nhất 3 lần**, verdict ổn định. Ra "Chưa đủ thông tin" thường là Groq trả 429: giãn cách các lượt (§4).
+- [ ] Nếu đã chạy E2E trên bản deploy: khối hồ sơ liên quan có thêm hồ sơ do E2E để lại, nên đọc số trên màn hình trước khi nói lời thoại "ba báo cáo khác". Báo cáo M1 của người khác cũng làm tăng số này.
 - [ ] Trình duyệt ẩn danh, không tiện ích, zoom 100%; tắt thông báo hệ điều hành.
 - [ ] ScamShield quay ở khung 360–414px (DevTools hoặc điện thoại thật); FraudOps ở 1280px trở lên.
 - [ ] Không có tab, bookmark hay thông báo nào lộ email, key, `.env`, dashboard Supabase/Vercel/Groq.

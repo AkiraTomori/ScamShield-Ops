@@ -1,6 +1,6 @@
 # Thiết kế slice S8: chỉ dấu đã xác minh quay lại engine (T-080, T-081)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, PR nháp #53, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). **T-080 xong ở local 28/11** (engine tra danh sách, signal và check `verified_indicator`; [§12](#12-ghi-chú-cài-đặt-t-080-28112026)). **T-081 xong ở local 28/11** (trang `/ops/chi-dau`, gỡ có lý do; [§13](#13-ghi-chú-cài-đặt-t-081-28112026)). **Owner chốt 28/11 XM-04** (loại thêm tên miền nền tảng dùng chung, [§9](#9-quyết-định-owner-chốt-26112026)); **XM-04 xong ở local 28/11**, chưa merge, chưa deploy ([§14](#14-ghi-chú-cài-đặt-xm-04-28112026)). SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; đã merge, PR #53, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). **T-080 xong ở local 28/11** (engine tra danh sách, signal và check `verified_indicator`; [§12](#12-ghi-chú-cài-đặt-t-080-28112026)). **T-081 xong ở local 28/11** (trang `/ops/chi-dau`, gỡ có lý do; [§13](#13-ghi-chú-cài-đặt-t-081-28112026)). **Owner chốt 28/11 XM-04** (loại thêm tên miền nền tảng dùng chung, [§9](#9-quyết-định-owner-chốt-26112026)); **XM-04 xong ở local 28/11**, đã merge (PR #53), chưa deploy ([§14](#14-ghi-chú-cài-đặt-xm-04-28112026)). SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-08](../spec/ScamShield-v1.md): AC01…AC03, P1, P4.
@@ -158,7 +158,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 
 ## 11. Ghi chú cài đặt (28/11/2026)
 
-**T-082, nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+**T-082, đã merge (PR #53), chưa deploy.**
 
 **Mã:** `packages/core/src/confirmed-indicators/{select,record,remove}.ts`, `core/src/db/schema/confirmed-indicators.ts`, migration `0001_confirmed_indicators`, `core/src/indicators/unmatched.ts`, `apps/web/src/server/ops-indicator-removal.ts`, `apps/web/src/app/api/ops/confirmed-indicators/[id]/removal/`, khối xem trước trong `features/cases/DecisionForm.tsx`.
 
@@ -171,7 +171,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 - Xem trước hiện ngay dưới nhóm lựa chọn, trong vùng `aria-live`.
 - `{id}` không phải UUID trả 400 không kèm `fields`.
 
-**Chưa có trong T-082:** `listConfirmedIndicators` (làm ở T-081, §13), bước reset của seed (T-090); `findVerifiedMatches` và signal `verified_indicator` làm ở T-080 (§12).
+**Chưa có trong T-082:** `listConfirmedIndicators` (làm ở T-081, §13), bước reset của seed (làm ở T-090, [demo-data §10](./demo-data.md#10-ghi-chú-cài-đặt-t-090-28112026)); `findVerifiedMatches` và signal `verified_indicator` làm ở T-080 (§12).
 
 **Đã kiểm 28/11 ở local:** `npm run verify` (1012 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start` và Edge headless, xoá sau khi kiểm: xem trước đúng ở 1280px và 360px, không có link, không cuộn ngang, ẩn khi chọn "Không phải lừa đảo", câu trống khi hồ sơ không có gì để thêm; kết luận `confirmed_scam` ghi 3 dòng, không ghi `momo.vn`; route gỡ trả 403, 401, 400, 404, 200, rồi 409.
 
@@ -184,7 +184,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 
 ## 12. Ghi chú cài đặt T-080 (28/11/2026)
 
-**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+**Đã merge (PR #53), chưa deploy.**
 
 **Mã:** `core/src/confirmed-indicators/lookup.ts` (`findVerifiedMatches`), bước `applyConfirmedList` trong `core/src/analysis/analyze.ts`, nối ở `createAnalysisDeps`; runner eval truyền hàm luôn trả rỗng. `rules-v1` và prompt **không đổi**, nên không chạy lại eval tập dev.
 
@@ -207,7 +207,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 
 ## 13. Ghi chú cài đặt T-081 (28/11/2026)
 
-**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+**Đã merge (PR #53), chưa deploy.**
 
 **Mã:** `core/src/confirmed-indicators/list.ts` (`listConfirmedIndicators`), `ConfirmedIndicatorItem` và `ConfirmedIndicatorPage` (`shared/src/ops.ts`), `apps/web/src/app/ops/(staff)/chi-dau/`, `features/indicators/{ConfirmedList,RemoveDialog}.tsx` + `{submit-removal,url}.ts`, mục "Chỉ dấu đã xác minh" ở `ops/(staff)/layout.tsx`. Không thêm endpoint.
 
@@ -227,7 +227,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 
 ## 14. Ghi chú cài đặt XM-04 (28/11/2026)
 
-**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+**Đã merge (PR #53), chưa deploy.**
 
 **Mã:** khoá `sharedPlatforms` trong `shared/data/url-lists.json` và schema `UrlLists` (16 tên miền ở §9; nguồn `owner-xm04-2026-11-28` trỏ tới comment ở PR #53), thêm vào `UNMATCHED_DOMAINS` (`core/src/indicators/unmatched.ts`). Mọi đường đọc danh sách loại trừ đó đổi theo: xem trước trên form kết luận, ghi khi kết luận, tra cứu của engine, hồ sơ liên quan. `shorteners` và quy tắc verdict không đổi, không cần migration, không chạy lại eval (eval dùng danh sách đã xác minh rỗng).
 
