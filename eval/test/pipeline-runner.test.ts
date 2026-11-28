@@ -54,6 +54,13 @@ describe("eval pipeline deps (eval-suite §3.1)", () => {
       expect(deps).not.toHaveProperty(key);
     }
   });
+
+  it("SO-08-AC02: uses an empty confirmed list, so results do not depend on any database", async () => {
+    const { deps } = setup();
+    expect(
+      await deps.verifiedIndicators([{ type: "domain", normalized: "vi-xac-minh.example" }]),
+    ).toEqual([]);
+  });
 });
 
 describe("runPipelineCase", () => {

@@ -109,6 +109,7 @@ describe.skipIf(!url)("getCaseDetail", () => {
       models: { signals: "m", explain: "m" },
       brands: BRANDS,
       urlLists: URL_LISTS,
+      verifiedIndicators: async () => [],
       now: () => new Date("2026-11-28T03:00:00.000Z"),
       random: () => "0123456789abcdef",
       newId: () => "5b0f3c1e-9a52-4c64-9d0e-7b1f2a3c4d5e",

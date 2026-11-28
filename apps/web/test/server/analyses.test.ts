@@ -36,6 +36,7 @@ function fakeServices(over: Partial<AnalysisServices> = {}) {
           models: { signals: "m-signals", explain: "m-explain" },
           brands: BRANDS,
           urlLists: URL_LISTS,
+          verifiedIndicators: async () => [],
           now: () => new Date(),
           random: () => "abc",
           newId: () => crypto.randomUUID(),
@@ -140,6 +141,38 @@ describe("POST /api/analyses", () => {
     const everything = JSON.stringify([await errorOf(response), log.mock.calls]);
     expect(everything).not.toContain("secret");
     expect(everything).not.toContain("riêng tư");
+  });
+
+  it("SO-08-AC02: answers 500 when the confirmed list cannot be read, storing nothing", async () => {
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    const { services, llm } = fakeServices({
+      analyze: (content, startedAt) =>
+        analyzeMessage(
+          content,
+          {
+            llm: { chatJson: llm },
+            models: { signals: "m-signals", explain: "m-explain" },
+            brands: BRANDS,
+            urlLists: URL_LISTS,
+            verifiedIndicators: () => Promise.reject(new Error("db: secret-host")),
+            now: () => new Date(),
+            random: () => "abc",
+            newId: () => crypto.randomUUID(),
+          },
+          { startedAt },
+        ),
+    });
+    const response = await handleCreateAnalysis(
+      post({ content: "Nội dung riêng tư: xem tại https://vi-xac-minh.example/a" }),
+      { env: ENV, services },
+    );
+    expect(response.status).toBe(500);
+    expect(services.save).not.toHaveBeenCalled();
+    expect(llm).not.toHaveBeenCalled();
+    const everything = JSON.stringify([await errorOf(response), log.mock.calls]);
+    for (const text of ["secret", "riêng tư", "vi-xac-minh"]) {
+      expect(everything).not.toContain(text);
+    }
   });
 
   it("answers 500 when configuration is missing, through the real route", async () => {

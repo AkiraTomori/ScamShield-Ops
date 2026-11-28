@@ -192,6 +192,7 @@ describe.skipIf(!url)("related cases", () => {
       models: { signals: "m", explain: "m" },
       brands: BRANDS,
       urlLists: URL_LISTS,
+      verifiedIndicators: async () => [],
       now: () => new Date("2026-11-28T03:00:00.000Z"),
       random: () => "0123456789abcdef",
       newId: randomUUID,

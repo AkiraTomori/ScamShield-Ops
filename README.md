@@ -52,7 +52,7 @@ flowchart LR
 | Thư mục | Nội dung |
 |---|---|
 | `apps/web` | Next.js: giao diện ScamShield, FraudOps và API (route handlers), deploy một lần lên Vercel. Hiện có trang skeleton, `/api/health` và `POST /api/analyses` |
-| `packages/core` | Nghiệp vụ không phụ thuộc Next.js, eval gọi trực tiếp. Hiện có: DB (schema 9 bảng, migration), HTTP client có allowlist, client Groq, pipeline phân tích (che dữ liệu, chỉ dấu, kiểm URL, quy tắc verdict, giải thích, lưu, rate limit), báo cáo, hồ sơ, đăng nhập, kết luận, danh sách chỉ dấu đã xác minh (chưa dùng khi phân tích). Chưa có: tra cứu ngoài (T-035) |
+| `packages/core` | Nghiệp vụ không phụ thuộc Next.js, eval gọi trực tiếp. Hiện có: DB (schema 9 bảng, migration), HTTP client có allowlist, client Groq, pipeline phân tích (che dữ liệu, chỉ dấu, kiểm URL, quy tắc verdict, giải thích, lưu, rate limit), báo cáo, hồ sơ, đăng nhập, kết luận, danh sách chỉ dấu đã xác minh (dùng khi phân tích). Chưa có: tra cứu ngoài (T-035) |
 | `packages/shared` | Zod schema (request/response, đầu ra LLM), mã lỗi kèm câu tiếng Việt |
 | `eval` | Bộ tình huống có nhãn (`eval/cases/`, hiện 20 câu dev nháp) và script đánh giá (`npm run eval -- --set dev` cho cả pipeline, `npm run eval:q08` cho thử model) |
 | `docs` | Tài liệu sản phẩm và kỹ thuật, viết bằng tiếng Việt |

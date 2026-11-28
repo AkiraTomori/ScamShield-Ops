@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { BRANDS, URL_LISTS, type AnalysisEnv, type ServerEnv } from "@scamshield/shared";
 import type { AnalysisDeps } from "./analysis";
+import { findVerifiedMatches } from "./confirmed-indicators";
 import type { ReportDeps } from "./reports";
 import { createDatabase, type Database } from "./db";
 import { createHttpClient } from "./http";
@@ -45,6 +46,7 @@ export function createAnalysisDeps(env: AnalysisEnv, base: Deps): AnalysisDeps {
     brands: BRANDS,
     urlLists: URL_LISTS,
     newId: randomUUID,
+    verifiedIndicators: (keys) => findVerifiedMatches(keys, { db: base.database.db }),
   };
 }
 

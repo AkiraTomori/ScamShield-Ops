@@ -32,6 +32,7 @@ describe.skipIf(!url)("storing analyses and counting requests", () => {
         models: { signals: "m", explain: "m" },
         brands: BRANDS,
         urlLists: URL_LISTS,
+        verifiedIndicators: async () => [],
         now: () => new Date(),
         random: () => "abc",
         newId: () => crypto.randomUUID(),

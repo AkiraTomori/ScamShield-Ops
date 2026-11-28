@@ -1,11 +1,15 @@
 import {
   AnalysisResult,
+  EVIDENCE_MAX_CHARS,
+  MatchableIndicatorType,
   normalizeInput,
   type BrandList,
+  type Check,
   type Indicator,
   type Signal,
   type UrlLists,
 } from "@scamshield/shared";
+import type { MatchableIndicator } from "../confirmed-indicators/select";
 import { extractIndicators, type ExtractedIndicators } from "../indicators";
 import {
   EXPLAIN_PROMPT_VERSION,
@@ -19,6 +23,7 @@ import {
 } from "../llm";
 import { logEvent, type LogFields } from "../log";
 import { redact } from "../redaction";
+import { clip } from "../text/clip";
 import { checkDomain, checkUrl, detectInjection, type CheckResult } from "../url-checks";
 import { decide, recommend, RULES_VERSION, type DecisionInput, type LlmFailure } from "../verdict";
 
@@ -28,6 +33,8 @@ const SIGNAL_ATTEMPT_MS = [8_000, 6_000];
 const LOOKUP_TIMEOUT_MS = 3_000;
 const EXPLAIN_TIMEOUT_MS = 4_000;
 const EXPLAIN_MIN_REMAINING_MS = 3_000;
+/** The same second the rate limit gets (verified-indicators §3). */
+export const VERIFIED_LOOKUP_TIMEOUT_MS = 1_000;
 
 export const PROMPT_VERSION = `${SIGNALS_PROMPT_VERSION}+${EXPLAIN_PROMPT_VERSION}`;
 
@@ -40,6 +47,11 @@ export interface AnalysisDeps {
   now: () => Date;
   random: () => string;
   newId: () => string;
+  /**
+   * Which of these indicators are on the confirmed list (SO-08-AC02). Required, so that no caller
+   * can leave the list out by accident; eval passes one that always finds nothing.
+   */
+  verifiedIndicators: (keys: MatchableIndicator[]) => Promise<MatchableIndicator[]>;
   /** External lookups (SO-02-AC03). Must report failures as `unavailable`. Unset: no check. */
   lookupDomain?: (domain: string, signal: AbortSignal) => Promise<CheckResult>;
   /** P-03: reserves one model call against the daily cap. Unset: no cap. */
@@ -96,8 +108,10 @@ export async function analyzeMessage(
   // From here on only the redacted text exists for storage, logs and the model.
   const { text, counts } = redact(input.text);
   const extracted = extractIndicators(text, deps.brands);
-  const checked = runChecks(extracted, deps);
+  const ruled = runChecks(extracted, deps);
   const injection = detectInjection(text);
+  // Before the model: a list that cannot be read fails the request without spending a call.
+  const checked = await applyConfirmedList(ruled, deps, log);
   const prepared = clock();
 
   let llmCalls = 0;
@@ -246,6 +260,61 @@ function runChecks(
     return { ...indicator, checks: found.checks };
   });
   return { indicators, signals };
+}
+
+const VERIFIED_CHECK: Check = { type: "verified_indicator", status: "warn", detail: null };
+
+/**
+ * SO-08-AC02: an indicator on the confirmed list gets a check and a hard signal (R1). One that is not
+ * on it gets nothing: "not listed" is not a passed check. A list that cannot be read fails the
+ * analysis rather than passing for "no match" (verified-indicators §3).
+ */
+async function applyConfirmedList(
+  checked: { indicators: Indicator[]; signals: Signal[] },
+  deps: Pick<AnalysisDeps, "verifiedIndicators">,
+  log: (fields: LogFields) => void,
+): Promise<{ indicators: Indicator[]; signals: Signal[] }> {
+  const keys = checked.indicators.flatMap(({ type, normalized }) => {
+    const matchable = MatchableIndicatorType.safeParse(type);
+    return matchable.success ? [{ type: matchable.data, normalized }] : [];
+  });
+  if (keys.length === 0) return checked;
+
+  let matches: MatchableIndicator[];
+  try {
+    matches = await withTimeout(deps.verifiedIndicators(keys), VERIFIED_LOOKUP_TIMEOUT_MS);
+  } catch {
+    log({ event: "verified_lookup_failed" });
+    // Not the original: a driver error carries the query's values.
+    throw new Error("verified_lookup_failed");
+  }
+
+  const listed = new Set(matches.map((m) => `${m.type} ${m.normalized}`));
+  const signals: Signal[] = [];
+  const indicators = checked.indicators.map((indicator) => {
+    if (!listed.has(`${indicator.type} ${indicator.normalized}`)) return indicator;
+    signals.push({
+      type: "verified_indicator",
+      source: "deterministic",
+      evidence: clip(indicator.value, EVIDENCE_MAX_CHARS),
+      indicator: indicator.normalized,
+    });
+    return { ...indicator, checks: [...indicator.checks, VERIFIED_CHECK] };
+  });
+  // First: it is the strongest thing the result has to say.
+  return { indicators, signals: [...signals, ...checked.signals] };
+}
+
+async function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error("timeout")), ms);
+  });
+  try {
+    return await Promise.race([work, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function runLookups(

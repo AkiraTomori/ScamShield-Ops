@@ -1,6 +1,6 @@
 # ScamShield Ops — API
 
-**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` đã merge vào `main` (PR #51, 28/11) (danh sách và chi tiết hồ sơ không có endpoint, §1); `POST …/confirmed-indicators/{id}/removal` có từ T-082 (nhánh `feat/s8-confirmed-indicators`, 28/11, chưa merge). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
+**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S5, S6 owner chốt 26/11 (RP-05, OP-01, OP-03). `POST /api/analyses` đã có trên `main` (PR #46), chưa deploy; `/report` và `/api/case-status` đã merge (PR #50, 27/11); `POST`/`DELETE /api/ops/session` và `POST …/decision` đã merge vào `main` (PR #51, 28/11) (danh sách và chi tiết hồ sơ không có endpoint, §1); `POST …/confirmed-indicators/{id}/removal` có từ T-082, và `POST /api/analyses` tra danh sách đã xác minh từ T-080, thêm một nguyên nhân 500 (cùng nhánh `feat/s8-confirmed-indicators`, 28/11, chưa merge). Danh sách endpoint, quyền, ví dụ và mã lỗi. Hình dạng dữ liệu ở [contracts.md](./contracts.md); khi đã có zod schema trong `packages/shared` thì schema thắng.
 
 ## 1. Nguyên tắc chung
 
@@ -68,7 +68,7 @@ Content-Type: application/json
 1. Kiểm giới hạn tần suất → 429, **không** gọi LLM (SO-01-AC04).
 2. Parse body; rỗng, chỉ khoảng trắng hay > 2.000 ký tự → 400, **không** gọi LLM (SO-01-AC02).
 3. Che dữ liệu nạn nhân (SO-01-AC03); từ đây chỉ dùng bản đã che.
-4. Trích chỉ dấu, chạy phép kiểm tất định và tra cứu ngoài (song song, có timeout); gọi LLM trích signal.
+4. Trích chỉ dấu, chạy phép kiểm tất định, tra danh sách chỉ dấu đã xác minh (SO-08-AC02); rồi tra cứu ngoài (song song, có timeout) và gọi LLM trích signal.
 5. Quy tắc tính verdict (P4) → LLM viết giải thích → chọn khuyến nghị.
 6. Lưu analysis, trả 200.
 
@@ -78,7 +78,7 @@ Hết trần 20 giây ở bất kỳ bước nào sau bước 3 → vẫn **200*
 |---|---|
 | 400 `validation_failed` | Bước 2, kể cả body không phải JSON, có trường lạ hoặc lớn hơn 64 KB |
 | 429 `rate_limited` | Bước 1 |
-| 500 `internal` | Lỗi không dự đoán được (ví dụ không ghi được DB), bộ đếm tần suất lỗi hoặc quá 1 s, thiếu biến môi trường của pipeline |
+| 500 `internal` | Lỗi không dự đoán được (ví dụ không ghi được DB), bộ đếm tần suất lỗi hoặc quá 1 s, không đọc được danh sách chỉ dấu đã xác minh hoặc quá 1 s, thiếu biến môi trường của pipeline |
 
 ### `POST /api/analyses/{analysisId}/report`
 

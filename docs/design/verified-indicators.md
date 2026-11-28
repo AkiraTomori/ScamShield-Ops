@@ -1,6 +1,6 @@
 # Thiết kế slice S8: chỉ dấu đã xác minh quay lại engine (T-080, T-081)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). T-080 (engine) và T-081 (trang) chưa làm. SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S8 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-082 xong ở local 28/11** (bảng, migration `0001_confirmed_indicators`, ghi khi kết luận, xem trước trên form, API gỡ; nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy; [§11](#11-ghi-chú-cài-đặt-28112026)). **T-080 xong ở local 28/11** (engine tra danh sách, signal và check `verified_indicator`; [§12](#12-ghi-chú-cài-đặt-t-080-28112026)). T-081 (trang) chưa làm. SO-08 là **P1, thứ 1 trong thứ tự cắt** ở plan §7: nếu phải cắt thì cắt slice này trước tiên. Owner chốt 26/11: **chưa cắt**; xem lại cùng các P1 khác ngày 27/11. T-080 phụ thuộc T-063 (kết luận, S6) và T-038 (S3). Slice này **cần một migration mới**, và owner chạy migration đó trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-08](../spec/ScamShield-v1.md): AC01…AC03, P1, P4.
@@ -169,7 +169,7 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 - Xem trước hiện ngay dưới nhóm lựa chọn, trong vùng `aria-live`.
 - `{id}` không phải UUID trả 400 không kèm `fields`.
 
-**Chưa có trong T-082:** `listConfirmedIndicators` (T-081), `findVerifiedMatches` và signal `verified_indicator` (T-080), bước reset của seed (T-090).
+**Chưa có trong T-082:** `listConfirmedIndicators` (T-081), bước reset của seed (T-090); `findVerifiedMatches` và signal `verified_indicator` làm ở T-080 (§12).
 
 **Đã kiểm 28/11 ở local:** `npm run verify` (1012 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start` và Edge headless, xoá sau khi kiểm: xem trước đúng ở 1280px và 360px, không có link, không cuộn ngang, ẩn khi chọn "Không phải lừa đảo", câu trống khi hồ sơ không có gì để thêm; kết luận `confirmed_scam` ghi 3 dòng, không ghi `momo.vn`; route gỡ trả 403, 401, 400, 404, 200, rồi 409.
 
@@ -178,4 +178,27 @@ Tiền tố `XM-` (xác minh, slice S8), chưa dùng ở tài liệu nào khác.
 **Cần biết khi triển khai:**
 - **Chạy migration trước khi deploy mã này.** Thiếu bảng thì mọi kết luận `confirmed_scam` trả 500 (giao dịch rollback) và route gỡ trả 500. DB local đã có từ trước cũng phải chạy `npm run db:migrate`.
 - Hồ sơ đã kết luận `confirmed_scam` trước khi có bảng không được ghi bù.
-- Cho tới khi có T-081, không gỡ được chỉ dấu bằng giao diện (chỉ có API, và chưa có chỗ xem `id`). Cho tới khi có T-080, danh sách chưa ảnh hưởng kết quả phân tích.
+- Cho tới khi có T-081, không gỡ được chỉ dấu bằng giao diện (chỉ có API, và chưa có chỗ xem `id`). Từ T-080 danh sách ảnh hưởng kết quả phân tích (§12).
+
+## 12. Ghi chú cài đặt T-080 (28/11/2026)
+
+**Nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa deploy.**
+
+**Mã:** `core/src/confirmed-indicators/lookup.ts` (`findVerifiedMatches`), bước `applyConfirmedList` trong `core/src/analysis/analyze.ts`, nối ở `createAnalysisDeps`; runner eval truyền hàm luôn trả rỗng. `rules-v1` và prompt **không đổi**, nên không chạy lại eval tập dev.
+
+**Chỗ khác hoặc thêm so với bản duyệt, chờ owner xác nhận:**
+- `findVerifiedMatches` áp **cả lúc đọc** danh sách loại trừ của XM-01: tên miền được thêm vào `brands.json` sau khi đã ghi thì không còn khớp.
+- `AnalysisDeps.verifiedIndicators` là trường **bắt buộc**, để không nơi nào bỏ sót danh sách mà vẫn typecheck được.
+- Tin không có tên miền, SĐT hay số tài khoản thì không truy vấn.
+- Signal `verified_indicator` đứng **đầu** danh sách signal; check đứng sau các check khác của chỉ dấu.
+- Lỗi hoặc quá 1 s: log `verified_lookup_failed` rồi ném lỗi mới, không mang theo lỗi gốc (lỗi của driver chứa giá trị truy vấn).
+
+**Đã kiểm 28/11 ở local:** `npm run verify` (1028 test, gồm tích hợp trên Postgres tạm) và `next build`. Trên DB tạm với `next start`, không gọi model (trần LLM đã hết, key giả): M3 trước kết luận `inconclusive`; báo cáo M1 rồi kết luận `confirmed_scam`; M3 ra `high_risk` R1 kèm `llm_unavailable`; Edge headless 360px hiện câu của SO-08-AC02 với nhãn *Kiểm tra*, câu "AI chưa chạy được", check "Đã được đội vận hành xác minh", không có link, không cuộn ngang; gỡ qua API rồi dán lại thì hết cảnh báo.
+
+**Số đo eval:** eval truyền danh sách rỗng, nên độ trễ eval không gồm một lượt truy vấn DB mà production có.
+
+**Chưa kiểm:** bản deploy; Safari; điện thoại thật; trường hợp khớp khi model chạy được (kể cả câu giải thích khi có signal này); E2E của T-092.
+
+**Rủi ro khi triển khai (nặng hơn T-082):** DB chưa chạy `0001_confirmed_indicators` thì **mọi tin có tên miền, SĐT hoặc số tài khoản trả 500** ở `/api/analyses` (đã thử: có link → 500, không có chỉ dấu → 200). Chạy migration trước khi deploy.
+
+**Câu hỏi cho owner:** có muốn "thiếu bảng" được coi là "không khớp" thay vì 500 không? §3 hiện yêu cầu 500; chưa đổi.
