@@ -21,6 +21,7 @@
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "db:generate": "npm run db:generate -w @scamshield/core",
     "db:migrate": "npm run db:migrate -w @scamshield/core",
+    "demo:seed": "tsx packages/core/scripts/demo-seed.ts",
     "eval:q08": "tsx eval/src/run-q08.ts",
     "eval": "tsx eval/src/run-eval.ts"
   },

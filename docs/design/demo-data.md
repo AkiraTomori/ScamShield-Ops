@@ -1,6 +1,6 @@
 # Thiết kế slice S9: dữ liệu demo, seed/reset, E2E (T-090…T-093)
 
-**Trạng thái (27/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã, trừ `demo-messages.json` bản tạm và schema của nó (§2; T-041, đã merge, PR #48). Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`), nên **soạn được ngay**. T-091 là việc của owner trên DB deploy.
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S9 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã, trừ `upsertDemoStaff` và `npm run demo:seed` phần tài khoản (làm sớm trong T-060 theo OP-04, nhánh `feat/s6-auth`, 28/11, chưa merge) và `demo-messages.json` bản tạm và schema của nó (§2; T-041, đã merge, PR #48). Mọi việc của S9 đều là **P0**. T-090 phụ thuộc T-063 (S6), T-092 phụ thuộc T-063 và T-051 (S5). T-093 chỉ cần T-033 (`brands.json`), nên **soạn được ngay**. T-091 là việc của owner trên DB deploy.
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5). Nó chỉ bổ sung phần các file dưới còn để ngỏ:
 - [spec SO-10](../spec/ScamShield-v1.md): AC01…AC05, Q-07, spec §8 (kịch bản demo).

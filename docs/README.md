@@ -48,8 +48,8 @@ Mỗi vai trò chỉ có **một** file chính. Cột "Cấp" là thứ tự ưu
 |---|---|---|---|
 | [`design/analysis-pipeline.md`](./design/analysis-pipeline.md) | Slice S3: 6 bước phân tích, phép kiểm URL, quy tắc verdict, prompt | **Owner duyệt 24/11**; đã merge (PR #46), còn T-035; eval dev chạy 27/11 | 5 |
 | [`design/scamshield-ui.md`](./design/scamshield-ui.md) | Slice S4: module và ranh giới client, state machine, phụ thuộc schema, bảng nhãn signal / mã detail, kiểm thử | **Owner duyệt 26/11**; T-040…T-042 đã merge (PR #48) | 5 |
-| [`design/report-flow.md`](./design/report-flow.md) | Slice S5: route báo cáo, tóm tắt AI, mã bí mật, tra trạng thái không lộ hồ sơ, sửa state machine S4; che ghi chú (RP-06) | **Owner duyệt 26/11**; T-050…T-053 xong ở local 27/11, PR nháp #50, chưa merge | 5 |
-| [`design/fraudops.md`](./design/fraudops.md) | Slice S6: kiểm phiên sát dữ liệu, đăng nhập/phiên/Origin, danh sách, chi tiết, kết luận và xung đột | **Owner duyệt 26/11**, chưa có mã | 5 |
+| [`design/report-flow.md`](./design/report-flow.md) | Slice S5: route báo cáo, tóm tắt AI, mã bí mật, tra trạng thái không lộ hồ sơ, sửa state machine S4; che ghi chú (RP-06) | **Owner duyệt 26/11**; T-050…T-053 đã merge (PR #50, 27/11) | 5 |
+| [`design/fraudops.md`](./design/fraudops.md) | Slice S6: kiểm phiên sát dữ liệu, đăng nhập/phiên/Origin, danh sách, chi tiết, kết luận và xung đột | **Owner duyệt 26/11**; T-060 xong ở local 28/11, chưa merge | 5 |
 | [`design/related-cases.md`](./design/related-cases.md) | Slice S7 (P1): hồ sơ liên quan theo chỉ dấu chung, loại tên miền quá phổ biến, truy vấn, khối giao diện | **Owner duyệt 26/11**, chưa có mã | 5 |
 | [`design/verified-indicators.md`](./design/verified-indicators.md) | Slice S8 (P1): ghi chỉ dấu khi xác nhận lừa đảo, engine dùng lại, gỡ có lý do, bảng `confirmed_indicators` | **Owner duyệt 26/11**, chưa có mã | 5 |
 | [`design/demo-data.md`](./design/demo-data.md) | Slice S9: tin demo một nguồn, seed/reset một đường code, nội dung 24 case mẫu, E2E 6 bước | **Owner duyệt 26/11**, chưa có mã | 5 |
@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 xong ở local, PR nháp #50, chưa merge).
+Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; T-060 xong ở local trên nhánh `feat/s6-auth`, chưa merge).
 
 | Phần | Trạng thái |
 |---|---|
@@ -105,8 +105,8 @@ Cập nhật 27/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã
 | Proposal cho vòng loại | Đã merge (PR #5), bản đề xuất để review |
 | S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Đã merge (PR #46, 26/11), chưa deploy: T-031…T-034, T-036…T-038, T-045, route `POST /api/analyses`. `npm run verify` xanh, test tích hợp chạy trên Postgres tạm, gọi thử Groq thật ở local. Chưa làm: T-035 (P1). Eval tập dev đã chạy 27/11 (T-039, [research B.4](./research/result.md#b4-nhật-ký-chạy)): 15/20 câu trong nhãn, chỉ 26/60 lượt có giải thích; runner đã merge (PR #47). Trễ so với lịch 22–23/11 |
 | S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); T-040 (nền giao diện) xong 27/11; T-041 (trang `/`) xong 27/11 (owner chấp nhận điện thoại giả lập là đủ tạm thời, chưa thử trên máy thật); T-042 (khối kết quả) xong 27/11, còn phải xoá `/xem-truoc` trước 30/11; cả ba đã merge vào `main` (PR #48, 27/11), chưa deploy; trễ so với lịch 24–25/11; schema `AnalysisResult` đã có trên `main` (PR #46) |
-| S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); T-050…T-053 xong ở local 27/11 (nhánh `feat/s5-report`, PR nháp #50, chưa merge, chưa deploy); đã kiểm ở local 27/11 ([§13](./design/report-flow.md#13-kết-quả-kiểm-27112026)): tóm tắt AI thường thiếu khi Groq trả 429. Chỗ khác bản duyệt và RP-06: owner chốt 27/11 |
-| S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); chưa có mã; T-060 không bị S3 chặn |
+| S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); T-050…T-053 đã merge vào `main` (PR #50, 27/11), chưa deploy; đã kiểm ở local 27/11 ([§13](./design/report-flow.md#13-kết-quả-kiểm-27112026)): tóm tắt AI thường thiếu khi Groq trả 429. Chỗ khác bản duyệt và RP-06: owner chốt 27/11 |
+| S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); T-060 xong ở local 28/11 (nhánh `feat/s6-auth`, chưa merge, chưa deploy, [§11](./design/fraudops.md#11-ghi-chú-cài-đặt-28112026)); T-061…T-063 chưa làm |
 | S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); chưa có mã; không cần migration |
 | S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |
 | S9 dữ liệu demo, seed/reset, E2E ([design](./design/demo-data.md)) | **Owner duyệt thiết kế 26/11** (DM-01…DM-03 theo đề xuất; DM-04: một ngân hàng); chưa có mã; T-093 không bị chặn |

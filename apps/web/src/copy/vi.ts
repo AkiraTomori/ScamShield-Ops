@@ -114,6 +114,26 @@ export const vi = {
     confirmAnother: "Đã lưu, kiểm tin khác",
     confirmBack: "Quay lại",
   },
+  // FraudOps: ui-pages §4, fraudops §3.
+  ops: {
+    productName: "FraudOps",
+    description: "Trang xử lý hồ sơ của đội vận hành.",
+    cases: "Hồ sơ",
+    casesNotBuilt: "Danh sách hồ sơ chưa có ở bản này.",
+    logout: "Đăng xuất",
+    loggingOut: "Đang đăng xuất…",
+    logoutFailed: "Chưa đăng xuất được. Hãy thử lại.",
+    login: {
+      heading: "Đăng nhập",
+      username: "Tên đăng nhập",
+      password: "Mật khẩu",
+      submit: "Đăng nhập",
+      submitting: "Đang đăng nhập…",
+      missing: "Hãy nhập tên đăng nhập và mật khẩu.",
+      failed: "Chưa đăng nhập được do lỗi kết nối. Hãy thử lại.",
+      accountHint: "Tài khoản thử có trong hướng dẫn sử dụng.",
+    },
+  },
   copyCode: {
     action: "Sao chép",
     done: "Đã sao chép",

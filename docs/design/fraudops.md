@@ -1,6 +1,6 @@
 # Thiết kế slice S6: FraudOps (T-060…T-063)
 
-**Trạng thái (26/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. Chưa có mã. T-060 (đăng nhập) chỉ phụ thuộc T-011 (schema P0, đã merge), nên **làm được ngay, không cần chờ S3**. T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060 xong ở local 28/11** (nhánh `feat/s6-auth`, chưa commit, chưa merge, chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). T-061…T-063 chưa có mã. T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-06-AC01…AC06, SO-05-AC01, AC03, SO-10-AC02, AC03, P1.
@@ -70,7 +70,7 @@ Vì vậy phiên phải được kiểm **sát nguồn dữ liệu**, không ph�
 ### 3.2 `verifySession` và đăng xuất
 
 - `verifySession`: tính SHA-256 của token, tìm theo PK, kiểm `expires_at > now()` và user chưa bị `disabled_at`. Kết quả là `{ staffUserId, username, displayName }`. Một truy vấn có join.
-- `DELETE /api/ops/session`: kiểm Origin → xoá dòng phiên (nếu có) → xoá cookie (`Max-Age=0`) → 204. Không có phiên thì vẫn trả 204: đăng xuất luôn thành công.
+- `DELETE /api/ops/session`: kiểm Origin → xoá dòng phiên (nếu có) → xoá cookie (`Max-Age=0`) → 204. Không có phiên hợp lệ thì trả 401 `unauthorized` như mọi route FraudOps khác (SO-06-AC01, api.md §4; sửa 28/11 cho khớp). Client coi 401 là đã đăng xuất.
 
 ### 3.3 Kiểm `Origin`
 
@@ -192,7 +192,7 @@ disagreesWithEngine(decision: Decision, verdict: Verdict): boolean
 | Int `auth` (Postgres local) | Đăng nhập đúng tạo phiên; DB chỉ chứa băm của token; sai mật khẩu, sai user, user bị khoá → `null`; phiên hết hạn hoặc user bị khoá → `verifySession` ra `null`; `logout` xoá phiên |
 | Int `decideCase` | Đóng case, ghi decision, lưu `engine_verdict` và `disagrees_with_engine`; **hai lời gọi song song chỉ một bên `decided`**, bên kia `conflict` kèm kết luận của bên thắng; lý do 9 ký tự bị từ chối (cả CHECK của DB) |
 | Int `listCases` | Mặc định chỉ `pending_review`, mới nhất trước; lọc verdict; tìm theo mã bỏ qua lọc trạng thái; trang 2 |
-| Route | Mọi `/api/ops/*` trừ đăng nhập: không cookie → 401; `POST` lệch Origin → 403; 409 có kết luận trong body |
+| Route | Mọi `/api/ops/*` trừ đăng nhập: không cookie → 401; `POST` lệch Origin → 403; 409 không kèm kết luận (OP-03 b) |
 | **Bất biến P1** (SO-06-AC06) | Test liệt kê mọi file `route.ts` dưới `apps/web/src/app/api`, so với bảng endpoint ở api.md §2. Thêm endpoint mà không sửa api.md thì test đỏ |
 | Kiểm tay | Ảnh 1280px: danh sách, chi tiết chờ, chi tiết đã đóng có nhãn không đồng ý, xung đột với hai tài khoản ở hai trình duyệt; tải lại vẫn còn kết luận (SO-06-AC05); làm hết bằng bàn phím |
 
@@ -221,3 +221,23 @@ Tiền tố `OP-` (FraudOps, slice S6), chưa dùng ở tài liệu nào khác.
 - **Lịch:** plan đặt T-060 ở 25–26/11 và T-061…T-063 ở 27–28/11. T-060 không bị S3 chặn, nên là việc nên bắt đầu sớm nhất trong S6.
 - **Origin sau proxy của Vercel:** nếu `request.nextUrl.origin` trên Vercel không khớp `Origin` trình duyệt gửi, mọi thao tác ghi của FraudOps trả 403. Phải kiểm ngay ở bản deploy đầu tiên.
 - **Next 16:** `cookies()`, `redirect()`, `notFound()` và `router.refresh()` có thể khác bản cũ. Đọc tài liệu đi kèm trong `node_modules/next/dist/docs/` khi viết mã.
+
+## 11. Ghi chú cài đặt (28/11/2026)
+
+T-060. **Chờ owner xác nhận** các chỗ khác hoặc thêm so với bản duyệt:
+
+- **Kiểm Origin (§3.3):** so `Origin` với scheme (`x-forwarded-proto`, mặc định theo `request.url`) cộng header `Host`, **không** dùng `request.nextUrl.origin`. Lý do: với `next start` ở local, `request.url` mang địa chỉ server đang lắng nghe (`0.0.0.0:3160`), không phải host trình duyệt gọi, nên mọi lượt ghi cùng origin đều bị 403 (kiểm 28/11). Trang ở site khác không đặt được `Origin` hay `Host`.
+- **`server-only`:** không import, vì gói chưa có trong repo và không thêm thư viện cho việc này. `ops-session.ts` dùng `next/headers`, chỉ chạy được ở server.
+- **Header FraudOps** nằm ở nhóm route `app/ops/(staff)/`, nên trang đăng nhập không có header. Header chỉ có mục "Hồ sơ"; mục "Chỉ dấu đã xác minh" thêm khi có trang (S8).
+- **`/ops` là trang chờ** cho tới T-061. `requireStaffPage` nhận đường dẫn do trang truyền vào: T-061 phải truyền cả query lọc để đăng nhập xong quay lại đúng trang (§4).
+- **scrypt** chuyển sang `packages/core/src/crypto/`, dùng chung cho mã bí mật (S5) và mật khẩu; định dạng băm không đổi.
+- **`demo:seed`** mới chỉ tạo `judge1…judge5` (OP-04 a). Mật khẩu được bỏ khoảng trắng đầu cuối và không chứa dấu phẩy. Tài khoản đã bị khoá vẫn khoá. Đổi mật khẩu **không** huỷ phiên đang mở (hết hạn sau tối đa 12 giờ).
+- **Câu chữ mới** (`copy/vi.ts`, khối `ops`): "Trang xử lý hồ sơ của đội vận hành.", "Danh sách hồ sơ chưa có ở bản này.", "Đang đăng xuất…", "Chưa đăng xuất được. Hãy thử lại.", "Đang đăng nhập…", "Hãy nhập tên đăng nhập và mật khẩu.", "Chưa đăng nhập được do lỗi kết nối. Hãy thử lại."
+
+**Đã kiểm 28/11 ở local** (DB tạm trên Postgres Docker, mật khẩu ngẫu nhiên, xoá sau khi kiểm):
+- `npm run verify` (có test tích hợp) và `next build` xanh.
+- `next start` + `curl`: `/ops` không phiên → 307 tới đăng nhập; `DELETE` không phiên → 401; sai Origin → 403; sai mật khẩu → 401; đúng → 204 và cookie; đăng xuất rồi dùng cookie cũ → bị chuyển về đăng nhập; lượt thứ 6 trong một phút từ một IP → 429; gọi qua `localhost`, `127.0.0.1`, IP LAN đều được. Header giả lập proxy HTTPS → 204.
+- `next dev`: cookie không có `Secure`.
+- Edge headless: chuyển hướng, lỗi trống và sai mật khẩu, quay lại `next`, tải lại vẫn đăng nhập, đăng xuất bằng bàn phím, `next` trỏ site khác về `/ops`; không có lỗi console; 1280px và 360px không cuộn ngang. JavaScript không đọc được cookie.
+
+**Chưa kiểm:** bản deploy (host và `x-forwarded-proto` sau proxy Vercel, `x-forwarded-for`), Safari, trình đọc màn hình, thời gian phản hồi sai tên so với sai mật khẩu (mới đọc mã: luôn chạy scrypt). **SO-06-AC01 phần "API trả 401":** hiện chỉ có `DELETE /api/ops/session`; route kết luận (T-063) và gỡ chỉ dấu (S8) phải gọi `requireStaffApi` và có test riêng.
