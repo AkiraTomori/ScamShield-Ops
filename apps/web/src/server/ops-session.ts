@@ -56,7 +56,10 @@ export const getStaffSession = cache(async (): Promise<StaffSession | null> => {
   if (!token) return null;
   const env = parseRuntimeDatabaseEnv(process.env);
   if (!env.success) throw new Error("config_missing");
-  return verifyWithDatabase(env.data)(token);
+  // Next logs what a page throws; a database error would carry the query and the token hash.
+  return verifyWithDatabase(env.data)(token).catch(() => {
+    throw new Error("session_lookup_failed");
+  });
 });
 
 /** For every page under `/ops`: without a session, to sign-in and back afterwards (SO-06-AC01). */

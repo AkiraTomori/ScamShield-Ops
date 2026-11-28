@@ -6,6 +6,7 @@ export { logEvent, type LogFields } from "./log";
 export * from "./analysis";
 export * from "./reports";
 export * from "./auth";
+export * from "./cases";
 export { upsertDemoStaff } from "./demo";
 export { extractIndicators, type ExtractedIndicators } from "./indicators";
 export {

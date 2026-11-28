@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import type { ReactNode } from "react";
 import { vi } from "../../../copy/vi";
 import { LogoutButton } from "../../../features/auth/LogoutButton";
@@ -7,7 +8,11 @@ import { getStaffSession } from "../../../server/ops-session";
 // Shows who is signed in. It guards nothing: a layout does not rerun on client navigation, so every
 // page calls requireStaffPage itself (fraudops §2).
 export default async function StaffLayout({ children }: { children: ReactNode }) {
-  const session = await getStaffSession();
+  // A failed lookup must not fail here, above the error boundary: the page repeats it and reports it.
+  const session = await getStaffSession().catch((error: unknown) => {
+    unstable_rethrow(error);
+    return null;
+  });
   return (
     <>
       {session ? (

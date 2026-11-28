@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CaseStatus, Decision, RiskType, Verdict } from "./enums";
 
 // Shapes of the FraudOps routes (api.md §4). Browser-safe.
 
@@ -13,3 +14,42 @@ export const LoginRequest = z
   })
   .strict();
 export type LoginRequest = z.infer<typeof LoginRequest>;
+
+export const CaseStatusFilter = z.enum([...CaseStatus.options, "all"]);
+export type CaseStatusFilter = z.infer<typeof CaseStatusFilter>;
+
+/** The case list filters (fraudops §4). A value nobody offered falls back instead of failing. */
+export const CaseListQuery = z.object({
+  status: CaseStatusFilter.catch("pending_review"),
+  verdict: Verdict.nullable().catch(null),
+  /** As typed. When not empty the status filter is ignored. */
+  code: z.string().trim().catch(""),
+  page: z.coerce.number().int().min(1).catch(1),
+});
+export type CaseListQuery = z.infer<typeof CaseListQuery>;
+
+export const CaseListItem = z
+  .object({
+    caseCode: z.string().min(1),
+    createdAt: z.iso.datetime(),
+    engineVerdict: Verdict,
+    riskTypes: z.array(RiskType),
+    status: CaseStatus,
+    isSeed: z.boolean(),
+    /** Null while the case is waiting. */
+    decision: Decision.nullable(),
+  })
+  .strict();
+export type CaseListItem = z.infer<typeof CaseListItem>;
+
+export const CaseListPage = z
+  .object({
+    items: z.array(CaseListItem),
+    /** The page returned, which is the last one when a later page was asked for. */
+    page: z.number().int().min(1),
+    totalPages: z.number().int().min(1),
+    /** False only when there is no case at all, whatever the filters. */
+    hasAnyCase: z.boolean(),
+  })
+  .strict();
+export type CaseListPage = z.infer<typeof CaseListPage>;

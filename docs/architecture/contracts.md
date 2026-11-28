@@ -1,6 +1,6 @@
 # ScamShield Ops — Hợp đồng dữ liệu
 
-**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2); slice S3 (PR #46, đã merge 26/11) thêm `CheckType`, `CheckStatus`, `AnalysisResult`, `CreateAnalysisRequest`, `BrandList`, `UrlLists`; slice S5 (PR #50, đã merge 27/11) thêm `PublicCaseStatus`, `LlmCaseSummaryOutput`, `ReportRequest`, `ReportResponse`, `CaseStatusRequest`, `CaseStatusResponse` (`report.ts`); T-060 (28/11, nhánh `feat/s6-auth`) thêm `LoginRequest` (`ops.ts`). Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
+**Trạng thái (28/11/2026):** BẢN NHÁP; sửa theo quyết định S4–S11 owner chốt 26/11 (U-03, ST-02); `SignalType`, `SignalSource` và schema đầu ra LLM đã có trong `packages/shared` (slice S2); slice S3 (PR #46, đã merge 26/11) thêm `CheckType`, `CheckStatus`, `AnalysisResult`, `CreateAnalysisRequest`, `BrandList`, `UrlLists`; slice S5 (PR #50, đã merge 27/11) thêm `PublicCaseStatus`, `LlmCaseSummaryOutput`, `ReportRequest`, `ReportResponse`, `CaseStatusRequest`, `CaseStatusResponse` (`report.ts`); T-060 (28/11, nhánh `feat/s6-auth`) thêm `LoginRequest` (`ops.ts`); T-061 thêm `CaseStatusFilter`, `CaseListQuery`, `CaseListItem`, `CaseListPage` (cùng file); T-062 thêm `CaseDetail`, `DecisionRecord`, `RelatedCases` (`case.ts`). Mô tả các khái niệm dữ liệu đi qua ranh giới (API, LLM, file dữ liệu) ở mức đủ để viết zod schema. Mục ghi *(đề xuất, chờ owner)* chưa được duyệt.
 
 **Thứ bậc:** khi `packages/shared` đã có schema, **schema thắng** file này; lệch thì sửa file này trong cùng PR ([conventions/contracts.md](../conventions/contracts.md)). Endpoint dùng các hình dạng này ở [api.md](./api.md). Quy tắc tính verdict **không** nằm ở đây; nó thuộc thiết kế slice pipeline (system-design §10).
 
@@ -109,6 +109,8 @@ Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá th�
 | `relatedCases` | `{ total: number, items: { caseCode, status, decision, isSeed, createdAt, sharedIndicators: { type, normalized }[] }[] }`; `items` tối đa 20 (SO-07; ST-02, owner chốt 26/11, [design/related-cases §3](../design/related-cases.md#3-truy-vấn)) |
 
 `disagreesWithEngine` tính theo bảng đồng ý ở SO-06-AC04, lưu lúc kết luận để eval đọc lại.
+
+**Danh sách hồ sơ** (T-061, [design/fraudops §4](../design/fraudops.md#4-danh-sách-hồ-sơ-ops-t-061)): `CaseListItem` = `{ caseCode, createdAt, engineVerdict, riskTypes, status, isSeed, decision | null }`; `CaseListPage` = `{ items, page, totalPages, hasAnyCase }`. Không có API: server component đọc thẳng `packages/core`.
 
 ## 7. Đầu ra LLM
 
