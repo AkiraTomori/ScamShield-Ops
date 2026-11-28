@@ -137,7 +137,7 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 |---|---|
 | 403 `forbidden_origin` | Thiếu hoặc sai `Origin` (kiểm đầu tiên) |
 | 429 `rate_limited` | Quá 5 lượt/phút/IP |
-| 400 `validation_failed` | Body sai dạng; `username` (bỏ khoảng trắng đầu cuối, viết thường) rỗng hoặc quá 64 ký tự; `password` rỗng hoặc quá 200 ký tự |
+| 400 `validation_failed` | Body sai dạng; `username` (bỏ khoảng trắng đầu cuối, viết thường) rỗng, quá 64 ký tự, hoặc chứa ký tự điều khiển hay surrogate lẻ; `password` rỗng hoặc quá 200 ký tự |
 | 401 `invalid_credentials` | Sai tên, sai mật khẩu hoặc tài khoản bị khoá |
 | 500 `internal` | Lỗi không dự đoán được, thiếu `DATABASE_URL` hoặc `RATE_LIMIT_SALT` |
 
@@ -161,7 +161,7 @@ Không trả lý do kết luận, tên nhân viên, nội dung tin.
 | 409 `conflict` | Hồ sơ đã đóng (người khác kết luận trước). Body là dạng lỗi chung, **không** kèm kết luận; UI tải lại trang để hiện kết luận hiện có (OP-03, owner chốt 26/11) |
 | 500 `internal` | Lỗi không dự đoán được, thiếu `DATABASE_URL` |
 
-`reason` được chuẩn hoá (NFC, bỏ ký tự điều khiển, trim) rồi mới đếm 10–500 ký tự và lưu.
+`reason` dài 10–500 ký tự sau khi trim, đếm theo cùng luật đếm ký tự với ô nhập tin (U-02).
 
 Trong **một transaction**: cập nhật case có điều kiện `status = pending_review`, ghi decision, và nếu `confirmed_scam` thì thêm các chỉ dấu `domain`/`phone`/`bank_account` vào danh sách đã xác minh (SO-08-AC01). `not_scam` và `insufficient_evidence` không thêm gì (SO-08-AC03).
 

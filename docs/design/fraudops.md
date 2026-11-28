@@ -1,6 +1,6 @@
 # Thiết kế slice S6: FraudOps (T-060…T-063)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060…T-063 xong ở local 28/11** (nhánh `feat/s6-auth`, chưa commit, chưa merge, chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). Chỗ cài đặt khác bản duyệt vẫn chờ owner xác nhận. T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060…T-063 xong ở local 28/11** (nhánh `feat/s6-auth`, PR nháp, chưa merge, chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-06-AC01…AC06, SO-05-AC01, AC03, SO-10-AC02, AC03, P1.
@@ -138,7 +138,7 @@ Theo ui-pages §6.1 và pages.md §6.1. Phần bổ sung:
 
 ### 5.4 Trạng thái phía client của form kết luận
 
-Form là component client duy nhất của trang (`features/case/DecisionForm.tsx`).
+Form là component client duy nhất của trang (`features/cases/DecisionForm.tsx`).
 
 | Tình huống | Hiển thị |
 |---|---|
@@ -263,7 +263,7 @@ T-060. **Chờ owner xác nhận** các chỗ khác hoặc thêm so với bản 
 - **Không có trạng thái đang tải** (ui-pages §6 không yêu cầu): không `loading.tsx`, không `Suspense`, để chưa đăng nhập nhận 307 và mã không tồn tại nhận 404 thật. Đổi lại, khi chuyển từ danh sách sang, màn cũ đứng yên cho tới khi hồ sơ đọc xong.
 - **Trang không tìm thấy:** đọc mã từ địa chỉ bằng `useParams`, chỉ nhắc lại khi đúng dạng `SC-…`; chuỗi khác thì ghi "Không tìm thấy hồ sơ.", tránh hiện chữ bất kỳ từ URL.
 - **Khối Bằng chứng** thêm thông báo đã che, và câu "Bước phân tích bằng AI chưa chạy được…" khi `high_risk` kèm lý do (P-01). Các câu lý do `inconclusive` khác không hiện vì viết cho người gửi ("hãy thử lại"); quy tắc kích hoạt đã nói lý do.
-- **Dùng chung `toViewModel` của S4**, nên chỉ dấu loại `brand` không có thẻ riêng (thương hiệu hiện trong phép kiểm tên miền chính thức), giống phía người gửi. Khuyến nghị cho người gửi không hiện.
+- **Dùng chung `toViewModel` của S4**, nên chỉ dấu loại `brand` không có thẻ riêng; khối Bằng chứng liệt kê chúng thành một dòng "Thương hiệu được nhắc tới: …" (sửa sau review 28/11: tin không có đường dẫn thì không có phép kiểm nào nhắc tới thương hiệu). Khuyến nghị cho người gửi không hiện.
 - `CaseDetail` nằm ở `packages/shared/src/case.ts`, không phải `ops.ts`, để schema đầu ra LLM không vào bundle trình duyệt.
 - Dữ liệu lưu không parse được: log `case_detail_invalid` kèm mã hồ sơ, trang lỗi, không render một phần.
 - **Chưa hiện kết luận** của hồ sơ đã đóng (đọc rồi nhưng chưa vẽ): form và thẻ là T-063.
@@ -286,4 +286,15 @@ T-060. **Chờ owner xác nhận** các chỗ khác hoặc thêm so với bản 
 **Đã kiểm 28/11 ở local** (DB tạm, xoá sau khi kiểm, không gọi model): `npm run verify` và `next build` xanh. Test: đủ 12 cặp đồng ý/khác (viết test trước), hai kết luận đồng thời (5 vòng), rollback khi DB từ chối, route 401/403/400/404/409/200/500, và test P1 so danh sách `route.ts` với bảng api.md §2. `curl`: 401, 403, 400, 404, 200, 409, hai lệnh song song ra một 200 một 409, người báo cáo tra thấy kết luận mới. Edge headless với hai tài khoản: lỗi nhập, lưu hoàn toàn bằng bàn phím, tải lại vẫn còn, xung đột, danh sách chờ không còn hồ sơ, lỗi server giữ nội dung rồi gửi lại được, hồ sơ bị xoá, hết phiên rồi đăng nhập quay lại đúng hồ sơ.
 
 **Chưa kiểm:** bản deploy; Safari; trình đọc màn hình; đăng nhập lại từ thiết bị khác (SO-06-AC05 mới kiểm bằng tải lại và đọc từ phiên khác trong test).
+
+### Sửa sau review (28/11/2026)
+
+**Chờ owner xác nhận** cùng các mục trên:
+- Khối Bằng chứng có dòng "Thương hiệu được nhắc tới: …" (SO-05-AC01).
+- Hồ sơ `closed` mà không có dòng `decisions` (S6 không tạo ra được; seed sai thì có thể) không hiện form, chỉ ghi "Hồ sơ đã đóng nhưng không có kết luận được lưu.".
+- Form kết luận bị từ chối thì focus chuyển tới ô sai đầu tiên (nhóm lựa chọn, rồi lý do), để trình đọc màn hình đọc câu lỗi.
+
+**Sửa lỗi, không phải đổi thiết kế:** `username` chứa NUL từng làm Postgres ném lỗi và route trả 500; nay mọi ký tự điều khiển hoặc surrogate lẻ trong `username` trả 400 (api.md §4). Mật khẩu không đổi luật.
+
+**Đã kiểm 28/11:** test mới viết trước và thấy đỏ; `npm run verify` và `next build` xanh; trên DB tạm: NUL trả 400, tin chỉ có "MoMo" hiện dòng thương hiệu, focus và mô tả trong cây accessibility của Edge đúng ô và đúng câu lỗi, hồ sơ đóng thiếu kết luận không có form. **Chưa kiểm** bằng trình đọc màn hình thật.
 

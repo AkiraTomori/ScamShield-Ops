@@ -41,6 +41,7 @@ export function CaseDetailView({ detail }: { detail: CaseDetail }) {
         <DecisionSection
           key={detail.caseCode}
           caseCode={detail.caseCode}
+          closed={detail.status === "closed"}
           decision={detail.decision}
         />
       </div>

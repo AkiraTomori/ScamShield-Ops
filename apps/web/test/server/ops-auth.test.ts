@@ -106,6 +106,17 @@ describe("POST /api/ops/session", () => {
     expect(services.login).not.toHaveBeenCalled();
   });
 
+  // Postgres rejects a NUL in text, so such a name must not reach the query.
+  it.each(["judge\u00001", "judge\u00071", "judge\ud800"])(
+    "answers 400 for a username with %j",
+    async (username) => {
+      const services = loginServices();
+      const response = await handleLogin(post({ username, password: PASSWORD }), { env, services });
+      expect(response.status).toBe(400);
+      expect(services.login).not.toHaveBeenCalled();
+    },
+  );
+
   it("answers 401 invalid_credentials without a cookie and without saying which part", async () => {
     const services = loginServices({ login: vi.fn(async () => null) });
     const response = await handleLogin(post(valid), { env, services });

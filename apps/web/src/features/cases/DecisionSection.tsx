@@ -26,9 +26,11 @@ type Problem = "none" | "taken" | "signed_out" | "not_found" | "failed";
  */
 export function DecisionSection({
   caseCode,
+  closed,
   decision,
 }: {
   caseCode: string;
+  closed: boolean;
   decision: DecisionRecord | null;
 }) {
   const t = vi.ops.decision;
@@ -40,6 +42,15 @@ export function DecisionSection({
   const [problem, setProblem] = useState<Problem>("none");
   const [sending, setSending] = useState(false);
   const inFlight = useRef(false);
+  const firstChoiceRef = useRef<HTMLInputElement>(null);
+  const reasonRef = useRef<HTMLTextAreaElement>(null);
+
+  // After the render, so the field already points at its message when focus arrives. A new object on
+  // every refused attempt, so pressing save again moves focus again.
+  useEffect(() => {
+    if (fields.decision) firstChoiceRef.current?.focus();
+    else if (fields.reason) reasonRef.current?.focus();
+  }, [fields]);
 
   useEffect(() => {
     if (problem !== "signed_out") return;
@@ -108,7 +119,10 @@ export function DecisionSection({
 
       {decision ? <DecisionCard decision={decision} /> : null}
 
-      {!decision && !taken ? (
+      {/* Damaged data: sending a decision for it could only fail. */}
+      {closed && !decision && !taken ? <p>{t.closedWithoutDecision}</p> : null}
+
+      {!closed && !decision && !taken ? (
         <DecisionForm
           choice={choice}
           reason={reason}
@@ -116,6 +130,8 @@ export function DecisionSection({
           choiceError={fields.decision}
           reasonError={fields.reason}
           error={problem === "failed" ? t.failed : undefined}
+          firstChoiceRef={firstChoiceRef}
+          reasonRef={reasonRef}
           onChoice={setChoice}
           onReason={setReason}
           onSubmit={() => {

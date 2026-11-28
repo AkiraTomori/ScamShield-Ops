@@ -95,7 +95,7 @@ Mỗi lần đổi mã, hợp đồng, quyết định hoặc trạng thái slic
 
 ## Trạng thái
 
-Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; T-060…T-063 xong ở local trên nhánh `feat/s6-auth`, chưa merge).
+Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã merge, PR #47; S4 T-040…T-042 đã merge, PR #48; S5 đã merge, PR #50; T-060…T-063 xong ở local trên nhánh `feat/s6-auth`, PR nháp, chưa merge).
 
 | Phần | Trạng thái |
 |---|---|
@@ -106,7 +106,7 @@ Cập nhật 28/11/2026 (S3 đã merge vào `main`, PR #46; runner eval dev đã
 | S3 pipeline phân tích ([design](./design/analysis-pipeline.md)) | Đã merge (PR #46, 26/11), chưa deploy: T-031…T-034, T-036…T-038, T-045, route `POST /api/analyses`. `npm run verify` xanh, test tích hợp chạy trên Postgres tạm, gọi thử Groq thật ở local. Chưa làm: T-035 (P1). Eval tập dev đã chạy 27/11 (T-039, [research B.4](./research/result.md#b4-nhật-ký-chạy)): 15/20 câu trong nhãn, chỉ 26/60 lượt có giải thích; runner đã merge (PR #47). Trễ so với lịch 22–23/11 |
 | S4 giao diện ScamShield ([design](./design/scamshield-ui.md)) | **Owner duyệt thiết kế 26/11** (U-01…U-06 theo đề xuất); T-040 (nền giao diện) xong 27/11; T-041 (trang `/`) xong 27/11 (owner chấp nhận điện thoại giả lập là đủ tạm thời, chưa thử trên máy thật); T-042 (khối kết quả) xong 27/11, còn phải xoá `/xem-truoc` trước 30/11; cả ba đã merge vào `main` (PR #48, 27/11), chưa deploy; trễ so với lịch 24–25/11; schema `AnalysisResult` đã có trên `main` (PR #46) |
 | S5 báo cáo + tra trạng thái ([design](./design/report-flow.md)) | **Owner duyệt thiết kế 26/11** (RP-01…RP-05 theo đề xuất); T-050…T-053 đã merge vào `main` (PR #50, 27/11), chưa deploy; đã kiểm ở local 27/11 ([§13](./design/report-flow.md#13-kết-quả-kiểm-27112026)): tóm tắt AI thường thiếu khi Groq trả 429. Chỗ khác bản duyệt và RP-06: owner chốt 27/11 |
-| S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); T-060…T-063 xong ở local 28/11 (nhánh `feat/s6-auth`, chưa merge, chưa deploy, [§11](./design/fraudops.md#11-ghi-chú-cài-đặt-28112026)) |
+| S6 FraudOps ([design](./design/fraudops.md)) | **Owner duyệt thiết kế 26/11** (OP-01…OP-04 theo đề xuất); T-060…T-063 xong ở local 28/11 (nhánh `feat/s6-auth`, PR nháp, chưa merge, chưa deploy, [§11](./design/fraudops.md#11-ghi-chú-cài-đặt-28112026)) |
 | S7 hồ sơ liên quan, P1 ([design](./design/related-cases.md)) | **Owner duyệt thiết kế 26/11** (ST-01, ST-02 theo đề xuất); chưa có mã; không cần migration |
 | S8 chỉ dấu đã xác minh, P1 ([design](./design/verified-indicators.md)) | **Owner duyệt thiết kế 26/11** (XM-01, XM-02 theo đề xuất; XM-03: chưa cắt); chưa có mã; cần migration mới `0001_confirmed_indicators` |
 | S9 dữ liệu demo, seed/reset, E2E ([design](./design/demo-data.md)) | **Owner duyệt thiết kế 26/11** (DM-01…DM-03 theo đề xuất; DM-04: một ngân hàng); chưa có mã; T-093 không bị chặn |

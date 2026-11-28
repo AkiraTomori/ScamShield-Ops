@@ -169,6 +169,26 @@ describe("case detail", () => {
     expect(render(closed(false))).not.toContain("không đồng ý");
   });
 
+  it("SO-05-AC01: lists a mentioned brand even when there is no address to check", () => {
+    const brand = { type: "brand", value: "MoMo", normalized: "momo", checks: [] } as const;
+    const { evidence, ai } = blocks(
+      render({
+        ...DETAIL,
+        analysis: { ...DETAIL.analysis, indicators: [{ ...brand, checks: [] }] },
+      }),
+    );
+    expect(evidence).toContain("Thương hiệu được nhắc tới: MoMo");
+    expect(ai).not.toContain("Thương hiệu được nhắc tới");
+    expect(blocks(render()).evidence).not.toContain("Thương hiệu được nhắc tới");
+  });
+
+  it("offers no form on a closed case whose decision is missing", () => {
+    const html = render({ ...DETAIL, status: "closed", decision: null });
+    expect(html).not.toContain("<form");
+    expect(html).not.toContain("<button");
+    expect(html).toContain("Hồ sơ đã đóng nhưng không có kết luận được lưu.");
+  });
+
   it("A-02: says so when there is no AI summary", () => {
     const html = render({
       ...DETAIL,

@@ -110,7 +110,7 @@ Phép `domain_age` và `blocklist` là tra cứu ngoài (Q-03): lỗi, quá th�
 
 `disagreesWithEngine` tính theo bảng đồng ý ở SO-06-AC04, lưu lúc kết luận để eval đọc lại.
 
-**Yêu cầu kết luận** (`DecisionRequest`, `ops.ts`): `{ decision: Decision, reason: string }`, `reason` chuẩn hoá rồi dài 10–500 ký tự.
+**Yêu cầu kết luận** (`DecisionRequest`, `ops.ts`): `{ decision: Decision, reason: string }`, `reason` dài 10–500 ký tự, đếm theo U-02.
 
 **Danh sách hồ sơ** (T-061, [design/fraudops §4](../design/fraudops.md#4-danh-sách-hồ-sơ-ops-t-061)): `CaseListItem` = `{ caseCode, createdAt, engineVerdict, riskTypes, status, isSeed, decision | null }`; `CaseListPage` = `{ items, page, totalPages, hasAnyCase }`. Không có API: server component đọc thẳng `packages/core`.
 

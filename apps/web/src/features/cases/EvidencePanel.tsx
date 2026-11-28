@@ -25,6 +25,8 @@ export function EvidencePanel({ detail, view }: { detail: CaseDetail; view: Resu
   const { analysis } = detail;
   const signals = view.signals.filter((signal) => signal.source === "deterministic");
   const risks = analysis.riskTypes.map((risk) => vi.ops.list.riskType[risk]).join(", ");
+  // The shared view model gives brands no card: without an address nothing else would name them.
+  const brands = analysis.indicators.filter((i) => i.type === "brand").map((i) => i.value);
 
   return (
     <section
@@ -67,6 +69,9 @@ export function EvidencePanel({ detail, view }: { detail: CaseDetail; view: Resu
       </Block>
 
       <Block heading={t.indicatorsHeading}>
+        {brands.length > 0 ? (
+          <p className="wrap-anywhere">{`${t.brands}: ${brands.join(", ")}`}</p>
+        ) : null}
         {view.indicators.length > 0 ? (
           view.indicators.map((indicator, index) => <IndicatorCard key={index} {...indicator} />)
         ) : (

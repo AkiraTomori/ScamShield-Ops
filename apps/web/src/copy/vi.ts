@@ -195,6 +195,7 @@ export const vi = {
       } satisfies Record<RuleCode, string>,
       indicatorsHeading: "Chỉ dấu và phép kiểm",
       checkSignalsHeading: "Dấu hiệu do kiểm tra",
+      brands: "Thương hiệu được nhắc tới",
       aiHeading: "Nhận định của AI",
       summaryHeading: "Tóm tắt điều tra",
       // design-system §3, contracts A-02.
@@ -220,6 +221,7 @@ export const vi = {
       unsavedReason: "Lý do bạn đang viết (chưa lưu)",
       expired: "Phiên đăng nhập đã hết hạn.",
       notFound: "Không tìm thấy hồ sơ.",
+      closedWithoutDecision: "Hồ sơ đã đóng nhưng không có kết luận được lưu.",
       reason: "Lý do",
       // Verbatim from SO-06-AC04.
       disagrees: "Nhân viên không đồng ý với đánh giá AI",

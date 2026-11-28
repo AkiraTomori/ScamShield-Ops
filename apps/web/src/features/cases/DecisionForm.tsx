@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ref } from "react";
 import { Decision } from "@scamshield/shared/enums";
 import { countInputChars } from "@scamshield/shared/input";
 import { DECISION_REASON_MAX_CHARS } from "@scamshield/shared/ops";
@@ -17,6 +18,8 @@ export interface DecisionFormProps {
   reasonError?: string;
   /** An error about the whole request. */
   error?: string;
+  firstChoiceRef?: Ref<HTMLInputElement>;
+  reasonRef?: Ref<HTMLTextAreaElement>;
   onChoice: (choice: Decision) => void;
   onReason: (reason: string) => void;
   onSubmit: () => void;
@@ -30,6 +33,8 @@ export function DecisionForm({
   choiceError,
   reasonError,
   error,
+  firstChoiceRef,
+  reasonRef,
   onChoice,
   onReason,
   onSubmit,
@@ -52,9 +57,12 @@ export function DecisionForm({
         className="flex flex-col gap-1"
       >
         <legend className="font-semibold">{t.choiceLegend} *</legend>
-        {Decision.options.map((option) => (
+        {Decision.options.map((option, index) => (
           <label key={option} className="flex min-h-11 items-center gap-2">
             <input
+              ref={index === 0 ? firstChoiceRef : undefined}
+              // On the radio too: not every screen reader reads a fieldset's description.
+              aria-describedby={choiceError ? "decision-choice-error" : undefined}
               type="radio"
               name="decision"
               value={option}
@@ -75,6 +83,7 @@ export function DecisionForm({
       </fieldset>
 
       <TextArea
+        ref={reasonRef}
         id="decision-reason"
         label={t.reasonLabel}
         counterId="decision-reason-count"

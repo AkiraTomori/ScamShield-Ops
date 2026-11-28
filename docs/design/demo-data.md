@@ -79,6 +79,7 @@ Tổng: **24 case**, mã `SC-0001…SC-0024`.
   - `details` qua được zod schema `AnalysisResult` (DB-02).
   - `verdict`, `rule` và `riskTypes` **phải khớp** kết quả của `decide()` (rules-v1) trên signal của chính case đó. Có test bắt buộc (§6), để dữ liệu mẫu không mâu thuẫn với quy tắc mà slide trình bày (P4).
   - Có dòng `analysis_indicators` cho mọi chỉ dấu `domain`, `phone`, `bank_account` (S7 cần).
+  - Case `closed` luôn có `closed_at` và một dòng `decisions`, chèn trong cùng giao dịch. Thiếu dòng này thì trang hồ sơ chỉ báo "không có kết luận được lưu" ([fraudops §11](./fraudops.md#11-ghi-chú-cài-đặt-28112026)).
   - Chỉ dùng tên miền `*.example` và thương hiệu giả "Ví XYZ", trừ ba case S1 dùng cùng thương hiệu với M1.
   - `disagrees_with_engine` tính bằng hàm `disagreesWithEngine` của S6, không gõ tay.
 - **Thời điểm:** `created_at` rải trong 7 ngày trước lúc chạy reset, theo thứ tự mã. Danh sách luôn trông mới, và thứ tự vẫn ổn định.
