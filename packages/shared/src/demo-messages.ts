@@ -4,7 +4,7 @@ import { Verdict } from "./enums";
 
 /**
  * Demo messages (demo-data §2): `data/demo-messages.json` is the only source, read by the page and
- * later by seed, E2E and eval. The current texts are placeholders until T-093 writes the final ones.
+ * E2E, and later by eval. M1 and M3 share a domain and impersonate the brand of the S1 seed cases.
  */
 export const DemoMessage = z
   .object({

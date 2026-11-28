@@ -8,3 +8,5 @@ tools
 .claude
 packages/core/src/db/migrations
 *.md
+test-results
+playwright-report

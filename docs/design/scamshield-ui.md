@@ -40,7 +40,6 @@ apps/web/src/
     ResultView.tsx                   nhận AnalysisResult đã parse, không có state
     submit-analysis.ts               fetch POST /api/analyses → AnalysisOutcome (§3.2); parse bằng schema shared
     view-model.ts                    hàm thuần: AnalysisResult → dữ liệu hiển thị (nhãn, câu detail, có nút Thử lại không)
-    samples.ts                       tin mẫu tĩnh (§7)
   components/                        Button, TextArea, CharCounter, SampleChips, VerdictBanner, SourceBadge,
                                      SignalList, IndicatorCard, CheckStatus, RedactionNotice, Disclaimer,
                                      Skeleton, ErrorState (design-system §4; mỗi file một component)
@@ -178,9 +177,9 @@ Câu phụ thuộc **cả loại phép kiểm, trạng thái và mã**, không c
 
 ## 7. Tin mẫu (SO-10-AC05)
 
-- *(S9 đề xuất đổi: đọc từ `packages/shared/data/demo-messages.json`, xem [demo-data §2](./demo-data.md#2-tin-demo-một-nguồn-duy-nhất-t-093).)* 3–4 tin tĩnh trong `features/analysis/samples.ts`, chữ nằm ở đó hoặc ở `copy/vi.ts`. Bấm chip thì **điền** vào ô, không tự gửi. Đang có kết quả thì bấm chip cũng ẩn kết quả (§3.1).
-- Chỉ dùng tên miền `*.example` và thương hiệu giả. Một tin là tin OTP thật (M2), phải ra `no_signal` (team-split §3; A kiểm verdict).
-- Nội dung do T-093 soạn. Trước khi có T-093, dùng tạm 4 tin trong fixture §4.
+- Đọc từ `packages/shared/data/demo-messages.json`, là nguồn duy nhất ([demo-data §2](./demo-data.md#2-tin-demo-một-nguồn-duy-nhất-t-093)). Bấm chip thì **điền** vào ô, không tự gửi. Đang có kết quả thì bấm chip cũng ẩn kết quả (§3.1).
+- Chỉ dùng tên miền `*.example`. Thương hiệu thật chỉ xuất hiện trong nội dung M1 và M3 (R-01). M2 là tin OTP thật, phải ra `no_signal`.
+- Nội dung chính thức soạn ở T-093 (28/11, chưa merge).
 
 ## 8. Kiểm thử
 

@@ -28,7 +28,10 @@ describe("analysis page", () => {
 
   it("SO-10-AC05: offers the sample messages as buttons", () => {
     const html = renderToStaticMarkup(<HomePage />);
-    for (const { chip } of DEMO_MESSAGES) {
+    const chips = DEMO_MESSAGES.flatMap((m) => (m.chip === null ? [] : [m.chip]));
+    expect(chips.length).toBeGreaterThanOrEqual(3);
+    expect(chips.length).toBeLessThanOrEqual(4);
+    for (const chip of chips) {
       expect(html).toMatch(new RegExp(`<button[^>]*type="button"[^>]*>${chip}</button>`));
     }
   });

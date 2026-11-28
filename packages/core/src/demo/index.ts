@@ -4,3 +4,4 @@ export {
   DemoPasswordsError,
   upsertDemoStaff,
 } from "./staff";
+export { DemoSeedError, parseDemoLookupSecret, resetDemoData, type DemoSummary } from "./reset";

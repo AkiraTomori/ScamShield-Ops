@@ -46,7 +46,7 @@ README hiện đã có các mục: hệ thống chạy thế nào, cấu trúc r
 | Mục | Nội dung | Nguồn |
 |---|---|---|
 | Link sản phẩm | URL production; ghi rõ tài khoản thử nằm trong hướng dẫn A4, không nằm trong README | T-091 |
-| Cách chạy | Đối chiếu với `setup-and-bringup.md`; thêm `demo:seed`, `demo:reset`, `npm run eval`, `npm run e2e`. Chỉ trỏ tới `.env.example`, không ghi giá trị thật | demo-data §7, eval-suite §3 |
+| Cách chạy | Đối chiếu với `setup-and-bringup.md`; thêm `demo:seed`, `demo:reset`, `npm run eval`, `npm run e2e:setup`, `npm run test:e2e`. Chỉ trỏ tới `.env.example`, không ghi giá trị thật | demo-data §7, eval-suite §3 |
 | Thư viện mã nguồn mở | Lấy **đúng** từ `docs/conventions/libraries.md` và `package.json`: thêm Next.js, Tailwind, `tldts`, Playwright nếu đã cài. Không liệt kê thư viện chưa cài | libraries.md |
 | Tài sản có sẵn | Font Be Vietnam Pro và giấy phép của nó (nếu U-01 chọn); biểu tượng là SVG tự vẽ; không dùng logo hay màu nhận diện của tổ chức nào | scamshield-ui U-01, spec §9 |
 | Công cụ AI | Hai loại, tách rõ: (1) **trong sản phẩm**: Groq, model chính và dự phòng (Q-08); (2) **khi phát triển**: Claude Code + my-sdlc-kit | Q-08, README hiện tại |

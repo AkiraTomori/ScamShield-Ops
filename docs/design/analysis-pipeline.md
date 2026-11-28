@@ -1,6 +1,6 @@
 # Thiết kế slice pipeline phân tích (SO-01…SO-03)
 
-**Trạng thái (28/11/2026):** thêm bước tra danh sách chỉ dấu đã xác minh (§2, §6.10; T-080, nhánh `feat/s8-confirmed-indicators`, chưa merge). Phần còn lại giữ như 27/11: **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)). **Cài đặt (27/11/2026):** mã đã merge vào `main` (PR #46, 26/11), chưa deploy; còn thiếu tra cứu ngoài (§6.6, T-035); eval tập dev chạy bằng runner của PR #47, đã merge (số ở [research B.4](../research/result.md#b4-nhật-ký-chạy)); các chỗ khác bản duyệt ở §13. **Sửa ngày 26/11/2026** (owner chốt khi duyệt S4, S10): `normalizeInput` đặt ở `packages/shared` (U-02); `analyzeMessage` không tự lưu, route lưu (EV-02). Hành vi không đổi.
+**Trạng thái (28/11/2026):** thêm bước tra danh sách chỉ dấu đã xác minh (§2, §6.10; T-080, đã merge, PR #53). Phần còn lại giữ như 27/11: **OWNER ĐÃ DUYỆT SLICE S3 ngày 24/11/2026** (`/sdlc:sign-off`), gồm ngân sách thời gian §2, bảng nhóm `SignalType` §6.9 và bảng quy tắc verdict §7 (`rules-v1`). Agent được viết mã S3 (T-031…T-039). P-05, P-06 dùng giá trị đề xuất làm giá trị ban đầu, chỉnh theo eval **tập dev** (không dùng held-out, SO-09-AC02). P-04: agent đề xuất nội dung có nguồn, owner duyệt trong PR S3. Owner chưa yêu cầu cắt việc dù S3 trễ lịch (xem [plan §3](../runbook/plan.md)). **Cài đặt (27/11/2026):** mã đã merge vào `main` (PR #46, 26/11), chưa deploy; còn thiếu tra cứu ngoài (§6.6, T-035); eval tập dev chạy bằng runner của PR #47, đã merge (số ở [research B.4](../research/result.md#b4-nhật-ký-chạy)); các chỗ khác bản duyệt ở §13. **Sửa ngày 26/11/2026** (owner chốt khi duyệt S4, S10): `normalizeInput` đặt ở `packages/shared` (U-02); `analyzeMessage` không tự lưu, route lưu (EV-02). Hành vi không đổi.
 
 **Căn cứ và thứ bậc:**
 - [spec](../spec/ScamShield-v1.md): SO-01…SO-03, P1–P5, Q-04, Q-06.
@@ -250,7 +250,7 @@ So với bản nháp ở contracts §3, đổi một mục:
 
 Bước này đặt sau §6.1–6.3: tra chỉ dấu đã chuẩn hoá trong danh sách đã xác minh (1 truy vấn DB). Có khớp → check `verified_indicator` (`warn`) + signal `verified_indicator`. Chưa có bảng (P1 chưa làm) thì bỏ qua bước này.
 
-**T-080 (28/11, nhánh `feat/s8-confirmed-indicators`, chưa merge):** bước này đã có. Chạy trước LLM, hạn 1 s, lỗi hoặc quá hạn → 500 `internal` ([verified-indicators §3, §12](./verified-indicators.md#12-ghi-chú-cài-đặt-t-080-28112026)).
+**T-080 (28/11, đã merge, PR #53):** bước này đã có. Chạy trước LLM, hạn 1 s, lỗi hoặc quá hạn → 500 `internal` ([verified-indicators §3, §12](./verified-indicators.md#12-ghi-chú-cài-đặt-t-080-28112026)).
 
 ## 7. Quy tắc verdict (P4, `rulesVersion = rules-v1`)
 

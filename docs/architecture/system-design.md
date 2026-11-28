@@ -12,7 +12,7 @@ Căn cứ: [spec v1](../spec/ScamShield-v1.md) (hành vi, P1–P5, Q-01…Q-10 �
 - Monorepo npm workspaces, TypeScript strict, cấu hình format, lint, typecheck, Vitest, và lệnh `npm run verify`.
 - Ứng dụng Next.js có trang skeleton và route `/api/health`.
 - `packages/shared` có zod schema đầu tiên (`HealthResponse`) và schema đọc biến môi trường.
-- Lớp truy cập DB (kết nối, đóng kết nối, ping), công cụ migration, và schema 8 bảng P0 (data-model.md) cùng migration `0000_p0_tables`. Migration chưa chạy trên DB deploy.
+- Lớp truy cập DB (kết nối, đóng kết nối, ping), công cụ migration, và schema 8 bảng P0 (data-model.md) cùng migration `0000_p0_tables`. Migration đã chạy trên Supabase (kiểm 28/11); app chưa deploy.
 - Postgres local cho dev (Docker Compose), `.env.example` chỉ có placeholder.
 - CI (GitHub Actions) chạy `npm run verify` trên PR và `main`.
 - Cập nhật `docs/runbook/setup-and-bringup.md`, `docs/architecture/codebase.md`, `docs/conventions/libraries.md` theo những gì owner duyệt.

@@ -18,10 +18,13 @@
     "lint": "eslint .",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",
+    "test:e2e": "npm run test:e2e -w @scamshield/web",
+    "e2e:setup": "tsx packages/core/scripts/e2e-setup.ts",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "db:generate": "npm run db:generate -w @scamshield/core",
     "db:migrate": "npm run db:migrate -w @scamshield/core",
     "demo:seed": "tsx packages/core/scripts/demo-seed.ts",
+    "demo:reset": "tsx packages/core/scripts/demo-reset.ts",
     "eval:q08": "tsx eval/src/run-q08.ts",
     "eval": "tsx eval/src/run-eval.ts"
   },

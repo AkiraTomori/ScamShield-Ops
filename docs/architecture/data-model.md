@@ -1,6 +1,6 @@
 # ScamShield Ops — Mô hình dữ liệu
 
-**Trạng thái (28/11/2026):** thêm bảng `confirmed_indicators` (§2.9, migration `0001_confirmed_indicators`, T-082, nhánh `feat/s8-confirmed-indicators`, chưa merge, chưa chạy trên DB deploy). Phần P0: ĐÃ DUYỆT để triển khai (owner duyệt 21/11/2026). Schema Drizzle và migration `0000_p0_tables` đã viết, đã chạy trên Postgres local (DB tạm trong test tích hợp; 77 test xanh ngày 21/11, gồm CHECK `analyses_inconclusive_has_reason` của DB-06); **chưa chạy trên DB deploy**, việc đó chỉ owner làm (plan §5). Seed và reset demo (§7) **chưa làm**, thuộc slice riêng. Quyết định ở §9: DB-01…DB-04, DB-06, O-04 đã chốt; DB-05 là đề xuất.
+**Trạng thái (28/11/2026):** thêm bảng `confirmed_indicators` (§2.9, migration `0001_confirmed_indicators`, T-082, đã merge (PR #53), đã chạy trên Supabase, kiểm 28/11). Phần P0: ĐÃ DUYỆT để triển khai (owner duyệt 21/11/2026). Schema Drizzle và migration `0000_p0_tables` đã viết, đã chạy trên Postgres local (DB tạm trong test tích hợp; 77 test xanh ngày 21/11, gồm CHECK `analyses_inconclusive_has_reason` của DB-06); **đã chạy trên Supabase** (kiểm 28/11); migrate DB deploy chỉ owner làm (plan §5). Seed và reset demo (§7) xong ở local 28/11 (T-090, PR #54, chưa merge; seed đã chạy trên Supabase, kiểm 28/11; [demo-data §10](../design/demo-data.md#10-ghi-chú-cài-đặt-t-090-28112026)). Quyết định ở §9: DB-01…DB-04, DB-06, O-04 đã chốt; DB-05 là đề xuất.
 
 **Căn cứ:**
 - [spec §10](../spec/ScamShield-v1.md#10-ảnh-hưởng-tới-dữ-liệu-và-api-mức-đặc-tả)
@@ -260,7 +260,7 @@ Ghi thất bại thì giao dịch rollback toàn bộ: không có case thiếu a
 ## 10. Kế hoạch migration
 
 1. Viết schema Drizzle trong `packages/core/src/db/schema/`. `npm run db:generate` sinh **một** migration cho mọi bảng P0, sequence và RLS. Drizzle đánh số từ `0000`, nên file là `0000_p0_tables.sql`. **Đọc lại file SQL** trước khi commit.
-2. Chạy trên Postgres local (Docker), chạy test tích hợp: các bất biến ở §3, giao dịch ở §4, mã hồ sơ, RLS. Mỗi file test tạo một database tạm, áp migration từ đầu rồi xoá, nên không đụng DB dev. Seed và reset chưa có test vì chưa có lệnh.
+2. Chạy trên Postgres local (Docker), chạy test tích hợp: các bất biến ở §3, giao dịch ở §4, mã hồ sơ, RLS. Mỗi file test tạo một database tạm, áp migration từ đầu rồi xoá, nên không đụng DB dev. Seed và reset có test ở `packages/core/test/demo/` (T-090).
 3. DB đã deploy: **chỉ owner** chạy `npm run db:migrate` với `DATABASE_URL_MIGRATE` (hiện hoãn theo D-05).
 4. Không sửa `0000_p0_tables` sau khi đã chạy trên DB deploy; thay đổi sau viết migration mới (backend.md §3).
 5. `0001_confirmed_indicators` chỉ thêm một bảng, index và RLS; không sửa bảng cũ. **Owner chạy trên DB deploy trước khi deploy mã của T-082.**

@@ -36,7 +36,7 @@ Hai **case** liên quan khi analysis của chúng có chung ít nhất một c�
 
 Đề xuất: **không so khớp** hai loại tên miền này. Danh sách đọc từ hai file dữ liệu đã có, không thêm danh sách thứ ba. Đây là thay đổi hành vi so với chữ của spec; owner chốt ST-01 ngày 26/11 và câu SO-07-AC01 đã được sửa.
 
-**Bổ sung 28/11 (XM-04, owner chốt; có mã ở local 28/11, chưa merge):** không so khớp thêm tên miền nền tảng dùng chung, đọc từ khoá mới `sharedPlatforms` trong `url-lists.json`. Đây là loại danh sách thứ ba, thay câu "không thêm danh sách thứ ba" ở trên; file dữ liệu vẫn là hai. Danh sách và lý do ở [verified-indicators §9](./verified-indicators.md#9-quyết-định-owner-chốt-26112026).
+**Bổ sung 28/11 (XM-04, owner chốt; có mã ở local 28/11, đã merge, PR #53):** không so khớp thêm tên miền nền tảng dùng chung, đọc từ khoá mới `sharedPlatforms` trong `url-lists.json`. Đây là loại danh sách thứ ba, thay câu "không thêm danh sách thứ ba" ở trên; file dữ liệu vẫn là hai. Danh sách và lý do ở [verified-indicators §9](./verified-indicators.md#9-quyết-định-owner-chốt-26112026).
 
 Số tổng đài `1800`/`1900` giữ nguyên trong so khớp. Hai báo cáo cùng một số tổng đài lạ là tín hiệu có ích.
 
@@ -130,5 +130,5 @@ Tiền tố `ST-` (liên kết hồ sơ, slice S7), chưa dùng ở tài liệu 
 - `next build`; Edge headless trên DB tạm: hồ sơ chung tên miền hiện "3 hồ sơ khác có cùng chỉ dấu", hai hồ sơ chỉ chung tên miền chính thức không nối, bấm link mở hồ sơ kia, không lỗi JS, 1280px và 360px không cuộn ngang.
 
 **Chưa kiểm:**
-- Cảnh demo ở §6 "Kiểm tay" với tin M3 gửi thật và dữ liệu `demo:seed`: seed hồ sơ mẫu (T-090) chưa có. T-090 phải chèn cả `analysis_indicators` (§5).
+- Cảnh demo ở §6 "Kiểm tay" với tin M3 gửi thật và dữ liệu `demo:seed`: seed hồ sơ mẫu đã có (T-090, chèn cả `analysis_indicators`; test tích hợp thấy 3 hồ sơ S1), M3 đã soạn và chạy qua route ở local (T-093), nhưng chưa mở khối liên quan của hồ sơ M3.
 - Bản deploy; thời gian truy vấn khi có nhiều hồ sơ.

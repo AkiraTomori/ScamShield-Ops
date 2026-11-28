@@ -6,7 +6,7 @@ T-004,S0 Nền móng,"Tạo project Vercel, đặt DATABASE_URL chỉ Production
 T-005,S0 Nền móng,"Merge PR nền móng, kiểm /api/health trên production",,T-002;T-004,21/11,S,owner,todo,P0,,"Mốc walking skeleton: URL công khai, health 200, time đổi giữa 2 lần gọi",C
 T-010,S1 Dữ liệu,"Thiết kế bảng nghiệp vụ, ràng buộc, RLS, seed/reset (/sdlc:database)",SO-04-AC03;SO-06-AC03;SO-10-AC04,T-001,21/11,M,agent,done,P0,,"docs/architecture có mô hình dữ liệu, owner duyệt",
 T-011,S1 Dữ liệu,"Schema Drizzle + migration đầu tiên (analyses, reports/cases, decisions, indicators, staff_users, rate limit)",SO-06-AC05,T-010,22/11,M,agent,done,P0,,Migration chạy được trên Postgres local; RLS bật mọi bảng,
-T-012,S1 Dữ liệu,Chạy migration lên Supabase,,T-011;T-005,22/11,S,owner,todo,P0,,,C
+T-012,S1 Dữ liệu,Chạy migration lên Supabase,,T-011;T-005,22/11,S,owner,done,P0,,,C
 T-020,S2 Thử model,"Soạn + gán nhãn 20 câu dev đầu tiên (research A.3, B.2)",SO-09-AC01,,21/11,M,đội,done,P0,,eval/cases/dev.jsonl có 20 dòng parse được,
 T-021,S2 Thử model,"Owner duyệt ngưỡng A.5, định dạng B.2, slice script thử model",,,21/11,S,owner,done,P0,,,
 T-022,S2 Thử model,"Module llm tối thiểu (Groq client qua http allowlist, prompt signal, parse zod, retry 1 lần) + script thử",SO-03-AC01,T-001;T-021,22/11,M,agent,done,P0,,Script chạy 20 câu × 3 lần cho 1 model,
@@ -37,10 +37,10 @@ T-070,S7 Liên kết hồ sơ,Hồ sơ liên quan theo chỉ dấu chuẩn hoá 
 T-082,S8 Chỉ dấu xác minh,Bảng confirmed_indicators (migration 0001) + ghi khi confirmed_scam trong giao dịch kết luận + API gỡ,SO-08-AC01;SO-08-AC03,T-063,28/11,M,agent,done,P1,1,Không ghi tên miền chính thức/rút gọn (XM-01) hay nền tảng dùng chung (XM-04); gỡ hai lần ra 409,C
 T-080,S8 Chỉ dấu xác minh,Engine tra danh sách chỉ dấu đã xác minh: signal verified_indicator (phần bảng và ghi ở T-082),SO-08-AC02,T-038;T-082,29/11,M,agent,done,P1,1,,A
 T-081,S8 Chỉ dấu xác minh,Trang /ops/chi-dau + gỡ có lý do,SO-08-AC03,T-082,29/11,S,agent,done,P1,1,,B
-T-090,S9 Demo,"Seed 20–40 case is_seed (gồm 3 case chung vi-xac-minh.example), judge1…judge5, demo:reset",SO-10-AC02;SO-10-AC03;SO-10-AC04,T-063;T-082,28/11,M,agent,todo,P0,,,C
-T-091,S9 Demo,Chạy seed + tạo tài khoản thử trên production,,T-090;T-012,29/11,S,owner,todo,P0,,,C
-T-092,S9 Demo,Playwright: luồng 6 bước plan §1,SO-10-AC01,T-063;T-051,29/11,M,agent,todo,P0,,,C
-T-093,S9 Demo,Soạn tin M1/M2/M3 (R-01) và 3–4 tin mẫu trên trang,SO-10-AC05,T-033,25/11,S,đội,todo,P0,,,B
+T-090,S9 Demo,"Seed 20–40 case is_seed (gồm 3 case chung vi-xac-minh.example), judge1…judge5, demo:reset",SO-10-AC02;SO-10-AC03;SO-10-AC04,T-063;T-082,28/11,M,agent,done,P0,,,C
+T-091,S9 Demo,Chạy seed + tạo tài khoản thử trên production,,T-090;T-012,29/11,S,owner,done,P0,,,C
+T-092,S9 Demo,Playwright: luồng 6 bước plan §1,SO-10-AC01,T-063;T-051,29/11,M,agent,done,P0,,,C
+T-093,S9 Demo,Soạn tin M1/M2/M3 (R-01) và 3–4 tin mẫu trên trang,SO-10-AC05,T-033,25/11,S,đội,in_progress,P0,,,B
 T-100,S10 Eval,"Hoàn thành 60–100 tình huống, chia dev/held-out, 5–10 injection",SO-09-AC01;SO-09-AC02,T-020,29/11,L,đội,todo,P0,,,A (chính) + B + C
 T-101,S10 Eval,"Runner eval đủ chỉ số research B.3, 3 lần/tình huống, xuất eval/results",SO-09-AC03,T-039,28/11,M,agent,in_progress,P0,,,A
 T-102,S10 Eval,"Đóng băng tính năng, chạy end-to-end trên production",,T-092;T-091,30/11,S,đội,todo,P0,,Không còn lỗi chặn luồng demo,C
