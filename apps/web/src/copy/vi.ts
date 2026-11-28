@@ -4,6 +4,7 @@ import type {
   CheckType,
   Decision,
   InconclusiveReason,
+  MatchableIndicatorType,
   PublicCaseStatus,
   RedactionCounts,
   ReportChannel,
@@ -135,6 +136,7 @@ export const vi = {
       columnCode: "Mã hồ sơ",
       columnTime: "Thời điểm",
       columnRisks: "Loại rủi ro",
+      columnRelated: "Liên quan",
       status: {
         pending_review: "Chờ xem xét",
         closed: "Đã đóng",
@@ -203,6 +205,14 @@ export const vi = {
       nextStepsHeading: "Đề xuất bước tiếp theo",
       aiSignalsHeading: "Dấu hiệu do AI nhận định",
       explanationHeading: "Giải thích đã hiện cho người dùng",
+      // related-cases §4.1.
+      relatedHeading: (total: number) => `${total} hồ sơ khác có cùng chỉ dấu`,
+      relatedShown: (shown: number) => `Đang hiện ${shown} hồ sơ có nhiều chỉ dấu chung nhất.`,
+      indicatorType: {
+        domain: "Tên miền",
+        phone: "Số điện thoại",
+        bank_account: "Số tài khoản",
+      } satisfies Record<MatchableIndicatorType, string>,
       notFound: (code: string | null) =>
         code ? `Không tìm thấy hồ sơ ${code}.` : "Không tìm thấy hồ sơ.",
       backToList: "Về danh sách hồ sơ",

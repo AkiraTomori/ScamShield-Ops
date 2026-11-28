@@ -89,6 +89,7 @@ describe.skipIf(!url)("listCases", () => {
       status: "pending_review",
       isSeed: true,
       decision: null,
+      relatedCount: 0,
     });
     expect(page).toMatchObject({ page: 1, totalPages: 1, hasAnyCase: true });
   });

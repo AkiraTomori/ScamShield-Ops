@@ -201,4 +201,84 @@ describe("case detail", () => {
     expect(evidence).toContain("Chưa phát hiện tín hiệu nào");
     expect(evidence).toContain("Không tìm thấy đường dẫn, số điện thoại hay số tài khoản");
   });
+
+  const related = (total: number): CaseDetail => ({
+    ...DETAIL,
+    relatedCases: {
+      total,
+      items: [
+        {
+          caseCode: "SC-0012",
+          status: "closed",
+          decision: "confirmed_scam",
+          isSeed: true,
+          createdAt: "2026-11-21T02:15:00.000Z",
+          sharedIndicators: [
+            { type: "bank_account", normalized: "0123456789" },
+            { type: "domain", normalized: "vi-xac-minh.example" },
+          ],
+        },
+        {
+          caseCode: "SC-0102",
+          status: "pending_review",
+          decision: null,
+          isSeed: false,
+          createdAt: "2026-11-22T07:03:00.000Z",
+          sharedIndicators: [{ type: "phone", normalized: "+84901234567" }],
+        },
+      ],
+    },
+  });
+
+  /** Evidence, AI judgement, related cases, conclusion. */
+  function relatedBlock(html: string) {
+    const sections = html.split("<section").slice(1);
+    expect(sections).toHaveLength(4);
+    return sections[2]!;
+  }
+
+  it("SO-07-AC01: counts the related cases and links to each", () => {
+    const block = relatedBlock(render(related(2)));
+    for (const text of [
+      "2 hồ sơ khác có cùng chỉ dấu",
+      "SC-0012",
+      "Số tài khoản",
+      "0123456789",
+      "Tên miền",
+      "vi-xac-minh.example",
+      "Xác nhận lừa đảo",
+      "Dữ liệu mẫu",
+      "SC-0102",
+      "Số điện thoại",
+      "+84901234567",
+      "Chờ xem xét",
+    ]) {
+      expect(block).toContain(text);
+    }
+    expect(block).not.toContain("Đang hiện");
+  });
+
+  it("SO-05-AC03, P5: marks them as a check, and links only to cases", () => {
+    const html = render(related(2));
+    const block = relatedBlock(html);
+    expect(block).toContain(vi.signalSource.deterministic);
+    expect(block).not.toContain(vi.signalSource.ai);
+    // A shared domain is text like everywhere else, and there is nothing to press (P1).
+    expect([...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1])).toEqual([
+      "/ops",
+      "/ops/ho-so/SC-0012",
+      "/ops/ho-so/SC-0102",
+    ]);
+    expect(block).not.toContain("<button");
+  });
+
+  it("says so when it shows only part of the matches", () => {
+    const block = relatedBlock(render(related(25)));
+    expect(block).toContain("25 hồ sơ khác có cùng chỉ dấu");
+    expect(block).toContain("Đang hiện 2 hồ sơ có nhiều chỉ dấu chung nhất.");
+  });
+
+  it("hides the block when nothing is related", () => {
+    expect(render()).not.toContain("hồ sơ khác có cùng chỉ dấu");
+  });
 });

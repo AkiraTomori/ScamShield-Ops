@@ -4,6 +4,7 @@ import type { StaffSession } from "../auth/session";
 import { cases, decisions } from "../db/schema";
 import type { Db } from "../rate-limit";
 import { normalizeCaseCode } from "../reports/lookup";
+import { countRelatedCases } from "./related";
 
 /** The FraudOps case queue (fraudops §4, SO-06-AC02). */
 
@@ -35,6 +36,7 @@ export async function listCases(
 
   const rows = await deps.db
     .select({
+      id: cases.id,
       caseCode: cases.code,
       createdAt: cases.createdAt,
       engineVerdict: cases.engineVerdict,
@@ -50,11 +52,19 @@ export async function listCases(
     .limit(CASES_PAGE_SIZE)
     .offset((page - 1) * CASES_PAGE_SIZE);
 
+  const related = await countRelatedCases(
+    rows.map((row) => row.id),
+    deps,
+  );
   const hasAnyCase =
     total > 0 || (await deps.db.select({ id: cases.id }).from(cases).limit(1)).length > 0;
 
   return CaseListPage.parse({
-    items: rows.map((row) => ({ ...row, createdAt: row.createdAt.toISOString() })),
+    items: rows.map(({ id, createdAt, ...row }) => ({
+      ...row,
+      createdAt: createdAt.toISOString(),
+      relatedCount: related.get(id) ?? 0,
+    })),
     page,
     totalPages,
     hasAnyCase,

@@ -6,6 +6,7 @@ import { logEvent } from "../log";
 import type { Db } from "../rate-limit";
 import { normalizeCaseCode } from "../reports/lookup";
 import { toDecisionRecord } from "./decision-record";
+import { findRelatedCases } from "./related";
 
 /** One investigation case (fraudops §5.1, SO-05-AC01). */
 
@@ -15,8 +16,6 @@ export async function getCaseDetail(
   caseCode: string,
   deps: { db: Db },
 ): Promise<CaseDetail | null> {
-  // Not used by the query: asking for it means no caller can forget the check (fraudops §2).
-  void session;
   const code = normalizeCaseCode(caseCode);
   if (!code) return null;
 
@@ -28,6 +27,7 @@ export async function getCaseDetail(
     .leftJoin(staffUsers, eq(staffUsers.id, decisions.decidedBy))
     .where(eq(cases.code, code));
   if (!row) return null;
+  const relatedCases = await findRelatedCases(session, row.case.id, deps);
 
   try {
     const { analysis, decision } = row;
@@ -55,8 +55,7 @@ export async function getCaseDetail(
       },
       aiSummary: row.case.aiSummary,
       decision: decision && toDecisionRecord(decision, row.staff),
-      // SO-07 fills this (T-070).
-      relatedCases: { total: 0, items: [] },
+      relatedCases,
     });
   } catch {
     // The parse error is not passed on: the page's errors are logged, and this one is about the data.

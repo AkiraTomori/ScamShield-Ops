@@ -152,6 +152,23 @@ export async function insertCase(
   return row;
 }
 
+type IndicatorKey = Pick<typeof schema.analysisIndicators.$inferInsert, "type" | "normalized">;
+
+/** A case whose analysis holds the given matchable indicators. */
+export async function insertCaseWith(
+  db: TestDatabase["db"],
+  indicators: IndicatorKey[],
+  overrides: Partial<CaseInsert> = {},
+): Promise<{ id: string; code: string }> {
+  const analysisId = await insertAnalysis(db);
+  if (indicators.length > 0) {
+    await db
+      .insert(schema.analysisIndicators)
+      .values(indicators.map((i) => ({ ...i, analysisId })));
+  }
+  return insertCase(db, analysisId, overrides);
+}
+
 export async function insertStaff(
   db: TestDatabase["db"],
   username = uniq("staff_"),

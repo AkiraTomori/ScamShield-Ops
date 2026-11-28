@@ -1,6 +1,6 @@
 # Thiết kế slice S6: FraudOps (T-060…T-063)
 
-**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060…T-063 xong ở local 28/11** (nhánh `feat/s6-auth`, PR nháp, chưa merge, chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
+**Trạng thái (28/11/2026):** **OWNER ĐÃ DUYỆT SLICE S6 ngày 26/11/2026** (`/sdlc:sign-off`), nhận mọi phương án đề xuất ở mục quyết định. Agent được viết mã cho slice này. **T-060…T-063 xong ở local 28/11** (đã merge vào `main` (PR #51, 28/11), chưa deploy; chỗ khác bản duyệt ở [§11](#11-ghi-chú-cài-đặt-28112026), **chờ owner xác nhận**). T-061…T-063 cần có case: lấy từ S5 hoặc seed (T-090).
 
 **Căn cứ và thứ bậc.** File này là thiết kế slice (cấp 5, docs/README.md). Nó **không nhắc lại** những gì đã có ở các file dưới, chỉ bổ sung phần còn để ngỏ:
 - [spec](../spec/ScamShield-v1.md): SO-06-AC01…AC06, SO-05-AC01, AC03, SO-10-AC02, AC03, P1.
@@ -24,7 +24,7 @@ Một giám khảo dùng `judge1` đăng nhập và thấy hàng đợi hồ sơ
 - T-063: kết luận, xung đột 409, nhãn không đồng ý với AI.
 
 **Ngoài slice:**
-- hồ sơ liên quan (T-070, SO-07; P1, thứ 2 trong thứ tự cắt). `relatedCases` luôn rỗng và khối bị ẩn; hình dạng ở [related-cases §3](./related-cases.md#3-truy-vấn).
+- hồ sơ liên quan (T-070, SO-07; P1, thứ 2 trong thứ tự cắt). Trong S6 `relatedCases` luôn rỗng và khối bị ẩn; T-070 điền sau (28/11), xem [related-cases](./related-cases.md).
 - chỉ dấu đã xác minh (T-080, T-081, SO-08). Chỉ chừa móc nối ở §5.3.
 - tạo tài khoản `judge1…judge5` và case mẫu (T-090, §8).
 
